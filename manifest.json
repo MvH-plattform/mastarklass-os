@@ -1,0 +1,46 @@
+{
+  "name": "Mästarklass OS",
+  "short_name": "Mästarklass",
+  "description": "Mattias personliga local-first investeringsplattform.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "display_override": [
+    "standalone",
+    "minimal-ui",
+    "browser"
+  ],
+  "background_color": "#07111f",
+  "theme_color": "#07111f",
+  "orientation": "portrait",
+  "categories": [
+    "finance",
+    "productivity"
+  ],
+  "lang": "sv-SE",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Portfölj",
+      "short_name": "Portfölj",
+      "url": "./index.html#portfolio"
+    },
+    {
+      "name": "Mål",
+      "short_name": "Mål",
+      "url": "./index.html#goals"
+    },
+    {
+      "name": "Analys",
+      "short_name": "Analys",
+      "url": "./index.html#analysis"
+    }
+  ]
+}
