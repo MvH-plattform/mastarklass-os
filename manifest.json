@@ -1,0 +1,20 @@
+{
+  "name": "Mästarklass OS 3.1 – Portfolio Intelligence",
+  "short_name": "Mästarklass 3.1",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#07111f",
+  "theme_color": "#07111f",
+  "orientation": "portrait",
+  "lang": "sv-SE",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "description": "Lokala innehavskort med GAV, resultat, kontoinformation, Mästarklass Score och status."
+}
