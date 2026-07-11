@@ -1,0 +1,49 @@
+const CACHE='mastarklass-os-7-6-1-stabilization';
+const ASSETS=[
+'./','./index.html','./manifest.json','./icon.svg',
+'./digital_twin.js','./styles_6_1.css',
+'./intelligence_7_0.js','./intelligence_7_0.css',
+'./portfolio_brain.js','./portfolio_brain.css',
+'./scenario_engine.js','./scenario_engine.css',
+'./market_intelligence.js','./market_intelligence.css',
+'./ai_portfolio_manager.js','./ai_portfolio_manager.css',
+'./dividend_intelligence.js','./dividend_intelligence.css',
+'./wealth_os.js','./wealth_os.css',
+'./integration_7_6_1.js','./integration_7_6_1.css'
+];
+
+self.addEventListener('install',event=>{
+  self.skipWaiting();
+  event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(ASSETS)));
+});
+
+self.addEventListener('activate',event=>{
+  event.waitUntil(
+    caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k))))
+      .then(()=>self.clients.claim())
+  );
+});
+
+self.addEventListener('fetch',event=>{
+  const req=event.request;
+  const url=new URL(req.url);
+  if(req.mode==='navigate' || url.pathname.endsWith('/index.html')){
+    event.respondWith(
+      fetch(req).then(res=>{
+        const copy=res.clone();
+        caches.open(CACHE).then(cache=>cache.put('./index.html',copy));
+        return res;
+      }).catch(()=>caches.match('./index.html'))
+    );
+    return;
+  }
+  if(req.method==='GET' && url.origin===self.location.origin){
+    event.respondWith(
+      caches.match(req).then(cached=>cached || fetch(req).then(res=>{
+        const copy=res.clone();
+        caches.open(CACHE).then(cache=>cache.put(req,copy));
+        return res;
+      }))
+    );
+  }
+});
