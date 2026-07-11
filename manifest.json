@@ -1,0 +1,20 @@
+{
+  "name": "Mästarklass OS 7.6.1 – Stabilisering & Integration",
+  "short_name": "Mästarklass 7.6.1",
+  "start_url": "./?v=761",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#07111f",
+  "theme_color": "#07111f",
+  "orientation": "portrait",
+  "lang": "sv-SE",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "description": "Wealth OS Command Center, stabil navigation, cacheförbättring och Integration Health Check."
+}
