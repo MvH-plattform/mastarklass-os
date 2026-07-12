@@ -1,0 +1,20 @@
+{
+  "name": "Mästarklass OS 8.0 – Cognitive Wealth Platform",
+  "short_name": "Mästarklass 8.0",
+  "start_url": "./?v=800",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#07111f",
+  "theme_color": "#07111f",
+  "orientation": "portrait",
+  "lang": "sv-SE",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "description": "Portfolio Memory, AI Reasoning, Cross-Engine Intelligence, Personal Wealth Coach och Knowledge Graph."
+}
