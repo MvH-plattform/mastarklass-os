@@ -1,7 +1,7 @@
 {
-  "name": "Mästarklass OS 8.7 – Private Portfolio Vault",
-  "short_name": "Mästarklass 8.7",
-  "start_url": "./?v=870",
+  "name": "Mästarklass OS 8.7.1 – Vault Recovery & Migration",
+  "short_name": "Mästarklass 8.7.1",
+  "start_url": "./?v=871",
   "scope": "./",
   "display": "standalone",
   "background_color": "#07111f",
@@ -16,5 +16,5 @@
       "purpose": "any maskable"
     }
   ],
-  "description": "Local-first privat portföljvalv med IndexedDB, autosparning, migrering och krypterad backup."
+  "description": "Djup lokal återställning, CSV/JSON-import, kontrollrapport och Vault Health Check."
 }
