@@ -1,13 +1,20 @@
 {
-  "name": "Mästarklass OS 8.8.4 – Unified Intelligence Engine",
-  "short_name": "Mästarklass 8.8.4",
-  "start_url": "./?v=884",
+  "name": "Mästarklass OS 8.8.5 – Transaction & Backup Engine",
+  "short_name": "Mästarklass 8.8.5",
+  "start_url": "./?v=885",
   "scope": "./",
   "display": "standalone",
   "background_color": "#07111f",
   "theme_color": "#07111f",
   "orientation": "portrait",
   "lang": "sv-SE",
-  "icons": [{"src":"icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}],
-  "description": "Gemensam lokal analysmotor för Portfolio Analytics, Portfolio Brain och övriga intelligensmoduler."
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "description": "Köp, försäljningar, utdelningar, automatiskt GAV, lokal autosäkerhetskopia och verifierad krypterad backup."
 }

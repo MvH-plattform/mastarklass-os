@@ -1,25 +1,29 @@
-# Mästarklass OS 8.8.4 – Unified Intelligence Engine
+# Mästarklass OS 8.8.5 – Transaction & Backup Engine
 
 ## Nytt
+- registrering av köp, försäljningar och utdelningar
+- automatiskt antal och viktat GAV vid köp
+- kontroll mot registrerat antal vid försäljning
+- courtage, valuta och valutakurs till SEK
+- transaktionshistorik per innehav
+- möjlighet att ta bort en felregistrerad transaktion och återställa föregående antal/GAV
+- omedelbar synk till Private Vault, Dashboard, Analytics och Portfolio Brain
+- automatisk lokal backup efter varje förändring
+- manuell AES-GCM-krypterad `.mkbackup`
+- verifiering genom dekryptering och SHA-256-checksumma före nedladdning
+- backupstatus: aktuell, ändringar sedan backup eller backup saknas
+- lokal backuphistorik
+- återställning på en ny enhet
 
-- Ett gemensamt lokalt analysobjekt används av Portfolio Analytics och Portfolio Brain.
-- Dynamisk Portfolio IQ baserad på datatäckning, koncentration, överlapp och diversifiering.
-- Samma antal överlapp visas i samtliga analysvyer.
-- Portfolio Brain Brief fylls automatiskt med spårbara lokala slutsatser.
-- Problem, DNA, Radar och hypotetisk kapitalallokering använder samma motor.
-- Analysen uppdateras efter återställning, import och lokal portföljsynk.
-- Service Worker-cache är reparerad och versionshöjd för säker uppdatering.
+## Registrera ett köp av två PepsiCo
+1. Öppna **Mer → Transaktioner & Backup 8.8.5**.
+2. Välj **Köp**.
+3. Välj PepsiCo och rätt konto.
+4. Ange antal `2`, pris per aktie, valuta, valutakurs till SEK och courtage.
+5. Kontrollera förhandsvisningen.
+6. Tryck **Kontrollera och spara**.
 
-## Säkerhet
+Innehavets antal och GAV uppdateras automatiskt. Ändringen sparas i Private Vault och skapar en automatisk lokal backup.
 
-All privat portföljdata ligger fortsatt lokalt i IndexedDB. GitHub-koden innehåller inga privata innehav. Externa kurser, bankkoppling och handel är fortsatt avstängda.
-
-## Kontroll efter uppladdning
-
-1. Ladda upp alla filer samtidigt till GitHub.
-2. Vänta tills GitHub Pages-deploymenten är klar.
-3. Öppna appen på samma enhet och i samma webbläsare.
-4. Kontrollera att 101 innehav visas.
-5. Öppna **Mer → Portfolio Analytics** och kontrollera värde, täckning och överlapp.
-6. Öppna **Portfolio Brain 7.1** och kontrollera att IQ, överlapp och Portfolio Brain Brief är ifyllda.
-7. Skapa därefter en krypterad `.mkbackup`.
+## Backup
+Den automatiska backupen är lokal i IndexedDB och uppdateras efter varje förändring. Den nedladdade `.mkbackup`-filen kan inte skrivas över automatiskt av webbläsaren. Appen visar därför hur många ändringar som har skett sedan filen skapades och när en ny manuell backup bör laddas ned.
