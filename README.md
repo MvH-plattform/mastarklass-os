@@ -1,3 +1,26 @@
+# Mästarklass OS 8.8.5.1 – Transaction Stability Fix
+
+## Rättat
+
+- felet `heroValue is not defined` efter sparad transaktion
+- äldre dashboardfält uppdateras nu säkert endast när de finns i DOM
+- en redan sparad transaktion rapporteras inte längre som misslyckad på grund av ett efterföljande renderingsfel
+- synk, Private Vault och automatisk lokal backup körs före visuell uppdatering
+- versionsidentitet och Service Worker-cache är höjda till 8.8.5.1
+
+## Viktigt vid test
+
+Det tidigare försöket kan redan ha hunnit sparas innan felmeddelandet visades. Kontrollera därför först PepsiCo/Montrose-innehavets antal och transaktionshistoriken innan samma köp registreras igen.
+
+## Kontroll efter uppladdning
+
+1. Ladda upp samtliga filer samtidigt till GitHub.
+2. Vänta tills GitHub Pages deployment är klar.
+3. Öppna plattformen på samma enhet och webbläsare.
+4. Kontrollera befintligt antal och historik för innehavet som testades.
+5. Registrera därefter en liten testtransaktion.
+6. Bekräfta att sparmeddelandet visas, historiken fylls och backupstatus uppdateras.
+
 # Mästarklass OS 8.8.5 – Transaction & Backup Engine
 
 ## Nytt

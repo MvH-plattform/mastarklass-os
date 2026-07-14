@@ -71,10 +71,16 @@ async function saveTransaction885(){
     if(window.MKUnifiedData883)await window.MKUnifiedData883.adopt(DATA,{source:"transaction-8.8.5",persist:false});
     if(window.MKPrivateVault87)await window.MKPrivateVault87.saveNow(DATA);
     await window.MKAutomaticBackup885.afterChange(DATA,`${applied.transaction.type} · ${applied.transaction.holdingName}`);
-    window.MKEventBus883?.emit("portfolio:changed",{source:"transaction-8.8.5"});
-    if(typeof renderAll==="function")renderAll();
+    window.MKEventBus883?.emit("portfolio:changed",{source:"transaction-8.8.5.1"});
+    // Transaktionen är nu permanent sparad. UI-rendering får aldrig omklassificera ett lyckat köp som misslyckat.
     if(result)result.textContent=`Sparat: ${applied.transaction.holdingName}. Nytt antal ${applied.transaction.after.quantity}; GAV ${applied.transaction.after.averageCost}.`;
-    renderTransactionBackup885();
+    try{
+      if(typeof renderAll==="function")renderAll();
+      renderTransactionBackup885();
+    }catch(renderError){
+      console.error("8.8.5.1: transaktionen sparades men en vy kunde inte uppdateras",renderError);
+      if(result)result.textContent+=` Vissa vyer uppdateras när sidan öppnas igen.`;
+    }
   }catch(e){if(result)result.textContent="Kunde inte spara: "+e.message}
 }
 async function deleteTransaction885(id){
