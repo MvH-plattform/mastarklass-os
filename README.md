@@ -1,20 +1,25 @@
-# Mästarklass OS 8.8.3 – Unified Data Sync
+# Mästarklass OS 8.8.4 – Unified Intelligence Engine
 
-## Löser
-- Portfolio Analytics-knappen öppnar nu Analytics 2.3 korrekt.
-- Private Vault, Portfolio Cockpit, Analytics, Portfolio Brain och Smart Import använder samma lokala datareferens.
-- Återställning och ändringar sänder synkhändelser till övriga moduler.
-- Dashboard och analyser renderas om automatiskt.
-- Externa kurser, bankkoppling och handel är fortsatt avstängda.
+## Nytt
 
-## Efter uppladdning
-1. Ladda upp alla filer samtidigt till GitHub.
-2. Vänta på GitHub Pages deployment.
-3. Öppna sidan på samma enhet och webbläsare.
-4. Kontrollera att 101 innehav visas.
-5. Öppna **Mer → Portfolio Analytics 2.3**.
-6. Kontrollera Portfolio Brain igen.
-7. Skapa därefter en krypterad `.mkbackup`.
+- Ett gemensamt lokalt analysobjekt används av Portfolio Analytics och Portfolio Brain.
+- Dynamisk Portfolio IQ baserad på datatäckning, koncentration, överlapp och diversifiering.
+- Samma antal överlapp visas i samtliga analysvyer.
+- Portfolio Brain Brief fylls automatiskt med spårbara lokala slutsatser.
+- Problem, DNA, Radar och hypotetisk kapitalallokering använder samma motor.
+- Analysen uppdateras efter återställning, import och lokal portföljsynk.
+- Service Worker-cache är reparerad och versionshöjd för säker uppdatering.
 
 ## Säkerhet
-Privat portföljdata ligger fortsatt lokalt i IndexedDB och ska inte läggas i GitHub.
+
+All privat portföljdata ligger fortsatt lokalt i IndexedDB. GitHub-koden innehåller inga privata innehav. Externa kurser, bankkoppling och handel är fortsatt avstängda.
+
+## Kontroll efter uppladdning
+
+1. Ladda upp alla filer samtidigt till GitHub.
+2. Vänta tills GitHub Pages-deploymenten är klar.
+3. Öppna appen på samma enhet och i samma webbläsare.
+4. Kontrollera att 101 innehav visas.
+5. Öppna **Mer → Portfolio Analytics** och kontrollera värde, täckning och överlapp.
+6. Öppna **Portfolio Brain 7.1** och kontrollera att IQ, överlapp och Portfolio Brain Brief är ifyllda.
+7. Skapa därefter en krypterad `.mkbackup`.
