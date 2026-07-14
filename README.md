@@ -1,21 +1,27 @@
-# Mästarklass OS 8.8 – Portfolio Intelligence Core
+# Mästarklass OS 8.8.1 – Intelligent Portfolio Import & Recovery
 
 ## Nytt
-- Portfolio Health Score
-- analys per konto och plattform
-- tillgångsmix för aktier, ETF:er och fonder
-- sektor-, land- och valutaexponering
-- koncentrationskontroll för största och fem största innehav
-- datatäckningsbetyg
-- prioriterade förbättringspunkter
-- målprogress mot 500 000 kr, 1 000 000 kr och 7 500 000 kr
-- lokala dagliga snapshots
-- full integration med Private Portfolio Vault
-- tomt och tydligt återställningsläge när portfölj saknas
-- inga externa kurser, bankkopplingar eller handelsfunktioner
+- sökning i samtliga LocalStorage-poster
+- sökning i tillgängliga IndexedDB-databaser och objektlager
+- rangordning av hittade portföljer
+- förhandsvisning innan data skrivs
+- CSV- och JSON-import
+- återställning från krypterad `.mkbackup`
+- val av enskild kandidat
+- sammanslagning av flera kandidater
+- dubblettkontroll
+- integritets- och datatäckningsrapport
+- enknappsöverföring till Private Vault
+- backup-påminnelse efter återställning
+- extern marknadsdata, bankkoppling och handel fortsatt avstängda
 
-## Viktigt
-8.8 analyserar endast lokalt sparad portföljdata. När innehaven har importerats eller återställts i Private Vault startar analysen automatiskt och sparas på samma enhet.
+## Arbetsflöde när 0 innehav visas
+1. Öppna **Smart Import**.
+2. Tryck **Sök alla lokala källor**.
+3. Välj den kandidat som har rätt antal innehav och värden.
+4. Granska förhandsvisningen.
+5. Tryck **Återställ vald portfölj**.
+6. Exportera därefter en krypterad `.mkbackup`.
 
-## Uppladdning till GitHub
-Packa upp hela ZIP-filen och ladda upp samtliga filer samtidigt. Befintliga filer med samma namn ersätts automatiskt; de behöver inte raderas en och en.
+## GitHub
+Detta är en komplett release. Packa upp ZIP-filen och ladda upp alla filer samtidigt. Befintliga filer med samma namn ersätts automatiskt.
