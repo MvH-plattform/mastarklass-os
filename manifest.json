@@ -1,7 +1,7 @@
 {
-  "name": "Mästarklass OS 8.7.1 – Vault Recovery & Migration",
-  "short_name": "Mästarklass 8.7.1",
-  "start_url": "./?v=871",
+  "name": "Mästarklass OS 8.8 – Portfolio Intelligence Core",
+  "short_name": "Mästarklass 8.8",
+  "start_url": "./?v=880",
   "scope": "./",
   "display": "standalone",
   "background_color": "#07111f",
@@ -16,5 +16,5 @@
       "purpose": "any maskable"
     }
   ],
-  "description": "Djup lokal återställning, CSV/JSON-import, kontrollrapport och Vault Health Check."
+  "description": "Lokal portföljhälsa, exponering, koncentration, målprogress och snapshots."
 }

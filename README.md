@@ -1,23 +1,21 @@
-# Mästarklass OS 8.7.1 – Vault Recovery & Migration Stabilization
+# Mästarklass OS 8.8 – Portfolio Intelligence Core
 
 ## Nytt
-- söker igenom samtliga LocalStorage-nycklar efter äldre Mästarklass-portföljer
-- väljer automatiskt den mest kompletta portföljen
-- flexibel CSV-import
-- JSON-import
-- automatisk normalisering av innehav
-- kontrollrapport efter återställning eller import
-- Vault Health Check
-- backupstatus och påminnelse
-- fortsatt lokal IndexedDB-lagring och autosparning
-- inga privata innehav i GitHub
-- externa källor fortsatt avstängda
+- Portfolio Health Score
+- analys per konto och plattform
+- tillgångsmix för aktier, ETF:er och fonder
+- sektor-, land- och valutaexponering
+- koncentrationskontroll för största och fem största innehav
+- datatäckningsbetyg
+- prioriterade förbättringspunkter
+- målprogress mot 500 000 kr, 1 000 000 kr och 7 500 000 kr
+- lokala dagliga snapshots
+- full integration med Private Portfolio Vault
+- tomt och tydligt återställningsläge när portfölj saknas
+- inga externa kurser, bankkopplingar eller handelsfunktioner
 
-## När startsidan visar 0 innehav
-1. Tryck **Sök igenom all lokal lagring**.
-2. Hittas ingen äldre portfölj, välj **Importera portföljfil**.
-3. Välj en CSV- eller JSON-fil med dina innehav.
-4. Kontrollera antalet importerade innehav.
-5. Ange en lösenfras och exportera en krypterad `.mkbackup`.
+## Viktigt
+8.8 analyserar endast lokalt sparad portföljdata. När innehaven har importerats eller återställts i Private Vault startar analysen automatiskt och sparas på samma enhet.
 
-Efter lyckad återställning sparas portföljen i IndexedDB och laddas automatiskt varje gång appen öppnas på samma enhet och i samma webbläsare.
+## Uppladdning till GitHub
+Packa upp hela ZIP-filen och ladda upp samtliga filer samtidigt. Befintliga filer med samma namn ersätts automatiskt; de behöver inte raderas en och en.
