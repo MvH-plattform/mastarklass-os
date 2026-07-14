@@ -1,0 +1,8 @@
+
+.smartImportMenuCard{border:1px solid rgba(56,189,248,.45)!important;background:linear-gradient(145deg,rgba(14,165,233,.16),rgba(168,85,247,.12))!important;box-shadow:0 14px 38px rgba(14,165,233,.08)}
+.smartImportMenuCard b{color:#e0f2fe}
+.si882QuickActions{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.si882QuickActions button{width:100%}
+.si882ExportGrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.si882ExportGrid .ii881Primary{grid-column:1/-1}
+@media(max-width:380px){.si882QuickActions,.si882ExportGrid{grid-template-columns:1fr}.si882ExportGrid .ii881Primary{grid-column:auto}}

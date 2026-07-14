@@ -1,27 +1,31 @@
-# Mästarklass OS 8.8.1 – Intelligent Portfolio Import & Recovery
+# Mästarklass OS 8.8.2 – Smart Import Center
 
 ## Nytt
-- sökning i samtliga LocalStorage-poster
-- sökning i tillgängliga IndexedDB-databaser och objektlager
-- rangordning av hittade portföljer
-- förhandsvisning innan data skrivs
-- CSV- och JSON-import
+- synlig knapp **Smart Import Center 8.8.2** högst upp under **Mer**
+- Smart Scan för LocalStorage och IndexedDB
+- rangordnade portföljkandidater
+- förhandsvisning före skrivning
+- import från CSV och JSON
 - återställning från krypterad `.mkbackup`
-- val av enskild kandidat
 - sammanslagning av flera kandidater
 - dubblettkontroll
-- integritets- och datatäckningsrapport
-- enknappsöverföring till Private Vault
-- backup-påminnelse efter återställning
+- enknappsåterställning till Private Vault
+- export till CSV
+- export till JSON
+- länk till krypterad Private Vault-backup
+- lokal import- och exporthistorik
+- samlad datarapport
 - extern marknadsdata, bankkoppling och handel fortsatt avstängda
 
-## Arbetsflöde när 0 innehav visas
-1. Öppna **Smart Import**.
-2. Tryck **Sök alla lokala källor**.
-3. Välj den kandidat som har rätt antal innehav och värden.
-4. Granska förhandsvisningen.
-5. Tryck **Återställ vald portfölj**.
-6. Exportera därefter en krypterad `.mkbackup`.
+## Så får du in dina innehav
+1. Öppna **Mer**.
+2. Tryck på **Smart Import Center 8.8.2**, som ligger överst.
+3. Börja med **Smart Scan**.
+4. Om ingen äldre portfölj hittas, välj **Importera fil**.
+5. Välj CSV, JSON eller `.mkbackup`.
+6. Kontrollera förhandsvisningen.
+7. Tryck **Återställ vald portfölj**.
+8. Exportera därefter en krypterad backup.
 
 ## GitHub
-Detta är en komplett release. Packa upp ZIP-filen och ladda upp alla filer samtidigt. Befintliga filer med samma namn ersätts automatiskt.
+Packa upp hela ZIP-filen och ladda upp samtliga filer samtidigt. Filer med samma namn ersätts automatiskt.
