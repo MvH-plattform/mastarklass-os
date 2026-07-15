@@ -1,7 +1,7 @@
 {
-  "name": "Mästarklass OS 8.9 – Portfolio Intelligence & Safety Layer",
-  "short_name": "Mästarklass 8.9",
-  "start_url": "./?v=890",
+  "name": "Mästarklass OS 9.0.1 – Investment Credit Center",
+  "short_name": "Mästarklass 9.0.1",
+  "start_url": "./?v=901",
   "scope": "./",
   "display": "standalone",
   "background_color": "#07111f",
@@ -16,5 +16,5 @@
       "purpose": "any maskable"
     }
   ],
-  "description": "Sandbox, Portfolio Impact, Backup Intelligence, dataintegritet, tidslinje och AI Decision Coach."
+  "description": "Värdepapperskredit, amorteringar, belåningsgrad, ränta och försäljningspåverkan – utan privatekonomiska lån."
 }
