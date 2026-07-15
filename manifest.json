@@ -1,7 +1,7 @@
 {
-  "name": "Mästarklass OS 9.0.1 – Investment Credit Center",
-  "short_name": "Mästarklass 9.0.1",
-  "start_url": "./?v=901",
+  "name": "Mästarklass OS 9.0.2 – Intelligent Investment Credit",
+  "short_name": "Mästarklass 9.0.2",
+  "start_url": "./?v=902",
   "scope": "./",
   "display": "standalone",
   "background_color": "#07111f",
@@ -16,5 +16,5 @@
       "purpose": "any maskable"
     }
   ],
-  "description": "Värdepapperskredit, amorteringar, belåningsgrad, ränta och försäljningspåverkan – utan privatekonomiska lån."
+  "description": "Intelligent värdepapperskredit med Credit Coach, scenarioanalys och prognos."
 }
