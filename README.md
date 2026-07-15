@@ -1,21 +1,41 @@
-# Mästarklass OS 9.0.3 – Intelligent Investment Credit
+# Mästarklass OS 9.0.3 Beta – Credit Risk Intelligence Pro
 
-## Nytt
-- AI Credit Coach med lokala råd utifrån utnyttjandegrad, belåningsgrad och ränta
-- tydlig tillgänglig kredit och säkerhetsstatus
-- kombinationsscenario: försäljning, nytt köp och kontant finansiering
-- 12-månaders kreditprognos med valfri månadsamortering
-- lokal uppskattning av räntekostnad per dag, månad och år
-- fortsatt full avgränsning: endast värdepapperskredit, inga privata lån eller löneflöden
-- all privat data ligger kvar lokalt i Private Vault/IndexedDB
+Detta är en komplett Beta-release. `index.html`, `manifest.json`, `sw.js`, README och samtliga 9.0.3-moduler är synkroniserade till samma version.
+
+## Innehåll
+
+- dynamiskt Credit Risk Score 0–100
+- riskklass: låg, normal, förhöjd eller hög
+- Credit Risk Intelligence Pro
+- stresstest vid portföljfall
+- säkerhetsmarginal
+- rekommenderad amortering
+- teoretiskt kreditutrymme inom målzonen
+- AI Credit Coach Pro
+- Investment Credit Center
+- Private Vault och krypterad backup
+- inga andra lån, löner eller hushållsflöden
+- ingen bankkoppling och ingen handel
+
+## Versions- och cachefix
+
+Beta-versionen innehåller en icke-destruktiv versionsvakt:
+
+- uppdaterar Service Worker
+- tar bort äldre Mästarklass-cacheversioner
+- raderar **inte** IndexedDB
+- raderar **inte** LocalStorage
+- raderar **inte** dina 101 innehav
+
+Appens synliga byggmärke visar `9.0.3 BETA`.
 
 ## Uppladdning
-Ladda upp samtliga filer samtidigt till GitHub. Filer med samma namn ersätts automatiskt. Vänta tills GitHub Pages är färdig och öppna sedan sidan i samma webbläsare och på samma enhet.
 
+1. Packa upp ZIP-filen.
+2. Markera samtliga filer.
+3. Ladda upp dem samtidigt till GitHub.
+4. Vänta tills GitHub Pages-deploymenten är färdig.
+5. Stäng den gamla appfliken/PWA:n och öppna den igen.
+6. Öppna gärna sidan första gången med `?v=903-beta`.
 
-## Nytt i 9.0.3
-- Dynamisk riskklass (Låg/Normal/Förhöjd/Hög)
-- AI Credit Coach med rekommendationer
-- Scenariomotor för köp/amortering
-- Prognos för månads- och årsränta
-- Kreditvarningar
+Radera inte webbplatsdata i Chrome. Det behövs inte för denna release och kan radera den lokala Private Vault-databasen.

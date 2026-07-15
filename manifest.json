@@ -1,7 +1,7 @@
 {
-  "name": "Mästarklass OS 9.0.2 – Intelligent Investment Credit",
-  "short_name": "Mästarklass 9.0.2",
-  "start_url": "./?v=902",
+  "name": "Mästarklass OS 9.0.3 Beta – Credit Risk Intelligence Pro",
+  "short_name": "Mästarklass 9.0.3B",
+  "start_url": "./?v=903-beta",
   "scope": "./",
   "display": "standalone",
   "background_color": "#07111f",
@@ -16,5 +16,6 @@
       "purpose": "any maskable"
     }
   ],
-  "description": "Intelligent värdepapperskredit med Credit Coach, scenarioanalys och prognos."
+  "description": "Komplett Beta med synkroniserad version, kreditriskmotor, stresstest, AI Credit Coach och säker cacheuppdatering.",
+  "id": "./?app=mastarklass-os-9-0-3-beta"
 }
