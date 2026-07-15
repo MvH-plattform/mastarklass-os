@@ -1,4 +1,4 @@
-# Mästarklass OS 9.0.2 – Intelligent Investment Credit
+# Mästarklass OS 9.0.3 – Intelligent Investment Credit
 
 ## Nytt
 - AI Credit Coach med lokala råd utifrån utnyttjandegrad, belåningsgrad och ränta
@@ -11,3 +11,11 @@
 
 ## Uppladdning
 Ladda upp samtliga filer samtidigt till GitHub. Filer med samma namn ersätts automatiskt. Vänta tills GitHub Pages är färdig och öppna sedan sidan i samma webbläsare och på samma enhet.
+
+
+## Nytt i 9.0.3
+- Dynamisk riskklass (Låg/Normal/Förhöjd/Hög)
+- AI Credit Coach med rekommendationer
+- Scenariomotor för köp/amortering
+- Prognos för månads- och årsränta
+- Kreditvarningar
