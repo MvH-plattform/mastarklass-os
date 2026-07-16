@@ -1,24 +1,26 @@
-# Mästarklass OS 9.4.0 – Performance Analytics
-
-9.4 bygger vidare på 9.3 Portfolio Ledger och lägger till en lokal analysmotor för faktisk portföljprestation.
+# Mästarklass OS 9.5.0 – Investment Intelligence Center
 
 ## Nytt
 
-- total return utifrån känd kostnadsbas
-- orealiserat och registrerat realiserat resultat
-- utdelningssummering
-- datumsviktad XIRR när kapitalflöden finns
-- volatilitet, maximal drawdown, Sharpe och Sortino när snapshots räcker
-- innehavsresultat och datatäckning
-- metodvy med tydliga begränsningar
-- benchmark förblir avstängd tills godkänd datakälla finns
-- all privat data stannar lokalt
+- ranking av innehav: Öka, Behåll eller Minska
+- lokal Intelligence Score
+- bästa köpprioritet och största bevakningsbehov
+- simulering av köp eller minskning utan att spara
+- påverkan på score och portföljvikt
+- tydliga förklaringar till varje signal
+- integritetskontroll mot Performance Analytics 9.4, Portfolio Ledger 9.3 och Transaction Intelligence 9.2
+
+## Viktig begränsning
+
+Motorn använder lokal portföljdata, registrerad kvalitet, metadata och vikter. Den använder ännu inte externa värderingar, livekurser eller rapportdata. Rekommendationerna är beslutsstöd och skapar inga order.
+
+## Säkerhet
+
+- Private Vault och IndexedDB bevaras
+- ingen bankkoppling
+- ingen handel
+- ingen privat hushållsekonomi
 
 ## Uppladdning
 
-1. Ladda upp PART1 och gör Commit.
-2. Ladda upp PART2 och gör Commit.
-3. Vänta tills GitHub Pages är färdig.
-4. Stäng den gamla appfliken och öppna appen igen.
-
-Alla filer ska ligga i repositoryts rot.
+Ladda upp PART1 och gör Commit. Ladda därefter upp PART2 och gör Commit. Alla filer ska ligga i repositoryts rot.
