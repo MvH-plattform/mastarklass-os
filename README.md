@@ -1,51 +1,30 @@
-# Mästarklass OS 9.2.0 – Transaction Intelligence 2.0
+# Mästarklass OS 9.3.0 – Portfolio Ledger
 
-Version 9.2.0 bygger vidare på den fungerande 9.1.0 Stable-basen.
+9.3.0 bygger vidare på 9.2.0 Transaction Intelligence.
 
-## Huvudnyhet
+## Nytt
 
-En försäljning skiljs nu från ett uttag ur investeringsportföljen.
-
-Försäljningslikvid kan registreras som:
-
-- kontanter kvar på investeringskontot
-- amortering av Avanza värdepapperskredit
-- uttag ur investeringsportföljen
-- direkt återinvestering
-
-## Ny kapitalmodell
-
-Plattformen skiljer på:
-
-- värdepappersvärde
-- kontanter inom investeringskonton
-- totalt investeringskapital
-- uttag ur portföljen
-- kreditamortering
+- gemensam ledger för köp, försäljningar, utdelningar och kapitalflöden
+- migrering av 9.2-transaktioner till 9.3-ledgern
+- tidslinje över hela investeringsresan
+- GAV och resultat per innehav
 - realiserat resultat
+- utdelningssummering
+- insättningar, uttag och flyttar mellan investeringskonton
+- Ledger Integrity Score
+- fortsatt lokal datalagring och automatisk backup
 
-Det innebär att en såld fond inte behöver minska det totala investeringskapitalet när pengarna fortfarande ligger kvar hos Avanza, SAVR, Montrose, Länsförsäkringar eller Lysa.
+## Avgränsning
 
-## Korrigering av tidigare Spiltan-försäljning
+Mästarklass OS hanterar endast investeringar och värdepapperskredit kopplad till investeringarna.
 
-Om cirka 22 000 kr från Spiltan-försäljningen fortfarande ligger kvar på investeringskontot:
-
-1. Öppna **Mer → Transaction Intelligence 9.2**.
-2. Välj **Likvidjustering**.
-3. Välj kontot där pengarna ligger.
-4. Ange det exakta positiva beloppet.
-5. Förhandsgranska och spara.
-
-Det återställer pengarna som investeringskontanter utan att fondinnehavet återskapas.
-
-## Säkerhet
-
-- all privat portföljdata ligger lokalt
-- IndexedDB och Private Vault rensas inte
-- ingen bankkoppling
-- ingen handel
-- inga löner, hushållsflöden, bolån, billån eller andra privata lån
+Lön, hushållsekonomi, bolån, billån och andra privata kassaflöden ingår inte.
 
 ## Uppladdning
 
-Ladda upp PART1 och gör Commit. Ladda därefter upp PART2 och gör Commit. Båda delarnas filer ska ligga i repositoryts rot.
+1. Ladda upp PART1 och gör Commit.
+2. Ladda upp PART2 och gör Commit.
+3. Vänta tills GitHub Pages är färdig.
+4. Stäng den gamla appfliken och öppna appen igen.
+
+Alla filer ska ligga i repositoryts rot.
