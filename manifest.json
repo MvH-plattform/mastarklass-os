@@ -1,7 +1,7 @@
 {
-  "name": "Mästarklass OS 9.5.0 – Investment Intelligence Center",
-  "short_name": "Mästarklass 9.5",
-  "start_url": "./?v=950",
+  "name": "Mästarklass OS 9.6.0 – Wealth Coach Pro",
+  "short_name": "Mästarklass 9.6",
+  "start_url": "./?v=960",
   "scope": "./",
   "display": "standalone",
   "background_color": "#07111f",
@@ -16,6 +16,6 @@
       "purpose": "any maskable"
     }
   ],
-  "description": "Local-first investeringsplattform med köp/behåll/minska-ranking, simulering och förklarbart beslutsstöd.",
-  "id": "./?app=mastarklass-os-9-5-0"
+  "description": "Local-first Wealth Coach med morgonbrief, personliga prioriteringar, målprognos och förklarbar beslutsintegritet.",
+  "id": "./?app=mastarklass-os-9-6-0"
 }

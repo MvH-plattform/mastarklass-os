@@ -1,26 +1,18 @@
-# Mästarklass OS 9.5.0 – Investment Intelligence Center
+# Mästarklass OS 9.6.0 – Wealth Coach Pro
+
+9.6.0 bygger vidare på 9.5 Investment Intelligence och sammanför lokala portföljdata till en personlig coachvy.
 
 ## Nytt
+- personlig morgonbrief
+- tre prioriterade åtgärder
+- frågefunktion för köp, risk, utdelning och mål
+- kapitalmålsprognos mot 7,5 Mkr
+- Coach Confidence och tydliga databegränsningar
+- direkt kontroll att Performance Analytics 9.4 och Investment Intelligence 9.5 är anslutna
+- icke-destruktiv versionsväxling; Private Vault, IndexedDB och LocalStorage bevaras
 
-- ranking av innehav: Öka, Behåll eller Minska
-- lokal Intelligence Score
-- bästa köpprioritet och största bevakningsbehov
-- simulering av köp eller minskning utan att spara
-- påverkan på score och portföljvikt
-- tydliga förklaringar till varje signal
-- integritetskontroll mot Performance Analytics 9.4, Portfolio Ledger 9.3 och Transaction Intelligence 9.2
-
-## Viktig begränsning
-
-Motorn använder lokal portföljdata, registrerad kvalitet, metadata och vikter. Den använder ännu inte externa värderingar, livekurser eller rapportdata. Rekommendationerna är beslutsstöd och skapar inga order.
-
-## Säkerhet
-
-- Private Vault och IndexedDB bevaras
-- ingen bankkoppling
-- ingen handel
-- ingen privat hushållsekonomi
+## Begränsning
+Wealth Coach använder lokal regelbaserad intelligens. Ingen extern AI, bankkoppling eller handel aktiveras. Rekommendationerna är beslutsstöd.
 
 ## Uppladdning
-
 Ladda upp PART1 och gör Commit. Ladda därefter upp PART2 och gör Commit. Alla filer ska ligga i repositoryts rot.
