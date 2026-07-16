@@ -1,21 +1,106 @@
-const CACHE='mastarklass-os-9-7-0';
-const ASSETS=["./", "./activation_gate.js", "./ai_portfolio_manager.css", "./ai_portfolio_manager.js", "./analytics_connector_8_8_3.js", "./analytics_connector_8_8_4.js", "./brain_connector_8_8_3.js", "./brain_connector_8_8_4.js", "./cache_engine.js", "./cache_policy_2.js", "./calendar_intelligence.js", "./cognitive_wealth_8_0.css", "./cognitive_wealth_8_0.js", "./connector_framework.js", "./dashboard_sync_8_8_3.js", "./data_lineage.js", "./data_manager.js", "./data_validation_2.js", "./digital_twin.js", "./dividend_intelligence.css", "./dividend_intelligence.js", "./event_bus_8_8_3.js", "./icon.svg", "./index.html", "./integration_7_6_1.css", "./integration_7_6_1.js", "./integration_monitor.js", "./integration_scheduler.js", "./intelligence_7_0.css", "./intelligence_7_0.js", "./intelligent_import_8_8_1.css", "./intelligent_import_8_8_1.js", "./legal_compliance.js", "./live_foundation_8_1.css", "./live_foundation_8_1.js", "./live_portfolio_8_2.css", "./live_portfolio_8_2.js", "./live_snapshot_template.csv", "./live_source_integration_8_6.css", "./live_source_integration_8_6.js", "./manifest.json", "./market_calendar.js", "./market_connect_8_3.css", "./market_connect_8_3.js", "./market_intelligence.css", "./market_intelligence.js", "./market_intelligence_8_4.css", "./market_intelligence_8_4.js", "./market_reasoning_engine.js", "./market_snapshot_importer.js", "./market_snapshot_template.csv", "./official_macro_adapters.js", "./portfolio_attribution.js", "./portfolio_brain.css", "./portfolio_brain.js", "./portfolio_candidate_ranker.js", "./portfolio_discovery_8_8_1.js", "./portfolio_exposure_engine.js", "./portfolio_file_importer.js", "./portfolio_health_engine.js", "./portfolio_import_review.csv", "./portfolio_import_validator.js", "./portfolio_intelligence_8_8.css", "./portfolio_intelligence_8_8.js", "./portfolio_intelligence_engine.js", "./portfolio_merge_engine.js", "./portfolio_snapshot_engine.js", "./portfolio_valuation.js", "./private_vault_8_7.css", "./private_vault_8_7.js", "./private_vault_crypto.js", "./private_vault_db.js", "./private_vault_integrity.js", "./private_vault_migration.js", "./provider_router.js", "./scenario_engine.css", "./scenario_engine.js", "./smart_import_center_8_8_2.css", "./smart_import_center_8_8_2.js", "./snapshot_importer.js", "./source_health_monitor.js", "./source_registry.js", "./source_trust_engine.js", "./styles_6_1.css", "./sync_engine_8_8_3.js", "./ticker_mapping.js", "./unified_data_provider_8_8_3.js", "./unified_data_sync_8_8_3.css", "./unified_intelligence_engine_8_8_4.js", "./validation_engine.js", "./vault_health_check.js", "./vault_recovery_8_7_1.css", "./vault_recovery_8_7_1.js", "./vault_recovery_engine.js", "./vault_sync_8_8_3.js", "./verified_data_8_5.css", "./verified_data_8_5.js", "./wealth_os.css", "./wealth_os.js",'./transaction_engine_8_8_5.js','./automatic_backup_8_8_5.js','./manual_backup_8_8_5.js','./transaction_backup_8_8_5.js','./transaction_backup_8_8_5.css','./sandbox_engine_8_9.js','./portfolio_impact_8_9.js','./backup_intelligence_8_9.js','./data_integrity_8_9.js','./decision_coach_8_9.js','./portfolio_safety_8_9.js','./portfolio_safety_8_9.css','./credit_engine_9_0_1.js','./credit_risk_9_0_1.js','./credit_integration_9_0_1.js','./investment_credit_9_0_1.js','./investment_credit_9_0_1.css','./investment_credit_9_0_2.css','./credit_intelligence_9_0_2.js','./credit_intelligence_9_0_3.js','./investment_credit_9_0_3.css','./version_guard_9_3_0.js','./stable_system_9_1_0.js','./stable_9_1_0.css','./transaction_intelligence_9_2_0.js','./transaction_intelligence_9_2_0.css','./portfolio_ledger_9_3_0.js','./portfolio_ledger_9_3_0.css','./version_guard_9_7_0.js','./performance_analytics_9_4_0.js','./performance_analytics_9_4_0.css','./investment_intelligence_9_5_0.js','./investment_intelligence_9_5_0.css','./live_provider_registry_9_7_0.js','./live_portfolio_pilot_9_7_0.js','./live_connectors_9_7_0.js','./live_foundation_ui_9_7_0.js','./live_portfolio_pilot_9_7_0.css'];
+/* Mästarklass OS 9.7.1 – non-destructive service worker */
+const MKOS_VERSION = "9.7.1";
+const CODE_CACHE = "mkos-code-9.7.1";
+const INTEGRATION_SCRIPT = "./live_integration_9_7_1.js?v=9.7.1";
 
-self.addEventListener('install',event=>{
+self.addEventListener("install", event => {
   self.skipWaiting();
-  event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(ASSETS)));
+  event.waitUntil(
+    caches.open(CODE_CACHE).then(cache =>
+      cache.addAll([
+        "./",
+        "./index.html",
+        "./manifest.json",
+        "./live_integration_9_7_1.js",
+        "./live_provider_registry_9_7_0.js",
+        "./live_portfolio_pilot_9_7_0.js",
+        "./live_connectors_9_7_0.js",
+        "./live_foundation_ui_9_7_0.js"
+      ]).catch(() => undefined)
+    )
+  );
 });
-self.addEventListener('activate',event=>{
-  event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim()));
+
+self.addEventListener("activate", event => {
+  event.waitUntil((async () => {
+    const keys = await caches.keys();
+    await Promise.all(
+      keys
+        .filter(key => key !== CODE_CACHE && /mkos|mastarklass/i.test(key))
+        .map(key => caches.delete(key))
+    );
+    await self.clients.claim();
+  })());
 });
-self.addEventListener('fetch',event=>{
-  const req=event.request;
-  const url=new URL(req.url);
-  if(req.mode==='navigate' || url.pathname.endsWith('/index.html')){
-    event.respondWith(fetch(req).then(res=>{const copy=res.clone();caches.open(CACHE).then(cache=>cache.put('./index.html',copy));return res;}).catch(()=>caches.match('./index.html')));
+
+function injectIntegration(html) {
+  if (html.includes("live_integration_9_7_1.js")) return html;
+
+  const tag =
+    '<script src="' + INTEGRATION_SCRIPT +
+    '" data-mkos-live-fix="9.7.1"></script>';
+
+  if (/<\/body>/i.test(html)) {
+    return html.replace(/<\/body>/i, tag + "\n</body>");
+  }
+  return html + "\n" + tag;
+}
+
+async function navigationResponse(request) {
+  try {
+    const network = await fetch(request, { cache: "no-store" });
+    const contentType = network.headers.get("content-type") || "";
+
+    if (!network.ok || !contentType.includes("text/html")) {
+      return network;
+    }
+
+    const html = injectIntegration(await network.text());
+    const headers = new Headers(network.headers);
+    headers.set("content-type", "text/html; charset=utf-8");
+    headers.set("cache-control", "no-store, max-age=0");
+    headers.set("x-mkos-version", MKOS_VERSION);
+
+    const response = new Response(html, {
+      status: network.status,
+      statusText: network.statusText,
+      headers
+    });
+
+    const cache = await caches.open(CODE_CACHE);
+    cache.put("./index.html", response.clone()).catch(() => undefined);
+    return response;
+  } catch (_) {
+    const cached = await caches.match("./index.html");
+    if (!cached) throw _;
+    const html = injectIntegration(await cached.text());
+    return new Response(html, {
+      headers: { "content-type": "text/html; charset=utf-8" }
+    });
+  }
+}
+
+self.addEventListener("fetch", event => {
+  const request = event.request;
+  const url = new URL(request.url);
+
+  if (request.mode === "navigate") {
+    event.respondWith(navigationResponse(request));
     return;
   }
-  if(req.method==='GET' && url.origin===self.location.origin){
-    event.respondWith(caches.match(req).then(cached=>cached||fetch(req).then(res=>{const copy=res.clone();caches.open(CACHE).then(cache=>cache.put(req,copy));return res;})));
-  }
+
+  if (url.origin !== self.location.origin || request.method !== "GET") return;
+
+  event.respondWith((async () => {
+    try {
+      const network = await fetch(request, { cache: "no-store" });
+      if (network.ok) {
+        const cache = await caches.open(CODE_CACHE);
+        cache.put(request, network.clone()).catch(() => undefined);
+      }
+      return network;
+    } catch (_) {
+      return (await caches.match(request)) || Response.error();
+    }
+  })());
 });
