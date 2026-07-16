@@ -1,38 +1,51 @@
-# Mästarklass OS 9.1.0 Stable – Investment Intelligence Platform
+# Mästarklass OS 9.2.0 – Transaction Intelligence 2.0
 
-9.1.0 är den första stabila produktionsversionen efter 9.0.3 Beta.
+Version 9.2.0 bygger vidare på den fungerande 9.1.0 Stable-basen.
 
-## Stabilisering
+## Huvudnyhet
 
-- all Beta-märkning är borttagen
-- index, manifest, Service Worker och cache använder 9.1.0
-- icke-destruktiv versionsväxling
-- IndexedDB och LocalStorage rensas inte
-- Private Vault och lokala innehav bevaras
-- ny systemstatus för Vault, backup, transaktioner, Analytics, Brain, kredit och Sandbox
-- förbättrad mobil statusvy
-- bankkoppling och handel fortsatt avstängda
+En försäljning skiljs nu från ett uttag ur investeringsportföljen.
 
-## Projektets avgränsning
+Försäljningslikvid kan registreras som:
 
-Mästarklass OS hanterar investeringar:
+- kontanter kvar på investeringskontot
+- amortering av Avanza värdepapperskredit
+- uttag ur investeringsportföljen
+- direkt återinvestering
 
-- aktier, ETF:er och fonder
-- köp, försäljningar och utdelningar
-- GAV och transaktionshistorik
-- portföljanalys och Portfolio Brain
-- värdepapperskredit kopplad till investeringar
-- lokal och krypterad backup
+## Ny kapitalmodell
 
-Lön, hushållsekonomi, bolån, billån och övriga privata kassaflöden ingår inte.
+Plattformen skiljer på:
 
-## Uppladdning till GitHub från mobil
+- värdepappersvärde
+- kontanter inom investeringskonton
+- totalt investeringskapital
+- uttag ur portföljen
+- kreditamortering
+- realiserat resultat
 
-Releasepaketet är uppdelat i delar med högst 100 filer:
+Det innebär att en såld fond inte behöver minska det totala investeringskapitalet när pengarna fortfarande ligger kvar hos Avanza, SAVR, Montrose, Länsförsäkringar eller Lysa.
 
-1. Ladda upp **PART1** och gör Commit.
-2. Ladda upp **PART2** och gör Commit.
-3. Vänta tills GitHub Pages-deploymenten är klar.
-4. Stäng den gamla appfliken och öppna appen igen.
+## Korrigering av tidigare Spiltan-försäljning
 
-Alla delar ska laddas upp i repositoryts rot, inte i separata GitHub-mappar.
+Om cirka 22 000 kr från Spiltan-försäljningen fortfarande ligger kvar på investeringskontot:
+
+1. Öppna **Mer → Transaction Intelligence 9.2**.
+2. Välj **Likvidjustering**.
+3. Välj kontot där pengarna ligger.
+4. Ange det exakta positiva beloppet.
+5. Förhandsgranska och spara.
+
+Det återställer pengarna som investeringskontanter utan att fondinnehavet återskapas.
+
+## Säkerhet
+
+- all privat portföljdata ligger lokalt
+- IndexedDB och Private Vault rensas inte
+- ingen bankkoppling
+- ingen handel
+- inga löner, hushållsflöden, bolån, billån eller andra privata lån
+
+## Uppladdning
+
+Ladda upp PART1 och gör Commit. Ladda därefter upp PART2 och gör Commit. Båda delarnas filer ska ligga i repositoryts rot.
