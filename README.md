@@ -1,24 +1,18 @@
-# Mästarklass OS 9.3.0 – Portfolio Ledger
+# Mästarklass OS 9.4.0 – Performance Analytics
 
-9.3.0 bygger vidare på 9.2.0 Transaction Intelligence.
+9.4 bygger vidare på 9.3 Portfolio Ledger och lägger till en lokal analysmotor för faktisk portföljprestation.
 
 ## Nytt
 
-- gemensam ledger för köp, försäljningar, utdelningar och kapitalflöden
-- migrering av 9.2-transaktioner till 9.3-ledgern
-- tidslinje över hela investeringsresan
-- GAV och resultat per innehav
-- realiserat resultat
+- total return utifrån känd kostnadsbas
+- orealiserat och registrerat realiserat resultat
 - utdelningssummering
-- insättningar, uttag och flyttar mellan investeringskonton
-- Ledger Integrity Score
-- fortsatt lokal datalagring och automatisk backup
-
-## Avgränsning
-
-Mästarklass OS hanterar endast investeringar och värdepapperskredit kopplad till investeringarna.
-
-Lön, hushållsekonomi, bolån, billån och andra privata kassaflöden ingår inte.
+- datumsviktad XIRR när kapitalflöden finns
+- volatilitet, maximal drawdown, Sharpe och Sortino när snapshots räcker
+- innehavsresultat och datatäckning
+- metodvy med tydliga begränsningar
+- benchmark förblir avstängd tills godkänd datakälla finns
+- all privat data stannar lokalt
 
 ## Uppladdning
 

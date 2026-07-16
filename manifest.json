@@ -1,7 +1,7 @@
 {
-  "name": "Mästarklass OS 9.3.0 – Portfolio Ledger",
-  "short_name": "Mästarklass 9.3",
-  "start_url": "./?v=930",
+  "name": "Mästarklass OS 9.4.0 – Performance Analytics",
+  "short_name": "Mästarklass 9.4",
+  "start_url": "./?v=940",
   "scope": "./",
   "display": "standalone",
   "background_color": "#07111f",
@@ -16,6 +16,6 @@
       "purpose": "any maskable"
     }
   ],
-  "description": "Local-first investeringsplattform med transaktionsbok, GAV-historik, realiserat resultat, utdelningar och kapitalflöden.",
-  "id": "./?app=mastarklass-os-9-3-0"
+  "description": "Local-first investeringsplattform med portföljbok, avkastningsanalys, XIRR, riskmått och lokala snapshots.",
+  "id": "./?app=mastarklass-os-9-4-0"
 }
