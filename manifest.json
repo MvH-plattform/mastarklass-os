@@ -1,7 +1,7 @@
 {
-  "name": "Mästarklass OS 9.0.3 Beta – Credit Risk Intelligence Pro",
-  "short_name": "Mästarklass 9.0.3B",
-  "start_url": "./?v=903-beta",
+  "name": "Mästarklass OS 9.1.0 Stable – Investment Intelligence Platform",
+  "short_name": "Mästarklass 9.1",
+  "start_url": "./?v=910-stable",
   "scope": "./",
   "display": "standalone",
   "background_color": "#07111f",
@@ -16,6 +16,6 @@
       "purpose": "any maskable"
     }
   ],
-  "description": "Komplett Beta med synkroniserad version, kreditriskmotor, stresstest, AI Credit Coach och säker cacheuppdatering.",
-  "id": "./?app=mastarklass-os-9-0-3-beta"
+  "description": "Stabil investeringsplattform med Private Vault, portföljanalys, transaktioner, backup, sandbox och Investment Credit.",
+  "id": "./?app=mastarklass-os-9-1-0-stable"
 }
