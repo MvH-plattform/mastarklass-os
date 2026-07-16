@@ -1,18 +1,62 @@
-# Mästarklass OS 9.6.0 – Wealth Coach Pro
+# Mästarklass OS 9.7.0 – Live Portfolio Pilot
 
-9.6.0 bygger vidare på 9.5 Investment Intelligence och sammanför lokala portföljdata till en personlig coachvy.
+## Syfte
 
-## Nytt
-- personlig morgonbrief
-- tre prioriterade åtgärder
-- frågefunktion för köp, risk, utdelning och mål
-- kapitalmålsprognos mot 7,5 Mkr
-- Coach Confidence och tydliga databegränsningar
-- direkt kontroll att Performance Analytics 9.4 och Investment Intelligence 9.5 är anslutna
-- icke-destruktiv versionsväxling; Private Vault, IndexedDB och LocalStorage bevaras
+9.7.0 gör det möjligt att testa den kompletta investeringsplattformen med verkliga, spårbara marknadsdata utan att liveinformationen får skriva över Private Vault.
 
-## Begränsning
-Wealth Coach använder lokal regelbaserad intelligens. Ingen extern AI, bankkoppling eller handel aktiveras. Rekommendationerna är beslutsstöd.
+## Aktiverade datavägar
 
-## Uppladdning
-Ladda upp PART1 och gör Commit. Ladda därefter upp PART2 och gör Commit. Alla filer ska ligga i repositoryts rot.
+### ECB Data Portal
+
+- officiella dagliga valutakurser
+- omräkning till SEK via EUR-kors
+- källa och kursdatum visas
+- ingen API-nyckel
+
+### Alpha Vantage-pilot
+
+- aktier och ETF:er
+- användaren anger en egen API-nyckel
+- nyckeln lagras endast lokalt i webbläsaren
+- endast mappade pilotinnehav uppdateras
+- användningen måste följa leverantörens plan, licens och rate limits
+
+### Manuell/CSV-reserv
+
+- aktier, ETF:er, fonder och valuta
+- källnamn och tidsstämpel följer med varje kurs
+- används när extern täckning saknas
+
+## Säkerhetsmodell
+
+Liveinformationen lagras i ett separat read-only-lager.
+
+Den ändrar inte:
+
+- antal
+- GAV
+- transaktioner
+- Portfolio Ledger
+- Investment Credit
+- Private Vault
+
+Stora avvikelser blockeras och visas för kontroll innan data får användas av analysmotorerna.
+
+## Rekommenderad pilot
+
+Börja med:
+
+1. en amerikansk aktie
+2. en utländsk utdelningsaktie
+3. en ETF
+4. en svensk aktie om providersymbolen stöds
+5. en fond via manuell eller CSV-baserad dagskurs
+
+Verifiera värden, valuta, datum och avvikelse innan piloten breddas.
+
+## GitHub-uppladdning
+
+1. Ladda upp PART1 och gör Commit.
+2. Ladda upp PART2 och gör Commit.
+3. Vänta tills GitHub Pages är klar.
+4. Stäng den gamla appfliken och öppna appen igen.

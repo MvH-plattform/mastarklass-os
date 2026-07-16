@@ -1,7 +1,7 @@
 {
-  "name": "Mästarklass OS 9.6.0 – Wealth Coach Pro",
-  "short_name": "Mästarklass 9.6",
-  "start_url": "./?v=960",
+  "name": "Mästarklass OS 9.7.0 – Live Portfolio Pilot",
+  "short_name": "Mästarklass 9.7",
+  "start_url": "./?v=970",
   "scope": "./",
   "display": "standalone",
   "background_color": "#07111f",
@@ -16,6 +16,6 @@
       "purpose": "any maskable"
     }
   ],
-  "description": "Local-first Wealth Coach med morgonbrief, personliga prioriteringar, målprognos och förklarbar beslutsintegritet.",
-  "id": "./?app=mastarklass-os-9-6-0"
+  "description": "Read-only livepilot med officiella ECB-valutor, Alpha Vantage-pilot, instrumentmappning, källspårning, cache och avvikelsekontroll.",
+  "id": "./?app=mastarklass-os-9-7-0"
 }
