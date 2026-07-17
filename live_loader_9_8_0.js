@@ -111,7 +111,7 @@
     const style = document.createElement('style');
     style.id = 'mk980Style';
     style.textContent = `
-      #home.mk980Host.active{display:block!important}
+      #home.mk980Host{display:block!important}
       #home.mk980Host>:not(.mk980Shell){display:none!important}
       .mk980Shell{padding:18px 16px 116px}
       .mk980Hero{padding:25px;border-radius:34px;background:radial-gradient(circle at 5% 0%,rgba(59,130,246,.36),transparent 38%),radial-gradient(circle at 100% 12%,rgba(16,185,129,.28),transparent 40%),linear-gradient(145deg,#061427,#0c2447 58%,#073a35);border:1px solid rgba(255,255,255,.15);box-shadow:0 24px 64px rgba(0,0,0,.30)}
