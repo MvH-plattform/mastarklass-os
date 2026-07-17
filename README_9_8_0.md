@@ -1,39 +1,19 @@
-# Mästarklass OS 9.8.0 – Live Portfolio Engine
-
-9.8.0 bygger vidare på den fungerande ECB-kopplingen i 9.7.2.
+# Mästarklass OS 9.8.0 – Portfolio Command Center
 
 ## Nytt
 
-- Pilotlista för verkliga innehav
-- Alpha Vantage-kurser
-- Automatisk valutaomräkning till SEK via ECB
-- Marknadsvärde, kostnadsbas och resultat
-- Separat read-only-lager
-- Kontrollpanel för connector, ECB och uppdateringstid
+- Ny mobiloptimerad startsida som sammanför portföljvärde, Portfolio Health, datatäckning och livepilot.
+- Dagens fokus prioriterar nästa praktiska steg utifrån lokal data.
+- Snabbkommandon till Live Portfolio, Portfölj, Investment Intelligence och Mål.
+- Största innehav och koncentration visas direkt på startsidan.
+- ECB-status, mappade innehav och livekurser läses från det separata read-only-lagret.
+- Private Vault, antal, GAV och transaktioner ändras inte av 9.8-modulen.
 
-## Första testet
+## Filer att ladda upp
 
-Börja med IBM:
+1. Ersätt nuvarande `index.html` med den nya filen.
+2. Ladda upp `live_loader_9_8_0.js` i repositoryts rot.
+3. Gör Commit och vänta tills GitHub Pages är färdig.
+4. Stäng den gamla appfliken helt och öppna appen igen.
 
-- Symbol: `IBM`
-- Namn: `IBM`
-- Valuta: `USD`
-- Antal: valfritt verkligt eller testantal
-- GAV per aktie i SEK: ditt verkliga GAV eller ett testvärde
-
-Alpha Vantage-nyckeln ska först sparas i den befintliga 9.7-vyn.
-
-## Uppladdning
-
-1. Ladda upp:
-   - `live_portfolio_9_8_0.css`
-   - `live_portfolio_9_8_0.js`
-   - `live_loader_9_8_0.js`
-2. Lägg raden från `index_patch_9_8_0.txt` direkt ovanför `</body>` i `index.html`.
-3. Commit till `main`.
-4. Vänta tills GitHub Pages är grön.
-5. Stäng appfliken helt och öppna appen igen.
-
-## Säkerhet
-
-9.8.0 ändrar inte Private Vault, IndexedDB, antal, GAV, transaktioner, Portfolio Ledger eller Investment Credit. Pilotdata sparas separat i LocalStorage.
+`README_9_8_0.md` är dokumentation och behöver inte ersätta huvud-README om du vill behålla den tidigare historiken.
