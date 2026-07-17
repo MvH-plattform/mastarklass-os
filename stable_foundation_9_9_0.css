@@ -1,0 +1,11 @@
+/* Mästarklass OS 9.9.0 – one screen, one navigation, one product shell */
+.screen{display:none!important}
+.screen.active{display:block!important}
+#home:not(.active){display:none!important}
+#mkVersionBuildBadge{display:block!important}
+.mk990-jumpbar{position:sticky;top:72px;z-index:35;display:flex;gap:8px;overflow-x:auto;padding:10px 16px;background:linear-gradient(180deg,rgba(7,17,31,.98) 78%,rgba(7,17,31,0));scrollbar-width:none}
+.mk990-jumpbar::-webkit-scrollbar{display:none}
+.mk990-jumpbar button{white-space:nowrap;border:1px solid rgba(148,163,184,.18);background:#111827;color:#e5e7eb;padding:11px 14px;border-radius:999px;font-size:11px;font-weight:900}
+.mk990-jumpbar button.active{background:linear-gradient(135deg,#2563eb,#059669);border-color:transparent;color:white}
+.mk990-top{display:block;margin:18px 16px 8px auto;background:#172033;color:#cbd5e1;border:1px solid rgba(148,163,184,.16);padding:10px 13px;border-radius:999px;font-size:11px;font-weight:900}
+.mk990-stability-note{margin:12px 16px;padding:14px;border-radius:20px;background:linear-gradient(135deg,rgba(34,197,94,.10),rgba(59,130,246,.08));border:1px solid rgba(34,197,94,.18);color:#cbd5e1;font-size:11px;line-height:1.5}

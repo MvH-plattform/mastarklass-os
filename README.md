@@ -1,17 +1,31 @@
-# Mästarklass OS
+# Mästarklass OS 9.9.0 – Stable Foundation
 
-Aktiv stabil version: **9.8.1 Recovery**
+Mästarklass OS är en local-first investeringsplattform för långsiktigt sparande, kvalitetsbolag, hållbara utdelningar och återinvestering. Plattformen är beslutsstöd – inte trading och inte bankkoppling.
 
-Detta paket återställer den senast fungerande sammanhängande versionen efter att 9.8.2 gav navigations- och versionskonflikter.
+## Syftet med 9.9.0
 
-## Ingår
+Denna release stabiliserar hela produkten efter att flera äldre patchlager börjat konkurrera med varandra.
 
-- korrekt separering mellan Hem, Portfölj, Marknad, Analys, Idéer, Mål och Mer
-- Målcentral från 9.8.1
-- portföljöversikt och live-/källstatus från 9.8.1
-- ECB-valutor och read-only livegrund
-- ingen förändring av antal, GAV, transaktioner eller Private Vault
+- en enda produktversion: 9.9.0
+- en enda aktiv skärm åt gången
+- en enda huvudnavigation
+- startsidan visas bara under Hem
+- inga 9.8.0/9.8.1-overlays som skriver om startsidan eller versionsnumret
+- en enda README.md i produktroten
+- ny och isolerad Service Worker-cache
+- lokal portföljdata, Private Vault, antal, GAV och transaktioner lämnas orörda
 
-## Versionspolicy
+## Säkerhetsprinciper
 
-Repositoryt ska framöver ha endast denna `README.md` som huvuddokumentation. Äldre versionsfiler med namn som `README_9_*.md` är historik och kan tas bort när appen åter är stabil.
+- ingen bankinloggning
+- ingen handel
+- inga API-nycklar i GitHub
+- live-data hålls separat och read-only
+- användaren äger sin lokala data
+- officiella och juridiskt tillåtna datakällor prioriteras
+
+## Uppladdning
+
+Detta är en full release. Ersätt repositoryts innehåll med samtliga filer i paketet. Radera inte webbläsarens lokala lagring eller Private Vault.
+
+Efter publicering: stäng alla gamla appflikar, öppna GitHub Pages igen och kontrollera att 9.9.0 visas stabilt.

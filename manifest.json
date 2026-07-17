@@ -1,6 +1,6 @@
 {
-  "name": "Mästarklass OS 9.7.0 – Live Portfolio Pilot",
-  "short_name": "Mästarklass 9.7",
+  "name": "Mästarklass OS 9.9.0",
+  "short_name": "Mästarklass 9.9",
   "start_url": "./?v=970",
   "scope": "./",
   "display": "standalone",
@@ -16,6 +16,6 @@
       "purpose": "any maskable"
     }
   ],
-  "description": "Read-only livepilot med officiella ECB-valutor, Alpha Vantage-pilot, instrumentmappning, källspårning, cache och avvikelsekontroll.",
+  "description": "Local-first plattform för långsiktigt utdelningssparande och stabilt förmögenhetsbyggande.",
   "id": "./?app=mastarklass-os-9-7-0"
 }

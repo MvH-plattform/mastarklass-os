@@ -1,0 +1,9 @@
+MÄSTARKLASS OS 9.9.0 – PART 2 AV 2 (LADDAS SIST)
+
+1. Ladda upp alla filer i detta paket till repositoryts rot.
+2. Ersätt filer med samma namn.
+3. Gör Commit changes.
+4. Vänta tills GitHub Pages deployment är klar.
+5. Stäng appfliken helt och öppna appen igen.
+
+Detta paket innehåller de aktiverande huvudfilerna index.html, sw.js, manifest.json, README.md och Stable Foundation-modulerna.
