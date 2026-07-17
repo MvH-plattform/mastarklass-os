@@ -1,0 +1,8 @@
+MÄSTARKLASS OS 9.9.0 – PART 1 AV 2
+
+1. Ladda upp alla filer i detta paket till GitHub-repositoryts rot.
+2. Ersätt filer med samma namn.
+3. Gör Commit changes.
+4. Ladda därefter upp PART 2.
+
+PART 1 aktiverar inte den nya versionen. De aktiverande huvudfilerna ligger i PART 2.
