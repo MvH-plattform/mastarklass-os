@@ -1,3 +1,0 @@
-id,name,assetType,price,currency,fxToSek,timestamp,source,verified
-AAPL,Apple,equity,0,USD,0,2026-07-16T12:00:00Z,manual,true
-XACT-HD,XACT Norden Högutdelande,etf,0,SEK,1,2026-07-16T12:00:00Z,manual,true
