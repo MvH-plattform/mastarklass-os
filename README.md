@@ -1,22 +1,40 @@
-# Mästarklass OS 10.0 — Stable Foundation
+# Mästarklass OS 10.0.1 – Stable System Recovery
 
-En ren, sammanhängande local-first grund för långsiktigt sparande, kvalitetsbolag, hållbara utdelningar och återinvestering.
+Detta är en sammanhängande full release av Mästarklass OS, byggd som en ren systemkärna efter 10.0.0:s tomma startvy.
 
-## Aktiv produktstruktur
-- en `index.html`
-- en `app.js`
-- en `styles.css`
-- en `manifest.json`
-- en `sw.js`
-- en `README.md`
+## Investeringsfilosofi
 
-## Säkerhetsprinciper
-- ingen bankinloggning
-- ingen handel
-- inga API-nycklar i GitHub
-- portföljdata lagras lokalt
-- externa marknadsdata är read-only
-- antal, GAV och transaktioner ändras aldrig av live-lagret
+- Långsiktigt sparande och förmögenhetsbyggande
+- Hållbara utdelningar och återinvestering
+- Kvalitet före jakt på hög direktavkastning
+- Ingen trading, ingen bankinloggning och ingen automatisk handel
+- Local-first: privat portföljdata stannar i användarens enhet
+- Extern marknadsdata får endast användas i ett separat read-only-lager
 
-## Uppgradering
-Ladda upp samtliga filer i detta paket till repositoryts rot och ersätt filer med samma namn. Version 10.0 refererar inte till äldre patch-, loader- eller recoveryfiler. Den nya Service Workern rensar äldre cacheversioner automatiskt.
+## 10.0.1
+
+- robust startsekvens med felgräns; appen kan inte längre fastna på en tom sida
+- säker genomsökning och migrering av äldre LocalStorage-data
+- en enda navigation och en enda aktiv skärm
+- Hem, Portfölj, Marknad, Analys, Idéer, Mål och Mer fungerar i samma system
+- Portfölj har snabbnavigation inklusive Från analys till handling och Personlig investeringsintelligens
+- ny Service Worker-cache `mastarklass-os-10.0.1`
+- en enda aktiv versionskälla
+- en enda README.md
+
+## Uppladdning
+
+Ladda upp samtliga filer i detta paket till repositoryts rot och ersätt filer med samma namn.
+
+De aktiverande filerna är:
+
+- `manifest.json`
+- `README.md`
+- `sw.js`
+- `index.html`
+
+Dessa ligger även i PART 2-paketet och ska laddas upp sist.
+
+## Säkerhet
+
+Releasekoden raderar inte LocalStorage, IndexedDB, Private Vault, antal, GAV eller transaktioner. Vid startfel visas en säker felvy i stället för en tom skärm.
