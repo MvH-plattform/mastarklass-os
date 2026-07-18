@@ -1,15 +1,15 @@
 {
-  "name": "Mästarklass OS 10.0.1",
+  "name": "Mästarklass OS 10.1",
   "short_name": "Mästarklass",
   "start_url": "./#home",
   "scope": "./",
   "display": "standalone",
   "background_color": "#050b16",
   "theme_color": "#07111f",
-  "description": "Local-first plattform för långsiktigt sparande och hållbara utdelningar.",
+  "description": "Local-first plattform för långsiktigt sparande, hållbara utdelningar, återinvestering och målstyrd portföljintelligens.",
   "icons": [
     {
-      "src": "icon.svg?v=10.0.1",
+      "src": "icon.svg?v=10.1.0",
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any maskable"

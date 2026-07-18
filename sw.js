@@ -1,5 +1,5 @@
-const CACHE='mastarklass-os-10.0.1';
-const ASSETS=['./','./index.html','./styles.css?v=10.0.1','./app.js?v=10.0.1','./manifest.json?v=10.0.1','./icon.svg?v=10.0.1'];
-self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(ASSETS)).then(()=>self.skipWaiting())));
-self.addEventListener('activate',event=>event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(key=>key.startsWith('mastarklass-os-')&&key!==CACHE).map(key=>caches.delete(key)))).then(()=>self.clients.claim())));
-self.addEventListener('fetch',event=>{if(event.request.method!=='GET')return;const url=new URL(event.request.url);if(url.origin!==location.origin)return;event.respondWith(fetch(event.request).then(response=>{if(response&&response.ok){const copy=response.clone();caches.open(CACHE).then(cache=>cache.put(event.request,copy)).catch(()=>{})}return response}).catch(()=>caches.match(event.request).then(hit=>hit||caches.match('./index.html'))))});
+const CACHE='mastarklass-os-10.1.0';
+const CORE=['./','./index.html','./styles.css?v=10.1.0','./app.js?v=10.1.0','./manifest.json?v=10.1.0','./icon.svg?v=10.1.0','./version.json?v=10.1.0'];
+self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(CORE)).then(()=>self.skipWaiting())));
+self.addEventListener('activate',event=>event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(key=>key!==CACHE).map(key=>caches.delete(key)))).then(()=>self.clients.claim())));
+self.addEventListener('fetch',event=>{if(event.request.method!=='GET')return;event.respondWith(fetch(event.request).then(response=>{const copy=response.clone();caches.open(CACHE).then(cache=>cache.put(event.request,copy));return response}).catch(()=>caches.match(event.request).then(hit=>hit||caches.match('./index.html'))))});
