@@ -1,17 +1,7 @@
 {
-  "product": "Mästarklass OS",
-  "version": "10.1.1",
-  "channel": "stable",
-  "architecture": "clean-foundation",
+  "version": "10.2.0",
+  "name": "Portfolio Experience",
   "released": "2026-07-18",
-  "activeFiles": [
-    "index.html",
-    "app.js",
-    "styles.css",
-    "manifest.json",
-    "sw.js",
-    "icon.svg",
-    "version.json",
-    "README.md"
-  ]
+  "dataPolicy": "local-first",
+  "livePolicy": "read-only"
 }
