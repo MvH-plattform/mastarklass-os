@@ -1,7 +1,0 @@
-Ta bort dessa två 9.8.2-filer från repositoryt efter att återställningen fungerar:
-- portfolio_live_command_9_8_2.js
-- portfolio_live_command_9_8_2.css
-
-De laddas inte längre av index.html, men bör tas bort för att undvika förvirring.
-
-För dokumentationen: behåll endast README.md som huvudfil. Äldre README_*.md kan tas bort senare i ett separat städsteg.
