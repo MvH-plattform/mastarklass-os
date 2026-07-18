@@ -1,22 +1,17 @@
-# Mästarklass OS 10.2 – Portfolio Experience
+# Mästarklass OS 10.2.1 — Full Portfolio Engine
 
-En sammanhängande full release ovanpå den stabila 10.1.1-kärnan.
+Detta steg färdigställer Portfolio Experience 10.2 utan att bygga AI- eller livefunktioner i förtid.
 
-## Nytt i 10.2
-- alla 101 innehav visas
-- sökning efter innehav, konto och tillgångsslag
-- filtrering per konto och tillgångsslag
-- sortering efter värde eller namn
-- kontovärden räknas från innehaven
-- sammanfattning för aktier, ETF:er, fonder och största vikt
-- tryck på ett innehav för detaljkort
-- snabbknappar till alla viktiga portföljsektioner
-
-## Säkerhet
-- ingen bankinloggning eller handel
-- ingen API-nyckel i GitHub
-- befintlig lokal portföljdata skrivs inte över
-- live-data fortsätter vara ett separat read-only-lager
+## Förbättrat i 10.2.1
+- robust läsning av svenska och engelska fältnamn
+- värdeprioritet: explicit marknadsvärde → kurs × antal × valutakurs → anskaffningsvärde
+- korrekta kontosummor från innehaven
+- deklarerad totalsumma jämförs med beräknad totalsumma
+- tydlig lista över poster som fortfarande saknar användbart värde
+- detaljkort visar värdemetod, antal, GAV, valuta och portföljvikt
+- inga värden hittas på och ingen privat portföljdata skrivs över
+- en enda README och en enda versionskälla
 
 ## Uppladdning
-Ladda upp samtliga filer i paketet till GitHub-repots rot och ersätt filer med samma namn.
+Ladda upp samtliga åtta filer till repositoryts rot och ersätt filer med samma namn.
+Vänta tills GitHub Pages är färdig och stäng därefter appen helt innan den öppnas igen.

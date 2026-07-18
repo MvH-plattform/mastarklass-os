@@ -1,15 +1,13 @@
 {
-  "name": "Mästarklass OS 10.2",
-  "short_name": "Mästarklass",
-  "start_url": "./#home",
-  "scope": "./",
+  "name": "Mästarklass OS 10.2.1",
+  "short_name": "Mästarklass OS",
+  "start_url": "./",
   "display": "standalone",
-  "background_color": "#050b16",
+  "background_color": "#06101d",
   "theme_color": "#07111f",
-  "description": "Portfolio Experience för långsiktigt sparande med alla innehav, sökning, filtrering och local-first säkerhet.",
   "icons": [
     {
-      "src": "icon.svg?v=10.2.0",
+      "src": "icon.svg",
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any maskable"

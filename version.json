@@ -1,7 +1,6 @@
 {
-  "version": "10.2.0",
-  "name": "Portfolio Experience",
-  "released": "2026-07-18",
-  "dataPolicy": "local-first",
-  "livePolicy": "read-only"
+  "version": "10.2.1",
+  "name": "Full Portfolio Engine",
+  "released": "2026-07-19",
+  "cache": "mastarklass-os-10-2-1"
 }
