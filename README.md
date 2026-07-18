@@ -1,33 +1,15 @@
-# Mästarklass OS 10.1 — Clean Foundation
+# Mästarklass OS 10.1.1 – Storage Recovery
 
-Mästarklass OS är en sammanhängande local-first produkt för långsiktigt sparande, kvalitetsbolag, hållbara utdelningar, återinvestering och målstyrd portföljintelligens.
+Denna korrigering löser felet `Setting the value ... exceeded the quota`.
 
-## Aktiv produktionsstruktur
+## Vad som ändrats
 
-Endast dessa filer ska ligga kvar i repositoryts produktionsrot:
+- äldre portföljdata läses direkt från befintlig lokal lagring utan att dupliceras
+- 10.1.1 försöker inte längre skriva en full kopia av portföljen till en ny LocalStorage-nyckel
+- mål och månadssparande sparas i ett litet separat inställningslager
+- lagringsfel fångas utan att hela appen stannar
+- ingen lokal portföljdata, Private Vault, antal, GAV eller transaktioner raderas
 
-- `index.html`
-- `app.js`
-- `styles.css`
-- `manifest.json`
-- `sw.js`
-- `icon.svg`
-- `version.json`
-- `README.md`
+## Uppladdning
 
-## Grundprinciper
-
-- ingen bankinloggning
-- ingen handel eller tradingmotor
-- privat portföljdata lagras lokalt
-- antal, GAV och transaktioner ägs av användaren
-- extern live-data är ett separat read-only-lager
-- datakällor väljs genom Provider Registry, Source Rating och Data Router
-- ingen enskild leverantör får bli ett permanent beroende
-- intelligensen ska hjälpa användaren nå långsiktiga mål utan onödig risk
-
-## Installation och uppdatering
-
-Ladda först upp PART 1 och därefter PART 2. PART 2 innehåller de aktiverande huvudfilerna och ska alltid laddas upp sist.
-
-Gamla filer tas inte bort automatiskt av GitHub. Följ `DELETE_FROM_GITHUB.txt` efter att version 10.1 har verifierats.
+Ladda upp PART 1 först och PART 2 sist. Rensa inga äldre GitHub-filer förrän appen har öppnats och samtliga huvudflikar har verifierats.

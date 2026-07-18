@@ -1,5 +1,5 @@
 {
-  "name": "Mästarklass OS 10.1",
+  "name": "Mästarklass OS 10.1.1",
   "short_name": "Mästarklass",
   "start_url": "./#home",
   "scope": "./",
@@ -9,7 +9,7 @@
   "description": "Local-first plattform för långsiktigt sparande, hållbara utdelningar, återinvestering och målstyrd portföljintelligens.",
   "icons": [
     {
-      "src": "icon.svg?v=10.1.0",
+      "src": "icon.svg?v=10.1.1.1",
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any maskable"
