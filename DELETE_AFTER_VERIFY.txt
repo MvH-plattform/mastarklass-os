@@ -1,0 +1,23 @@
+Filerna nedan kan tas bort från GitHub EFTER att 10.0.1 har verifierats:
+
+- README_9_7_0.md
+- README_9_7_1.md
+- README_9_7_2.md
+- README_9_8_0.md
+- README_9_8_1.md
+- README_9_8_2.md
+- README_NAV_FIX.md
+- REMOVE_AFTER_RECOVERY.txt
+- DELETE_FROM_GITHUB_AFTER_VERIFY.txt
+- STABILISERINGSRAPPORT.md
+- UPLOAD_INSTRUCTIONS.txt
+- UPLOAD_INSTRUCTIONS_PART_1.txt
+- UPLOAD_INSTRUCTIONS_PART_2_LAST.txt
+- portfolio_live_command_9_8_2.js
+- portfolio_live_command_9_8_2.css
+- ux_live_stabilizer_9_8_1.js
+- ux_live_stabilizer_9_8_1.css
+- stable_foundation_9_9_0.js
+- stable_foundation_9_9_0.css
+
+Gamla övriga 8.x/9.x-filer laddas inte av 10.0.1. Radera dem först i ett separat kontrollerat städsteg efter verifierad drift.

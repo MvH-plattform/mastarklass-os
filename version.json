@@ -1,0 +1,8 @@
+{
+  "product": "Mästarklass OS",
+  "version": "10.0.1",
+  "channel": "stable",
+  "schema": "10.0.1",
+  "philosophy": "long-term-dividend",
+  "liveData": "read-only"
+}
