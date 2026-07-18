@@ -1,8 +1,17 @@
 {
   "product": "Mästarklass OS",
-  "version": "10.0.1",
+  "version": "10.1.0",
   "channel": "stable",
-  "schema": "10.0.1",
-  "philosophy": "long-term-dividend",
-  "liveData": "read-only"
+  "architecture": "clean-foundation",
+  "released": "2026-07-18",
+  "activeFiles": [
+    "index.html",
+    "app.js",
+    "styles.css",
+    "manifest.json",
+    "sw.js",
+    "icon.svg",
+    "version.json",
+    "README.md"
+  ]
 }
