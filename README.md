@@ -1,15 +1,22 @@
-# Mästarklass OS 10.1.1 – Storage Recovery
+# Mästarklass OS 10.2 – Portfolio Experience
 
-Denna korrigering löser felet `Setting the value ... exceeded the quota`.
+En sammanhängande full release ovanpå den stabila 10.1.1-kärnan.
 
-## Vad som ändrats
+## Nytt i 10.2
+- alla 101 innehav visas
+- sökning efter innehav, konto och tillgångsslag
+- filtrering per konto och tillgångsslag
+- sortering efter värde eller namn
+- kontovärden räknas från innehaven
+- sammanfattning för aktier, ETF:er, fonder och största vikt
+- tryck på ett innehav för detaljkort
+- snabbknappar till alla viktiga portföljsektioner
 
-- äldre portföljdata läses direkt från befintlig lokal lagring utan att dupliceras
-- 10.1.1 försöker inte längre skriva en full kopia av portföljen till en ny LocalStorage-nyckel
-- mål och månadssparande sparas i ett litet separat inställningslager
-- lagringsfel fångas utan att hela appen stannar
-- ingen lokal portföljdata, Private Vault, antal, GAV eller transaktioner raderas
+## Säkerhet
+- ingen bankinloggning eller handel
+- ingen API-nyckel i GitHub
+- befintlig lokal portföljdata skrivs inte över
+- live-data fortsätter vara ett separat read-only-lager
 
 ## Uppladdning
-
-Ladda upp PART 1 först och PART 2 sist. Rensa inga äldre GitHub-filer förrän appen har öppnats och samtliga huvudflikar har verifierats.
+Ladda upp samtliga filer i paketet till GitHub-repots rot och ersätt filer med samma namn.
