@@ -1,19 +1,24 @@
-# Mästarklass OS 10.5.0 — Portfolio Intelligence Foundation
+# Mästarklass OS 10.5.1 — Portfolio Intelligence Modal Stability
 
-En full, sammanhängande release ovanpå den stabila 10.4.1-kärnan. Portfolio Engine, Transaction Engine, Administration Layer och Portfolio Ledger finns kvar oförändrade som sanningskälla.
+En full, sammanhängande stabiliseringsrelease ovanpå 10.5.0. Portfolio Engine, Transaction Engine, Administration Layer, Portfolio Ledger och Portfolio Intelligence finns kvar oförändrade som en gemensam produktstruktur.
 
-## Nytt i 10.5
-- lokalt Portfolio Intelligence Score för hela portföljen
-- intelligenskort för samtliga innehav
-- spårbara delpoäng för kvalitet, tillväxt, utdelning, värdering, riskkontroll, diversifiering och datakvalitet
-- status: Öka kandidat, Behåll, Bevaka, Komplettera data eller Minska/granska
-- förklaringsmotor som visar varför en status har satts
-- filter för köpkandidater, hög kvalitet, bevakning och risk
-- styrkor och förbättringsområden för portföljen
-- intelligens i varje innehavs detaljkort
+## Korrigerat i 10.5.1
 
-## Säkerhetsprincip
-Intelligenslagret är lokalt och read-only mot masterdata. Det ändrar aldrig antal, GAV, kredit, transaktioner eller ledger. Live-data är fortsatt separat och avstängd tills Provider Registry aktiveras i en senare full release.
+- innehavsdetaljer öppnas åter korrekt från **Alla innehav**
+- den mörka bakgrunden visas inte längre utan själva detaljkortet
+- modalens position är nu knuten till mobilens synliga viewport
+- Android/PWA-felet som orsakades av layout-containment runt appytan är borttaget
+- detaljkortets stängning, redigering och köp/sälj-knappar fungerar vidare i samma flöde
+- versionsnummer, manifest, cache och service worker är synkroniserade till 10.5.1
+- ingen lokal portföljdata, GAV, antal, kredit, transaktion eller ledger skrivs över
 
 ## Uppladdning
-Ladda upp samtliga åtta filer till repositoryts rot och ersätt filer med samma namn. Vänta tills GitHub Pages är färdig. Stäng därefter den installerade appen helt och öppna den igen.
+
+Ladda upp samtliga åtta filer till GitHub-repots rot och ersätt filer med samma namn. Vänta tills GitHub Pages är färdig. Stäng därefter den installerade appen helt och öppna den igen.
+
+## Kontroll efter uppladdning
+
+1. Öppna **Portfölj → Alla innehav**.
+2. Tryck på ett innehav.
+3. Kontrollera att detaljkortet syns ovanpå den nedtonade bakgrunden.
+4. Stäng med krysset och prova ytterligare ett innehav.
