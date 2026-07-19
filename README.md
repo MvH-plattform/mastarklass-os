@@ -1,17 +1,32 @@
-# Mästarklass OS 10.2.1 — Full Portfolio Engine
+# Mästarklass OS 10.3 — Transaction Engine
 
-Detta steg färdigställer Portfolio Experience 10.2 utan att bygga AI- eller livefunktioner i förtid.
+En sammanhängande full release ovanpå den stabila 10.2.1-kärnan.
 
-## Förbättrat i 10.2.1
-- robust läsning av svenska och engelska fältnamn
-- värdeprioritet: explicit marknadsvärde → kurs × antal × valutakurs → anskaffningsvärde
-- korrekta kontosummor från innehaven
-- deklarerad totalsumma jämförs med beräknad totalsumma
-- tydlig lista över poster som fortfarande saknar användbart värde
-- detaljkort visar värdemetod, antal, GAV, valuta och portföljvikt
-- inga värden hittas på och ingen privat portföljdata skrivs över
-- en enda README och en enda versionskälla
+## Nytt i 10.3
 
-## Uppladdning
-Ladda upp samtliga åtta filer till repositoryts rot och ersätt filer med samma namn.
-Vänta tills GitHub Pages är färdig och stäng därefter appen helt innan den öppnas igen.
+- registrera köp och försäljningar
+- datum, konto, värdepapper, antal, pris, courtage, valuta och valutakurs
+- kompakt lokal transaktionslogg i en separat lagringsnyckel
+- automatisk omräkning av antal och viktat GAV
+- kontroll som hindrar försäljning av fler enheter än portföljen innehåller
+- transaktionshistorik per innehav
+- radering av felregistrerade transaktioner med omedelbar omräkning
+- full backup av portfölj, mål och transaktioner
+- live-lagret är fortsatt read-only och kan aldrig skriva över antal, GAV eller transaktioner
+
+## Installation
+
+Ladda upp samtliga åtta filer till repositoryts rot och ersätt filer med samma namn. Vänta tills GitHub Pages har deployat färdigt. Stäng därefter den installerade appen helt och öppna den igen.
+
+## Aktiv produktstruktur
+
+- `index.html`
+- `app.js`
+- `styles.css`
+- `manifest.json`
+- `sw.js`
+- `icon.svg`
+- `version.json`
+- `README.md`
+
+Ingen bankinloggning, handel eller API-nyckel lagras i GitHub. Privat portföljdata och transaktioner stannar lokalt på användarens enhet.

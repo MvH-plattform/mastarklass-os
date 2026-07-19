@@ -1,6 +1,6 @@
 {
-  "version": "10.2.1",
-  "name": "Full Portfolio Engine",
+  "version": "10.3.0",
+  "name": "Transaction Engine",
   "released": "2026-07-19",
-  "cache": "mastarklass-os-10-2-1"
+  "cache": "mastarklass-os-10-3-0"
 }
