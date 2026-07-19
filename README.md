@@ -1,19 +1,17 @@
-# Mästarklass OS 10.5.2 — Core Modal Engine
+# Mästarklass OS 10.6.0 — Decision Center
 
-En sammanhängande stabiliseringsrelease ovanpå 10.5.1. Portfolio Engine, Transaction Engine, Administration Layer, Portfolio Ledger och Portfolio Intelligence finns kvar som samma produkt.
+En full, sammanhängande release ovanpå den stabila 10.5.2-kärnan. Portfolio Engine, Transaction Engine, Administration Layer, Portfolio Ledger, Core Modal Engine och Portfolio Intelligence finns kvar oförändrade som samma produkt.
 
-## Korrigerat i 10.5.2
+## Nytt i 10.6.0
 
-- en enda global modal-container ligger nu utanför den omrenderade appytan
-- detaljkort och mörk backdrop är separerade
-- innehavsdetaljer öppnas stabilt från **Alla innehav** och **Analys**
-- Android/PWA-backknappen stänger detaljkortet i stället för att lämna appen
-- stängning fungerar via kryss, bakgrund och Escape
-- appens bakomliggande innehåll låses medan detaljkortet är öppet
-- modalens z-index, viewport-höjd och scroll är isolerade från listornas `content-visibility`
-- service worker använder network-first för appfiler och rensar äldre Mästarklass-cache
-- version, manifest, cache och versionsfil är synkroniserade till 10.5.2
-- ingen lokal portföljdata, GAV, antal, kredit, transaktion eller ledger skrivs över
+- nytt lokalt **Decision Center** i Analys
+- prioriterad köpkö baserad på score, risk, datakvalitet och portföljvikt
+- separat lista för **Öka kandidater**, **Granska först** och **Behåll kärnan**
+- skyddsregler väger in utnyttjad kredit, koncentration och bristande data
+- visar nästa bästa handling och planerat månadskapital
+- varje beslut leder till samma stabila innehavsdetalj från 10.5.2
+- rekommendationerna är read-only och skriver aldrig över antal, GAV, kredit, transaktioner eller ledger
+- version, manifest, cache och service worker är synkroniserade till 10.6.0
 
 ## Uppladdning
 
@@ -21,8 +19,8 @@ Ladda upp samtliga åtta filer till GitHub-repots rot och ersätt filer med samm
 
 ## Kontroll
 
-1. Öppna **Portfölj → Alla innehav**.
-2. Tryck på flera olika innehav.
-3. Kontrollera att detaljkortet alltid syns ovanpå den nedtonade bakgrunden.
-4. Stäng med krysset, genom att trycka utanför kortet och med mobilens bakåtknapp.
-5. Öppna ett intelligenskort under **Analys** och kontrollera samma flöde.
+1. Öppna **Analys**.
+2. Kontrollera avsnittet **Nästa bästa handling**.
+3. Tryck på en kandidat i den prioriterade arbetslistan.
+4. Kontrollera att samma stabila detaljkort öppnas och kan stängas.
+5. Kontrollera att portfölj, transaktioner, ledger och backup fortfarande är oförändrade.
