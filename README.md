@@ -1,17 +1,16 @@
-# Mästarklass OS 10.8.1 — Mobile Layout Stability
+# Mästarklass OS 10.9.0 – Live Readiness & UX Polish
 
-En full, sammanhängande stabiliseringsrelease ovanpå 10.8.0 Wealth Intelligence Engine.
+En full, sammanhängande release ovanpå den stabila 10.8.1-kärnan. Portfolio Engine, Transaction Engine, Administration Layer, Portfolio Ledger, Portfolio Intelligence, Decision Center, Capital Allocation och Wealth Intelligence finns kvar i samma produkt.
 
-## Korrigerat i 10.8.1
+## Nytt i 10.9.0
 
-- Portföljhälsans kort håller sig inom mobilens viewport.
-- Belåning, Datakvalitet och övriga hälsomått ligger korrekt i linje.
-- Automatisk växling mellan två och en kolumn beroende på skärmbredd.
-- Progressbars, etiketter och värden kan inte längre skjuta utanför korten.
-- Horisontell scroll blockeras på appnivå utan att påverka vertikal navigering.
-- Gemensamma marginaler, kortmått och typografi har stabiliserats.
-- Version, manifest, cache, service worker och versionsfil är synkroniserade till 10.8.1.
-- Befintlig portfölj, GAV, antal, kredit, transaktioner, Ledger och backup skrivs inte över.
+- portföljflikar och analysfilter har en stabil, mobil horisontell scroll
+- tydlig live-status: Förberett, Provider-pilot, Synkroniserar, Live-data ansluten eller Offline
+- Wealth Coach visar upp till fem prioriterade råd i stället för ett enda
+- råd väger kredit, koncentration, datakvalitet och nästa möjliga kapitalallokering
+- Live Data Foundation är fortsatt strikt read-only mot masterdata
+- befintlig portfölj, GAV, antal, kredit, transaktioner, Ledger och backup skrivs inte över
+- version, manifest, cache, service worker och versionsfil är synkroniserade till 10.9.0
 
 ## Uppladdning
 
@@ -19,8 +18,8 @@ Ladda upp samtliga åtta filer till GitHub-repots rot och ersätt filer med samm
 
 ## Kontroll
 
-1. Öppna Hem och scrolla till Portföljhälsa.
-2. Kontrollera särskilt Belåning och Datakvalitet.
-3. Verifiera att inget kort eller någon stapel ligger utanför skärmen.
-4. Kontrollera Hem, Portfölj, Marknad, Analys, Idéer, Mål och Mer.
-5. Säkerställ att detaljkort, Ledger och backup fortfarande fungerar.
+1. Kontrollera flikarna i Portfölj och filtren under Analys.
+2. Kontrollera att de kan svepas horisontellt utan att layouten kapas.
+3. Kontrollera Wealth Coach på Hem och dess prioriterade råd.
+4. Kontrollera live-statusen på Hem och Marknad.
+5. Säkerställ att innehavsdetaljer, Ledger, transaktioner och full backup fungerar.
