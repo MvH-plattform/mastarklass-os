@@ -1,19 +1,17 @@
-# Mästarklass OS 10.4 – Portfolio Ledger
+# Mästarklass OS 10.4.1 – Portfolio Ledger Stability
 
-Detta är nästa sammanhängande lager ovanpå Portfolio Engine, Transaction Engine och Administration Layer.
+Stabiliseringsuppdatering ovanpå 10.4 Portfolio Ledger.
 
-## Nytt i 10.4
+## Korrigerat
 
-- gemensamt revisionsspår för hela portföljen
-- automatisk migrering av befintliga transaktioner och direktkorrigeringar till ledgern
-- historik per innehav i innehavskortet
-- manuella händelser: insättning, uttag, utdelning, skatt, ränta, avgift, valutaväxling, split, namnbyte, anteckning och AI-rekommendation
-- konto, innehav, belopp och kommentar kan kopplas till varje händelse
-- full backup omfattar nu även Portfolio Ledger
-- live-lagret förblir read-only och får inte skriva över antal, GAV, kredit, transaktioner eller ledger
+- Ledger-fliken renderas nu korrekt och visar både migrerad historik och manuella poster.
+- Transaktioner och administrationsändringar migreras till ledgern i en enda skrivning i stället för många lokala skrivningar vid varje start.
+- Appens första vy renderas innan service worker registreras, vilket minskar flimrande och tomma vyer.
+- Versionsnummer är synkroniserade i HTML, manifest, cache och versionsfil.
+- Ny cache 10.4.1 tar över och äldre Mästarklass OS-cache rensas vid aktivering.
+- Laddningsskal, stabilare listlayout och säkrare felvy har lagts till.
+- Befintlig lokal portföljdata, GAV, antal, kredit, transaktioner och ledger skrivs inte över.
 
 ## Uppladdning
 
-Ladda upp samtliga åtta filer till repositoryts rot och ersätt filer med samma namn. Vänta tills GitHub Pages har deployat färdigt. Stäng därefter den installerade appen helt och öppna den igen.
-
-Ingen befintlig lokal portföljdata raderas.
+Ladda upp samtliga åtta filer till repositoryts rot och ersätt filer med samma namn. Vänta tills GitHub Pages är färdig. Stäng därefter den installerade appen helt och öppna den igen.
