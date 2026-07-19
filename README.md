@@ -1,24 +1,26 @@
-# Mästarklass OS 10.6.1 — Decision Center Navigation Fix
+# Mästarklass OS 10.7.0 — Capital Allocation Engine
 
-En stabiliseringsrelease ovanpå 10.6.0. Samma sammanhängande produkt och samma lokala portföljdata.
+Ett sammanhängande nästa lager ovanpå Portfolio Engine, Transaction Engine, Administration Layer, Portfolio Ledger, Portfolio Intelligence och Decision Center.
 
-## Korrigerat i 10.6.1
+## Nytt i 10.7.0
 
-- Analys öppnas nu korrekt från bottenmenyn.
-- Decision Center renderas utan JavaScript-fel.
-- Prioriterad kandidat och arbetslistor använder nu rätt innehavsreferenser.
-- Analysikonen kan inte längre bli aktiv medan föregående Portfölj-vy ligger kvar.
-- Innehavsdetaljer, redigering, köp/sälj, ledger, kredit och backup är oförändrade.
-- Version, manifest, cache, service worker och versionsfil är synkroniserade till 10.6.1.
-- Ingen lokal portföljdata, GAV, antal, kredit, transaktion eller ledger skrivs över.
+- portföljbetyg med bokstavsbetyg, score och fem tydliga dimensioner
+- mer differentierad lokal score för kvalitet, värdering, utdelning, risk och data
+- förklaringar som visar varför ett innehav bör ökas, behållas eller granskas
+- simulerad månadsfördelning av planerat kapital
+- kredit vägs in före nytt investeringsutrymme
+- upp till tre prioriterade innehav med belopp, tillit och motiv
+- inga order skapas och ingen masterdata skrivs över
+- befintlig portfölj, GAV, antal, transaktioner, ledger och backup bevaras
 
 ## Uppladdning
 
-Ladda upp samtliga åtta filer till GitHub-repots rot och ersätt filer med samma namn. Vänta tills GitHub Pages visar en ny deployment. Stäng därefter den installerade appen helt och öppna den igen.
+Ladda upp samtliga åtta filer till repositoryts rot och ersätt filer med samma namn. Vänta tills GitHub Pages visar en ny deployment. Stäng därefter den installerade appen helt och öppna den igen.
 
 ## Kontroll
 
-1. Öppna Portfölj → Alla innehav.
-2. Tryck på Analys i bottenmenyn.
-3. Kontrollera att Decision Center visas direkt.
-4. Öppna en kandidat från arbetslistan och kontrollera att detaljkortet öppnas.
+1. Öppna **Analys**.
+2. Kontrollera portföljbetyget och de fem dimensionerna.
+3. Kontrollera avsnittet **Plan för nästa månadskapital**.
+4. Öppna ett föreslaget innehav och kontrollera score, värdering och tillit.
+5. Kontrollera att Portfölj, transaktioner, ledger och backup fortfarande är oförändrade.
