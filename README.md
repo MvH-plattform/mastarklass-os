@@ -1,17 +1,19 @@
-# Mästarklass OS 10.4.1 – Portfolio Ledger Stability
+# Mästarklass OS 10.5.0 — Portfolio Intelligence Foundation
 
-Stabiliseringsuppdatering ovanpå 10.4 Portfolio Ledger.
+En full, sammanhängande release ovanpå den stabila 10.4.1-kärnan. Portfolio Engine, Transaction Engine, Administration Layer och Portfolio Ledger finns kvar oförändrade som sanningskälla.
 
-## Korrigerat
+## Nytt i 10.5
+- lokalt Portfolio Intelligence Score för hela portföljen
+- intelligenskort för samtliga innehav
+- spårbara delpoäng för kvalitet, tillväxt, utdelning, värdering, riskkontroll, diversifiering och datakvalitet
+- status: Öka kandidat, Behåll, Bevaka, Komplettera data eller Minska/granska
+- förklaringsmotor som visar varför en status har satts
+- filter för köpkandidater, hög kvalitet, bevakning och risk
+- styrkor och förbättringsområden för portföljen
+- intelligens i varje innehavs detaljkort
 
-- Ledger-fliken renderas nu korrekt och visar både migrerad historik och manuella poster.
-- Transaktioner och administrationsändringar migreras till ledgern i en enda skrivning i stället för många lokala skrivningar vid varje start.
-- Appens första vy renderas innan service worker registreras, vilket minskar flimrande och tomma vyer.
-- Versionsnummer är synkroniserade i HTML, manifest, cache och versionsfil.
-- Ny cache 10.4.1 tar över och äldre Mästarklass OS-cache rensas vid aktivering.
-- Laddningsskal, stabilare listlayout och säkrare felvy har lagts till.
-- Befintlig lokal portföljdata, GAV, antal, kredit, transaktioner och ledger skrivs inte över.
+## Säkerhetsprincip
+Intelligenslagret är lokalt och read-only mot masterdata. Det ändrar aldrig antal, GAV, kredit, transaktioner eller ledger. Live-data är fortsatt separat och avstängd tills Provider Registry aktiveras i en senare full release.
 
 ## Uppladdning
-
 Ladda upp samtliga åtta filer till repositoryts rot och ersätt filer med samma namn. Vänta tills GitHub Pages är färdig. Stäng därefter den installerade appen helt och öppna den igen.
