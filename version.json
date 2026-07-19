@@ -1,6 +1,6 @@
 {
-  "version": "10.3.1",
-  "name": "Portfolio Administration Layer",
+  "version": "10.4.0",
+  "name": "Portfolio Ledger",
   "released": "2026-07-19",
-  "cache": "mastarklass-os-10-3-1"
+  "cache": "mastarklass-os-10-4-0"
 }
