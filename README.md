@@ -1,32 +1,24 @@
-# Mästarklass OS 10.3 — Transaction Engine
+# Mästarklass OS 10.3.1 — Portfolio Administration Layer
 
-En sammanhängande full release ovanpå den stabila 10.2.1-kärnan.
+Detta är nästa sammanhängande steg ovanpå Portfolio Engine och Transaction Engine. Versionen bygger ett lokalt Master Data-lager utan att skriva över den äldre portföljkällan.
 
-## Nytt i 10.3
+## Nytt i 10.3.1
 
-- registrera köp och försäljningar
-- datum, konto, värdepapper, antal, pris, courtage, valuta och valutakurs
-- kompakt lokal transaktionslogg i en separat lagringsnyckel
-- automatisk omräkning av antal och viktat GAV
-- kontroll som hindrar försäljning av fler enheter än portföljen innehåller
-- transaktionshistorik per innehav
-- radering av felregistrerade transaktioner med omedelbar omräkning
-- full backup av portfölj, mål och transaktioner
-- live-lagret är fortsatt read-only och kan aldrig skriva över antal, GAV eller transaktioner
+- redigera antal, GAV, konto, valuta, ticker, tillgångsslag och marknadsvärde utan att skapa en falsk transaktion
+- lägga till nya värdepapper utan köptransaktion
+- registrera köp och försäljningar med datum, antal, pris, courtage, valuta och valutakurs
+- automatisk uppdatering av antal och viktat GAV vid köp
+- försäljningskontroll som hindrar försäljning av fler enheter än innehavet
+- lokal transaktionshistorik med möjlighet att radera och återställa
+- separat kreditregister per konto med kreditlimit, utnyttjad kredit och ränta
+- spårbar ändringslogg och ångra senaste direktkorrigering
+- full backup av basportfölj, administrationslager, kredit och transaktioner
+- live-lagret förblir read-only och får inte skriva över privat masterdata
 
-## Installation
+## Säker datamodell
 
-Ladda upp samtliga åtta filer till repositoryts rot och ersätt filer med samma namn. Vänta tills GitHub Pages har deployat färdigt. Stäng därefter den installerade appen helt och öppna den igen.
+Basportföljen läses från befintlig lokal lagring. Nya ändringar lagras i små separata lokala lager för administration och transaktioner. Det minskar risken för lagringskvotfel och bevarar äldre data.
 
-## Aktiv produktstruktur
+## Uppladdning
 
-- `index.html`
-- `app.js`
-- `styles.css`
-- `manifest.json`
-- `sw.js`
-- `icon.svg`
-- `version.json`
-- `README.md`
-
-Ingen bankinloggning, handel eller API-nyckel lagras i GitHub. Privat portföljdata och transaktioner stannar lokalt på användarens enhet.
+Ladda upp samtliga åtta filer till repositoryts rot och ersätt filer med samma namn. Vänta tills GitHub Pages är färdig. Stäng därefter den installerade appen helt och öppna den igen.
