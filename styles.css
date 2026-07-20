@@ -124,3 +124,13 @@ input,select,textarea,button{max-width:100%}
 .dangerBar i{background:linear-gradient(90deg,#e65b72,#ff8d78)!important}.cautionBar i{background:linear-gradient(90deg,#d89535,#f0c557)!important}
 @media(max-width:520px){.foundationActions{grid-template-columns:1fr}.liveHeroStats{grid-template-columns:1fr 1fr}.providerRow,.eventRow{grid-template-columns:1fr}.providerMeta{text-align:left;display:flex;gap:10px;align-items:center}.eventRow{gap:8px}}
 @media(max-width:360px){.liveHeroStats{grid-template-columns:1fr}}
+
+
+/* 11.1.0 Live Prices & FX */
+.liveSyncPanel{border-color:#2d6f8f;background:linear-gradient(180deg,#0d1d34,#0a1729)}
+.syncStatus{padding:7px 11px;border-radius:999px;border:1px solid #3a4b65;color:#aab7c9;text-transform:uppercase;font-size:11px;font-weight:900}
+.syncStatus.syncing{border-color:#9a6b32;color:#f4c86f}.syncStatus.success{border-color:#26704f;color:#79e4b2}.syncStatus.error{border-color:#8f344c;color:#ff9bad}
+.positive{color:#62e6aa!important}.negative{color:#ff8aa0!important}.liveProvider{padding:7px 10px;border-radius:999px;background:#153e61;color:#bce9ff;font-size:12px;font-weight:900}
+.liveQuoteDetail{margin:18px 0;padding:18px;border:1px solid #2e6e8b;border-radius:22px;background:linear-gradient(145deg,#0a1b31,#0b2630)}
+.liveQuoteDetail .grid{margin-top:14px;margin-bottom:0}.liveQuoteDetail .metric b{font-size:18px;overflow-wrap:anywhere}
+@media(max-width:430px){.liveQuoteDetail .grid{grid-template-columns:1fr 1fr}.liveSyncPanel .grid{grid-template-columns:1fr 1fr}.liveSyncPanel .metric b{font-size:17px}}

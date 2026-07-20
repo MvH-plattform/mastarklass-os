@@ -1,15 +1,31 @@
-# Mästarklass OS 11.0.2 — Interaction Stability
+# Mästarklass OS 11.1.0 — Live Prices & FX
 
-Stabiliseringsrelease ovanpå 11.0.1.
+Första fungerande live-marknadsreleasen ovanpå den stabila 11.0.2-kärnan.
 
-## Korrigerat
-- återställd Ledger-motor och Ledger-vy
-- återställd Intelligence Engine som används av Analys och innehavsdetaljer
-- klick på innehav öppnar globalt detaljkort igen
-- Analys renderas utan att falla tillbaka till Portfölj
-- central event delegation för navigation, portföljflikar, innehav, intelligenskort och Ledger
-- synlig felvy vid framtida renderingsfel i stället för tyst sidbyte
-- versionsnummer och PWA-cache synkroniserade
+## Nytt i 11.1.0
+- Live Price Engine för mappade aktier och ETF:er
+- FX Engine med EUR-baserade ECB-referenskurser till SEK
+- Stooq-adapter för prisobservationer utan att röra portföljens masterdata
+- Provider Router med primär källa och lokal cache-fallback
+- livevärde, dagsförändring, kurstäckning och synkstatus på Marknad
+- livekurs, källa, förändring och datans ålder i innehavsdetaljen
+- validering av pris, tidsstämpel, färskhet och cache
+- tydlig felhantering när en källa eller ticker saknar svar
 
-## Säkerhet
-Ingen lokal portföljdata, GAV, antal, kredit, transaktion eller Ledger skrivs över.
+## Säkerhetsmodell
+Live-data är strikt read-only och får aldrig skriva över:
+- antal
+- GAV
+- kredit
+- transaktioner
+- Portfolio Ledger
+- lokal historik
+
+## Innan synkronisering
+Öppna Marknad och välj **Skapa/uppdatera instrumentmappning**. Innehav behöver en korrekt ticker eller ISIN för automatisk kurshämtning.
+
+## Viktigt
+Marknadsdatakällor kan ha fördröjda kurser, begränsad täckning och tillfälliga CORS-/nätverksproblem. Appen behåller senast validerade cache och visar tydligt när uppdateringen inte lyckas.
+
+## Uppladdning
+Ladda upp samtliga åtta filer till GitHub-repots rot och ersätt filer med samma namn. Vänta på GitHub Pages-deployment. Stäng därefter den installerade appen helt och öppna den igen.
