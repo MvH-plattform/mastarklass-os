@@ -1,7 +1,7 @@
 {
-  "name": "Mästarklass OS 11.1.0",
-  "short_name": "Mästarklass 11.1.0",
-  "start_url": "./?v=11.1.0",
+  "name": "Mästarklass OS 11.1.1",
+  "short_name": "Mästarklass 11.1.1",
+  "start_url": "./?v=11.1.1",
   "display": "standalone",
   "background_color": "#06101d",
   "theme_color": "#07111f",

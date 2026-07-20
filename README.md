@@ -1,8 +1,8 @@
-# Mästarklass OS 11.1.0 — Live Prices & FX
+# Mästarklass OS 11.1.1 — Live Mapping & Sync Stability
 
 Första fungerande live-marknadsreleasen ovanpå den stabila 11.0.2-kärnan.
 
-## Nytt i 11.1.0
+## Nytt i 11.1.1
 - Live Price Engine för mappade aktier och ETF:er
 - FX Engine med EUR-baserade ECB-referenskurser till SEK
 - Stooq-adapter för prisobservationer utan att röra portföljens masterdata
@@ -11,6 +11,13 @@ Första fungerande live-marknadsreleasen ovanpå den stabila 11.0.2-kärnan.
 - livekurs, källa, förändring och datans ålder i innehavsdetaljen
 - validering av pris, tidsstämpel, färskhet och cache
 - tydlig felhantering när en källa eller ticker saknar svar
+
+
+- nytt Live Mapping Center för att granska och redigera ticker, ISIN och valuta
+- automatisk försiktig tickeridentifiering för ett urval vanliga svenska och amerikanska innehav
+- manuell mappning sparas separat i live-lagret och påverkar aldrig masterdata
+- tydligare mappningsstatus före synkronisering
+- mobilanpassad redigeringsvy för instrumentmappning
 
 ## Säkerhetsmodell
 Live-data är strikt read-only och får aldrig skriva över:
