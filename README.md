@@ -1,25 +1,36 @@
-# Mästarklass OS 10.9.0 – Live Readiness & UX Polish
+# Mästarklass OS 11.0.0 — Live Intelligence Foundation
 
-En full, sammanhängande release ovanpå den stabila 10.8.1-kärnan. Portfolio Engine, Transaction Engine, Administration Layer, Portfolio Ledger, Portfolio Intelligence, Decision Center, Capital Allocation och Wealth Intelligence finns kvar i samma produkt.
+Detta är första releasen i Live Intelligence-fasen. Den bygger vidare på hela 10.9-systemet och bevarar Portfolio Engine, Transaction Engine, Administration Layer, Portfolio Ledger, Portfolio Intelligence, Decision Center, Capital Allocation och Wealth Intelligence.
 
-## Nytt i 10.9.0
+## Nytt i 11.0.0
 
-- portföljflikar och analysfilter har en stabil, mobil horisontell scroll
-- tydlig live-status: Förberett, Provider-pilot, Synkroniserar, Live-data ansluten eller Offline
-- Wealth Coach visar upp till fem prioriterade råd i stället för ett enda
-- råd väger kredit, koncentration, datakvalitet och nästa möjliga kapitalallokering
-- Live Data Foundation är fortsatt strikt read-only mot masterdata
-- befintlig portfölj, GAV, antal, kredit, transaktioner, Ledger och backup skrivs inte över
-- version, manifest, cache, service worker och versionsfil är synkroniserade till 10.9.0
+- Provider Registry med utbytbara adapterplatser
+- Data Router med kategoribaserad routing och fallback
+- separat read-only Live Cache
+- Validation Engine för pris, tidsstämpel och färskhet
+- Instrument Mapping för portföljens innehav
+- Live Event Log
+- Foundation Health och täckningsmätning
+- kontrollknappar för mappning och validering
+- tydlig status för konfigurerade respektive okonfigurerade providers
+
+## Säkerhetsmodell
+
+Live-data får aldrig skriva över:
+
+- antal
+- GAV
+- transaktioner
+- Portfolio Ledger
+- kredit
+- historik
+
+Live Intelligence är ett separat observationslager. Portfolio Ledger förblir sanningskällan.
+
+## Viktig avgränsning
+
+11.0.0 bygger infrastrukturen. Den hämtar ännu inte fullständiga marknadskurser för samtliga innehav. Nästa steg är 11.1.0 — Live Prices & FX, där adapters ansluts kontrollerat genom registryt.
 
 ## Uppladdning
 
-Ladda upp samtliga åtta filer till GitHub-repots rot och ersätt filer med samma namn. Vänta tills GitHub Pages visar en ny deployment. Stäng därefter den installerade appen helt och öppna den igen.
-
-## Kontroll
-
-1. Kontrollera flikarna i Portfölj och filtren under Analys.
-2. Kontrollera att de kan svepas horisontellt utan att layouten kapas.
-3. Kontrollera Wealth Coach på Hem och dess prioriterade råd.
-4. Kontrollera live-statusen på Hem och Marknad.
-5. Säkerställ att innehavsdetaljer, Ledger, transaktioner och full backup fungerar.
+Ladda upp samtliga åtta filer till GitHub-repots rot och ersätt filer med samma namn. Vänta på GitHub Pages, stäng appen helt och öppna den igen.
