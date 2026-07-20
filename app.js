@@ -1,5 +1,5 @@
 (()=>{'use strict';
-const VERSION='11.0.1';
+const VERSION='11.0.2';
 const DATA_KEY='mastarklass_os_10_data';
 const LIVE_KEY='mastarklass_os_live_readonly_v1';
 const SETTINGS_KEY='mastarklass_os_10_settings';
@@ -209,6 +209,58 @@ function market(){
  <section class="section"><h2>Validation Engine & Cache</h2><div class="healthGrid"><div class="healthItem"><div><span>Godkända</span><b>${fh.validation.accepted||0}</b></div><div class="bar"><i style="width:${fh.cache.items?Math.min(100,(fh.validation.accepted||0)/fh.cache.items*100):0}%"></i></div></div><div class="healthItem"><div><span>Avvisade</span><b>${fh.validation.rejected||0}</b></div><div class="bar dangerBar"><i style="width:${fh.cache.items?Math.min(100,(fh.validation.rejected||0)/fh.cache.items*100):0}%"></i></div></div><div class="healthItem"><div><span>Färska</span><b>${fh.cache.fresh||0}</b></div><div class="bar"><i style="width:${fh.cache.items?Math.min(100,(fh.cache.fresh||0)/fh.cache.items*100):0}%"></i></div></div><div class="healthItem"><div><span>Fördröjda/gamla</span><b>${(fh.cache.delayed||0)+(fh.cache.stale||0)}</b></div><div class="bar cautionBar"><i style="width:${fh.cache.items?Math.min(100,((fh.cache.delayed||0)+(fh.cache.stale||0))/fh.cache.items*100):0}%"></i></div></div></div></section>
  <section class="section"><div class="sectionHead"><h2>Live Event Log</h2><span>${liveEvents.length} poster</span></div><div class="eventList">${eventRows||'<div class="empty">Live Foundation är initierad. Händelser visas här när kontroller och framtida connectors körs.</div>'}</div></section>`;
 }
+
+/* 11.0.2 Interaction Stability: restored shared Ledger and Intelligence engines. */
+function ledgerSection(all,accounts){
+ const holdingOpts=all.map(h=>`<option value="${esc(h._key)}">${esc(h._name)} — ${esc(h._account)}</option>`).join('');
+ const accountOpts=accounts.map(a=>`<option>${esc(a)}</option>`).join('');
+ const kindLabels={transaction:'Transaktion','holding-edit':'Direktkorrigering','holding-add':'Nytt innehav','credit-edit':'Kredit','transaction-delete':'Raderad transaktion',deposit:'Insättning',withdrawal:'Uttag',dividend:'Utdelning',tax:'Skatt',interest:'Ränta',fee:'Avgift',fx:'Valutaväxling',split:'Split',rename:'Namnbyte',note:'Anteckning',ai:'AI-rekommendation'};
+ const rows=ledger.map(x=>`<div class="ledgerRow"><div><span class="ledgerKind">${esc(kindLabels[x.kind]||x.kind)}</span><b>${esc(x.label)}</b><small>${new Date(x.date).toLocaleString('sv-SE')}${x.details?.account?' · '+esc(x.details.account):''}</small></div><button type="button" class="secondary smallBtn" data-ledger-id="${esc(x.id)}">Visa</button></div>`).join('');
+ return `<section class="hero"><div class="eyebrow">Portfolio Ledger · 11.0.2</div><h2>Portföljens historiska liv</h2><p>Ett gemensamt revisionsspår för köp, försäljningar, korrigeringar, kredit, utdelningar, avgifter och viktiga beslut.</p><div class="value">${ledger.length}</div><small>spårbara ledgerposter</small></section>
+ <section class="section"><h2>Registrera annan portföljhändelse</h2><div class="form twoCol"><label>Händelse<select id="ledgerKind"><option value="deposit">Insättning</option><option value="withdrawal">Uttag</option><option value="dividend">Utdelning</option><option value="tax">Skatt</option><option value="interest">Räntekostnad</option><option value="fee">Avgift</option><option value="fx">Valutaväxling</option><option value="split">Split</option><option value="rename">Namnbyte</option><option value="note">Anteckning</option><option value="ai">AI-rekommendation</option></select></label><label>Datum<input id="ledgerDate" type="date" value="${today()}"></label><label>Rubrik<input id="ledgerLabel" placeholder="Beskriv händelsen"></label><label>Konto<input id="ledgerAccount" list="ledgerAccounts"><datalist id="ledgerAccounts">${accountOpts}</datalist></label><label>Innehav<select id="ledgerHolding"><option value="">Hela kontot/portföljen</option>${holdingOpts}</select></label><label>Belopp SEK<input id="ledgerAmount" inputmode="decimal" placeholder="0,00"></label><label class="wide">Kommentar<textarea id="ledgerNote" rows="3" placeholder="Bakgrund, beslut eller annan viktig information"></textarea></label></div><button id="saveLedger" class="primary" type="button">Spara ledgerpost</button></section>
+ <section class="section"><div class="sectionHead"><h2>Revisionsspår</h2><span>${ledger.length} poster</span></div><div class="list">${rows||'<div class="empty">Inga ledgerposter ännu.</div>'}</div></section>`;
+}
+function saveManualLedger(){
+ const kind=document.getElementById('ledgerKind')?.value||'note';
+ const label=document.getElementById('ledgerLabel')?.value.trim()||'';
+ if(!label)return alert('Ange en rubrik för händelsen.');
+ const key=document.getElementById('ledgerHolding')?.value||'';
+ const h=canonicalHoldings().find(x=>x._key===key);
+ ledgerAdd(kind,label,{date:document.getElementById('ledgerDate')?.value||today(),account:document.getElementById('ledgerAccount')?.value.trim()||h?._account||'',holdingKey:key,holdingName:h?._name||'',amountSEK:num(document.getElementById('ledgerAmount')?.value),note:document.getElementById('ledgerNote')?.value.trim()||''});
+ render();
+}
+function showLedger(id){
+ const x=ledger.find(y=>y.id===id);if(!x)return;
+ const d=x.details||{};
+ openModal(`<div class="eyebrow">Portfolio Ledger</div><h2>${esc(x.label)}</h2><div class="grid"><div class="card metric"><span>Typ</span><b>${esc(x.kind)}</b></div><div class="card metric"><span>Datum</span><b>${new Date(x.date).toLocaleDateString('sv-SE')}</b></div><div class="card metric"><span>Konto</span><b>${esc(d.account||'—')}</b></div><div class="card metric"><span>Belopp</span><b>${d.amountSEK?kr(d.amountSEK):'—'}</b></div></div>${d.holdingName?`<section class="section"><b>Innehav</b><p>${esc(d.holdingName)}</p></section>`:''}${d.note?`<section class="section"><b>Kommentar</b><p>${esc(d.note)}</p></section>`:''}<pre class="ledgerJson">${esc(JSON.stringify(d,null,2))}</pre>`);
+}
+function holdingLedger(key){return ledger.filter(x=>x.details?.holdingKey===key||x.details?.after?.key===key||x.details?.before?.key===key)}
+function fieldScore(h,keys,fallback=0){for(const k of keys){const v=num(h?.[k]);if(v)return Math.max(0,Math.min(100,v))}return fallback}
+function gradeFor(value){const v=num(value);if(v>=85)return'A';if(v>=75)return'B+';if(v>=65)return'B';if(v>=55)return'C+';if(v>=45)return'C';return'D'}
+function starsFor(value){const n=Math.max(1,Math.min(5,Math.round(num(value)/20)));return '★★★★★'.slice(0,n)+'☆☆☆☆☆'.slice(0,5-n)}
+function intelligenceFor(h){
+ const t=total(),weight=t?h._value/t*100:0;
+ const quality=fieldScore(h,['qualityScore','quality','masterclassRating','mastarklassRating','rating'],h._value?58:35);
+ const growth=fieldScore(h,['growthScore','growth','tillvaxtScore'],50);
+ const dividend=fieldScore(h,['dividendScore','dividendSafety','utdelningScore'],/fond|etf|investment|dividend|utdel/i.test(`${h._type} ${h._name}`)?62:45);
+ const valuation=fieldScore(h,['valuationScore','valuation','varderingScore'],50);
+ const dataQuality=Math.round((h._value?35:0)+(h._qty?20:0)+(h._gav?15:0)+(text(h,['ticker','symbol'],'')?15:0)+(text(h,['sector','sektor'],'')?8:0)+(text(h,['country','land'],'')?7:0));
+ let risk=50;if(weight>20)risk-=28;else if(weight>10)risk-=16;else if(weight>5)risk-=7;else risk+=8;if(!h._value)risk-=25;if(/lever|credit|kredit|china|alibaba|crypto/i.test(`${h._name} ${h._type}`))risk-=12;risk=Math.max(0,Math.min(100,risk));
+ const diversification=/fond|etf/i.test(h._type)?72:55;
+ const score=Math.round(quality*.25+growth*.14+dividend*.14+valuation*.13+risk*.15+diversification*.08+dataQuality*.11);
+ const confidence=Math.max(20,Math.min(100,Math.round(dataQuality*.8+(h._value?10:0)+(h._gav?10:0))));
+ let status='Bevaka';if(dataQuality<45)status='Komplettera data';else if(score>=72&&weight<10)status='Öka kandidat';else if(score>=62)status='Behåll';else if(score<45||weight>20)status='Minska / granska';
+ const reasons=[],strengths=[],warnings=[];
+ if(dataQuality<70){reasons.push('datatäckningen behöver förbättras');warnings.push('Ofullständig beslutsdata')}
+ if(weight>10){reasons.push(`hög portföljvikt ${pct(weight)}`);warnings.push('Koncentrationsrisk')}
+ if(quality>=70){reasons.push('stark lokal kvalitetspoäng');strengths.push('Stark kvalitet')}
+ if(dividend>=65){reasons.push('stödjer utdelningsmålet');strengths.push('Utdelningsbidrag')}
+ if(risk<45){reasons.push('förhöjd risk eller koncentration');warnings.push('Förhöjd risk')}
+ if(valuation>=65)strengths.push('Gynnsam lokal värderingssignal');
+ if(!reasons.length)reasons.push('balanserad lokal profil');
+ return {...h,weight,quality,growth,dividend,valuation,risk,diversification,dataQuality,score,grade:gradeFor(score),confidence,status,reasons,strengths,warnings};
+}
+
 function intelligencePortfolio(){
  const items=canonicalHoldings().map(intelligenceFor),weighted=items.reduce((s,x)=>s+x.score*(x.weight||0),0)/(items.reduce((s,x)=>s+(x.weight||0),0)||1);
  const high=items.filter(x=>x.score>=70).length,watch=items.filter(x=>x.status==='Bevaka'||x.status==='Komplettera data').length,risky=items.filter(x=>x.risk<45||x.weight>12).length;
@@ -302,13 +354,26 @@ function render(){
   app.innerHTML=view();
  }catch(error){
   console.error(`Render failed: ${screen}`,error);
-  screen='portfolio';portfolioTab='overview';
-  app.innerHTML=portfolio();
-  history.replaceState(null,'','#portfolio');
+  app.innerHTML=`<section class="fatal"><b>Vyn ${esc(screen)} kunde inte renderas.</b><p>${esc(error?.message||'Okänt renderingsfel')}</p><button type="button" class="primary" data-screen="home">Till Hem</button></section>`;
  }
  const meta=document.getElementById('headerMeta');if(meta)meta.textContent=`${canonicalHoldings().length} innehav · Portfolio Intelligence · ${VERSION}`;
  bind();
 }
+
+function installInteractionRouter(){
+ if(document.documentElement.dataset.mkInteractionRouter==='1')return;
+ document.documentElement.dataset.mkInteractionRouter='1';
+ document.addEventListener('click',event=>{
+  const target=event.target.closest('button,[data-screen],[data-tab],[data-tabgo],[data-index],[data-intel-index],[data-ledger-id]');
+  if(!target)return;
+  if(target.dataset.screen){event.preventDefault();navigateTo(target.dataset.screen);return}
+  if(target.dataset.tab||target.dataset.tabgo){event.preventDefault();screen='portfolio';portfolioTab=target.dataset.tab||target.dataset.tabgo||'overview';if(location.hash!=='#portfolio')history.pushState(null,'','#portfolio');render();requestAnimationFrame(()=>scrollTo({top:0,left:0,behavior:'auto'}));return}
+  if(target.dataset.index!==undefined){event.preventDefault();showHolding(Number(target.dataset.index));return}
+  if(target.dataset.intelIndex!==undefined){event.preventDefault();showHolding(Number(target.dataset.intelIndex));return}
+  if(target.dataset.ledgerId){event.preventDefault();showLedger(target.dataset.ledgerId);return}
+ },true);
+}
+
 function boot(){
  data=loadData();
  admin=merge(ADMIN_DEFAULT,parse(safeGet(ADMIN_KEY))||{});
@@ -321,6 +386,7 @@ function boot(){
  screen=(location.hash.slice(1)||'home');
  if(!NAV.some(x=>x[0]===screen))screen='home';
  migrateLedger();
+ installInteractionRouter();
  render();
  document.body.classList.add('appReady');
  window.addEventListener('hashchange',()=>{const next=location.hash.slice(1)||'home';if(NAV.some(x=>x[0]===next)){screen=next;render();requestAnimationFrame(()=>scrollTo({top:0,left:0,behavior:'auto'}))}});

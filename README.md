@@ -1,36 +1,15 @@
-# Mästarklass OS 11.0.1 — Live Intelligence Foundation
+# Mästarklass OS 11.0.2 — Interaction Stability
 
-Detta är första releasen i Live Intelligence-fasen. Den bygger vidare på hela 10.9-systemet och bevarar Portfolio Engine, Transaction Engine, Administration Layer, Portfolio Ledger, Portfolio Intelligence, Decision Center, Capital Allocation och Wealth Intelligence.
+Stabiliseringsrelease ovanpå 11.0.1.
 
-## Nytt i 11.0.1
+## Korrigerat
+- återställd Ledger-motor och Ledger-vy
+- återställd Intelligence Engine som används av Analys och innehavsdetaljer
+- klick på innehav öppnar globalt detaljkort igen
+- Analys renderas utan att falla tillbaka till Portfölj
+- central event delegation för navigation, portföljflikar, innehav, intelligenskort och Ledger
+- synlig felvy vid framtida renderingsfel i stället för tyst sidbyte
+- versionsnummer och PWA-cache synkroniserade
 
-- Provider Registry med utbytbara adapterplatser
-- Data Router med kategoribaserad routing och fallback
-- separat read-only Live Cache
-- Validation Engine för pris, tidsstämpel och färskhet
-- Instrument Mapping för portföljens innehav
-- Live Event Log
-- Foundation Health och täckningsmätning
-- kontrollknappar för mappning och validering
-- tydlig status för konfigurerade respektive okonfigurerade providers
-
-## Säkerhetsmodell
-
-Live-data får aldrig skriva över:
-
-- antal
-- GAV
-- transaktioner
-- Portfolio Ledger
-- kredit
-- historik
-
-Live Intelligence är ett separat observationslager. Portfolio Ledger förblir sanningskällan.
-
-## Viktig avgränsning
-
-11.0.1 bygger infrastrukturen. Den hämtar ännu inte fullständiga marknadskurser för samtliga innehav. Nästa steg är 11.1.0 — Live Prices & FX, där adapters ansluts kontrollerat genom registryt.
-
-## Uppladdning
-
-Ladda upp samtliga åtta filer till GitHub-repots rot och ersätt filer med samma namn. Vänta på GitHub Pages, stäng appen helt och öppna den igen.
+## Säkerhet
+Ingen lokal portföljdata, GAV, antal, kredit, transaktion eller Ledger skrivs över.
