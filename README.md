@@ -1,4 +1,4 @@
-# Mästarklass OS 11.1.3 — Multi-Provider Live Engine
+# Mästarklass OS 11.2.0 — Smart Provider Router
 
 Hotfix av 11.1.2 och förstärker live-lagret med faktisk providertelemetri, timeout, retry, cache-fallback, förbättrad symbolrouting och tydligare instrumentidentitet.
 
@@ -22,6 +22,14 @@ Live-lagret får aldrig skriva över antal, GAV, kredit, transaktioner, Portfoli
 Ladda upp samtliga åtta filer till GitHub-repots rot och ersätt befintliga filer.
 
 
-## Hotfix 11.1.3
+## Hotfix 11.2.0
 - återställer den saknade `market()`-vyn som orsakade total uppstartskrasch
 - behåller all lokal portföljdata och alla lagringsnycklar oförändrade
+
+
+## 11.2.0 Smart Provider Router
+- Twelve Data och Alpha Vantage kan aktiveras med lokalt sparade API-nycklar.
+- Automatisk providerordning per instrument.
+- Stooq nedgraderad till valfri legacy-fallback.
+- Synk begränsas till valfritt antal instrument för att respektera providergränser.
+- Lokal cache och portföljens masterdata förblir separerade.
