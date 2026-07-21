@@ -1,18 +1,28 @@
-# Mästarklass OS 11.9.0 — Global Instrument Registry
-
-Bygger vidare på 11.8 med ett säkert, lokalt och versionsstyrt identitetsregister.
+# Mästarklass OS 11.10.0 — Global Identity Resolver
 
 ## Nytt
-- Rebuild Identity Registry med lokal backup och återställning
-- bevarar manuellt verifierade kopplingar
-- återställer misstänkta automatiska tickers utan att röra portföljdata
-- känner igen andelsklasser och utdelande/ackumulerande varianter
-- lagrar primär ticker, ISIN, börs, valuta och separata providersymboler
-- konfliktgranskning och tydlig lista över instrument som kräver manuell kontroll
-- fortsatt stöd för aktier, ETF:er, traditionella fonder och NAV
 
-## Säkerhet
-Version 11.9.0 ändrar aldrig antal, GAV, marknadsvärde, kredit, transaktioner, Portfolio Ledger, historik eller API-nycklar. All identitetsdata ligger i det lokala read-only live-lagret.
+- Ny resolverpanel under Marknad.
+- Söker i OpenFIGI, Twelve Data, Finnhub och det lokala identitetsregistret.
+- Sammanväger officiellt namn, ticker, börs, valuta, instrumenttyp och andelsklass.
+- Automatisk verifiering kräver hög förtroendescore; osäkra träffar läggs för manuell granskning.
+- Manuella live-kopplingar skrivs aldrig över automatiskt.
+- Portföljdata, antal, GAV, marknadsvärde, kredit, transaktioner och Ledger ändras aldrig.
 
-## Uppdatering
-Ladda upp samtliga åtta filer till GitHub-repots rot och ersätt befintliga filer. Vänta tills GitHub Pages är klar och öppna sedan appen på nytt.
+## Viktig avgränsning
+
+Morningstar, Yahoo Finance, Stooq och börsernas databaser finns som planerade/kompatibla källor men används inte automatiskt utan en stabil, laglig och CORS-kompatibel anslutning. Versionen låtsas inte att en källa har svarat när den inte har gjort det.
+
+## Uppladdning
+
+Behåll nuvarande `app.js`, `styles.css` och `icon.svg`. Ladda upp och ersätt/lägg till följande filer i repositoryts rot:
+
+- `index.html`
+- `manifest.json`
+- `sw.js`
+- `version.json`
+- `README.md`
+- `global_identity_resolver_11_10.js`
+- `global_identity_resolver_11_10.css`
+
+Vänta tills GitHub Pages är klar. Stäng sedan appen helt och öppna den på nytt.

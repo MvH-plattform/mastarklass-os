@@ -1,16 +1,1 @@
-{
-  "name": "Mästarklass OS 11.9.0",
-  "short_name": "Mästarklass 11.9.0",
-  "start_url": "./?v=11.9.0",
-  "display": "standalone",
-  "background_color": "#06101d",
-  "theme_color": "#07111f",
-  "icons": [
-    {
-      "src": "icon.svg",
-      "sizes": "any",
-      "type": "image/svg+xml",
-      "purpose": "any maskable"
-    }
-  ]
-}
+{"name":"Mästarklass OS","short_name":"Mästarklass","description":"Local-first Wealth Intelligence och portföljplattform.","start_url":"./","scope":"./","display":"standalone","background_color":"#07111f","theme_color":"#07111f","icons":[{"src":"icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}]}
