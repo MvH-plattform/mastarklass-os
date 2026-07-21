@@ -1,38 +1,22 @@
-# Mästarklass OS 11.1.1 — Live Mapping & Sync Stability
+# Mästarklass OS 11.1.2 — Multi-Provider Live Engine
 
-Första fungerande live-marknadsreleasen ovanpå den stabila 11.0.2-kärnan.
+Bygger vidare på 11.1.1 och förstärker live-lagret med faktisk providertelemetri, timeout, retry, cache-fallback, förbättrad symbolrouting och tydligare instrumentidentitet.
 
-## Nytt i 11.1.1
-- Live Price Engine för mappade aktier och ETF:er
-- FX Engine med EUR-baserade ECB-referenskurser till SEK
-- Stooq-adapter för prisobservationer utan att röra portföljens masterdata
-- Provider Router med primär källa och lokal cache-fallback
-- livevärde, dagsförändring, kurstäckning och synkstatus på Marknad
-- livekurs, källa, förändring och datans ålder i innehavsdetaljen
-- validering av pris, tidsstämpel, färskhet och cache
-- tydlig felhantering när en källa eller ticker saknar svar
+## Nytt
+- Provider Health: försök, lyckade svar, fel, svarstid och tillförlitlighet
+- kontrollerad timeout och retry för ECB och Stooq
+- lokal cache-fallback när extern källa inte svarar
+- flera symbolkandidater per börs
+- Cache Engine 2.0 med färska, fördröjda och gamla observationer
+- försiktiga tickerförslag för ett begränsat antal välkända instrument
+- Live-identitet i innehavsdetaljen
+- synkstatus: success, partial eller error
 
+## Viktig avgränsning
+Ingen provider visas som online innan den faktiskt har svarat. Webbläsarhämtning kan begränsas av nätverk, CORS eller leverantörsvillkor.
 
-- nytt Live Mapping Center för att granska och redigera ticker, ISIN och valuta
-- automatisk försiktig tickeridentifiering för ett urval vanliga svenska och amerikanska innehav
-- manuell mappning sparas separat i live-lagret och påverkar aldrig masterdata
-- tydligare mappningsstatus före synkronisering
-- mobilanpassad redigeringsvy för instrumentmappning
-
-## Säkerhetsmodell
-Live-data är strikt read-only och får aldrig skriva över:
-- antal
-- GAV
-- kredit
-- transaktioner
-- Portfolio Ledger
-- lokal historik
-
-## Innan synkronisering
-Öppna Marknad och välj **Skapa/uppdatera instrumentmappning**. Innehav behöver en korrekt ticker eller ISIN för automatisk kurshämtning.
-
-## Viktigt
-Marknadsdatakällor kan ha fördröjda kurser, begränsad täckning och tillfälliga CORS-/nätverksproblem. Appen behåller senast validerade cache och visar tydligt när uppdateringen inte lyckas.
+## Säkerhet
+Live-lagret får aldrig skriva över antal, GAV, kredit, transaktioner, Portfolio Ledger eller historik.
 
 ## Uppladdning
-Ladda upp samtliga åtta filer till GitHub-repots rot och ersätt filer med samma namn. Vänta på GitHub Pages-deployment. Stäng därefter den installerade appen helt och öppna den igen.
+Ladda upp samtliga åtta filer till GitHub-repots rot och ersätt befintliga filer.

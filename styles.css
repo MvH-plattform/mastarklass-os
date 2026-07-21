@@ -144,3 +144,15 @@ input,select,textarea,button{max-width:100%}
 .mappingRow label{font-size:.78rem;color:var(--muted)}.mappingRow input{text-transform:none;margin-top:6px}
 .stickyAction{position:sticky;bottom:0;margin-top:18px;box-shadow:0 -16px 28px rgba(4,12,23,.88)}
 @media(max-width:760px){.mappingRow{grid-template-columns:1fr 1fr}.mappingRow>div{grid-column:1/-1}.mappingRow label:last-child{grid-column:1/-1}.mappingSummary{align-items:flex-start;flex-direction:column}.mappingSummary span{text-align:left}}
+
+
+/* 11.1.2 Multi-Provider Live Engine */
+.healthScore{padding:8px 12px;border-radius:999px;background:#123b5a;border:1px solid #2c85b9;color:#c5efff;font-weight:900}
+.providerHealthGrid{display:grid;gap:11px;margin-top:16px}
+.providerHealthCard{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px 14px;padding:16px;border-radius:20px;background:#091427;border:1px solid #2b3a57}
+.providerHealthCard>div{display:flex;gap:9px;align-items:center;flex-wrap:wrap}.providerHealthCard span{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:#9aa8bb}
+.providerHealthCard strong{font-size:22px}.providerHealthCard small{grid-column:1/-1;color:#9aa8bb}.providerHealthCard em{grid-column:1/-1;color:#ff9bad;font-size:12px;font-style:normal;overflow-wrap:anywhere}
+.providerHealthCard.online{border-color:#26704f}.providerHealthCard.degraded,.providerHealthCard.retrying{border-color:#8a6534}.providerHealthCard.standby{border-color:#315d89}
+.instrumentIdentity{margin:18px 0;padding:18px;border:1px solid #345c7f;border-radius:22px;background:#0a172a}.identityGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:14px}
+.identityGrid span{padding:12px;border-radius:15px;background:#101d32;color:#9eabc0;overflow-wrap:anywhere}.identityGrid b{display:block;color:#fff;margin-top:5px;font-size:16px}.syncStatus.partial{border-color:#8a6534;color:#f4c86f}
+@media(max-width:350px){.identityGrid{grid-template-columns:1fr}}

@@ -1,6 +1,6 @@
 {
-  "version": "11.1.1",
-  "name": "Live Mapping & Sync Stability",
+  "version": "11.1.2",
+  "name": "Multi-Provider Live Engine",
   "released": "2026-07-21",
-  "cache": "mastarklass-os-11-1-1"
+  "cache": "mastarklass-os-11-1-2"
 }
