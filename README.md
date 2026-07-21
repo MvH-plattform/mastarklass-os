@@ -1,17 +1,26 @@
-# Mästarklass OS 11.6.1 — Quality Match Engine
+# Mästarklass OS 11.7.0 — Universal Identity Engine
 
-Hotfix för Global Instrument Registry som prioriterar originalnoteringen och rättar felaktiga alternativa listningar.
+Nästa lager ovanpå Global Instrument Registry och Adaptive Provider Network.
 
 ## Nytt
 
-- Mastercard korrigeras till **MA · NYSE · USD · US57636Q1040** i stället för brasilianska MSCD34
-- exakta registernamn prioriteras framför providersökning
-- tillgångsslag och valuta vägs in i identitetsmatchningen
-- felaktiga automatiska tickers skrivs över av verifierat register
-- manuella kopplingar lämnas orörda
-- Identity Engine visar hur många felaktiga tickers som rättats
-- portföljdata, antal, GAV, historik, Ledger och API-nycklar ändras inte
+- universell identitetskontroll av namn, ISIN, ticker, börs, valuta och tillgångsslag
+- Confidence Score per instrument
+- upptäckt av dubbla ISIN och ticker/börs-kombinationer
+- konfliktkontroll mot det verifierade instrumentregistret
+- säkra korrigeringsförslag som kan tillämpas med en knapp
+- manuella kopplingar lämnas alltid orörda
+- audit-logg för varje identitetskörning
+- all identitetsdata sparas endast i read-only live-lagret
 
-## Uppladdning
+## Säkerhet
 
-Ladda upp samtliga åtta appfiler till GitHub-repots rot och ersätt befintliga filer. Kör därefter **Identity Engine** en gång och synkronisera live-data.
+Antal, GAV, kredit, transaktioner, Portfolio Ledger, historik och API-nycklar ändras aldrig av Universal Identity Engine.
+
+## Efter uppladdning
+
+1. Ladda upp samtliga åtta filer och ersätt befintliga filer.
+2. Öppna **Marknad**.
+3. Tryck **Kör Universal Identity**.
+4. Granska konflikter och tryck därefter **Tillämpa säkra förslag**.
+5. Synkronisera live-data.

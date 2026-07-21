@@ -166,3 +166,9 @@ input,select,textarea,button{max-width:100%}
 .stewardPanel{border-color:#2f7766;background:linear-gradient(180deg,#0b2130,#0a1828)}
 .smallMetric{font-size:16px!important;line-height:1.35;overflow-wrap:anywhere}
 .stewardPanel .grid{margin-top:16px}
+
+
+/* 11.7.0 Universal Identity Engine */
+.universalIdentityPanel{border-color:#3d6fa0;background:linear-gradient(180deg,#10213a,#0a1729)}
+.identityIssueList{display:grid;gap:10px;margin-top:18px}.identityIssue{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:14px;align-items:center;padding:16px;border:1px solid #6f5432;border-radius:18px;background:#241c14}.identityIssue.conflict{border-color:#93384f;background:#351621}.identityIssue.review{border-color:#765834}.identityIssue.unresolved{border-color:#3c4f69;background:#0b1728}.identityIssue small{display:block;color:#9ba8ba;margin-top:4px}.identityIssue p{margin:7px 0 0;color:#c7d1de;font-size:13px}.identityIssue>span{padding:8px 11px;border-radius:999px;background:#153e61;color:#bce9ff;font-weight:900}
+@media(max-width:520px){.identityIssue{grid-template-columns:1fr}.identityIssue>span{justify-self:start}}
