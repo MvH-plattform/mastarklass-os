@@ -1,17 +1,17 @@
-# Mästarklass OS 11.6.0 — Global Instrument Registry
+# Mästarklass OS 11.6.1 — Quality Match Engine
 
-Komplett Identity Engine ovanpå Adaptive Provider Network.
+Hotfix för Global Instrument Registry som prioriterar originalnoteringen och rättar felaktiga alternativa listningar.
 
 ## Nytt
-- versionsstyrt lokalt instrumentregister
-- primär ticker, ISIN, börs, valuta, land och tillgångstyp
-- separata providersymboler för Twelve Data, Alpha Vantage och Finnhub
-- automatisk berikning vid start och manuell Identity Engine-körning
-- Stooq Legacy stängs av vid migrering om användaren inte uttryckligen väljer den
-- befintlig portföljmasterdata, GAV, antal, transaktioner, Ledger och API-nycklar lämnas orörda
 
-## Säkerhet
-Registry skriver endast till read-only live-mappningen. Det skapar inga order och ändrar inga innehav.
+- Mastercard korrigeras till **MA · NYSE · USD · US57636Q1040** i stället för brasilianska MSCD34
+- exakta registernamn prioriteras framför providersökning
+- tillgångsslag och valuta vägs in i identitetsmatchningen
+- felaktiga automatiska tickers skrivs över av verifierat register
+- manuella kopplingar lämnas orörda
+- Identity Engine visar hur många felaktiga tickers som rättats
+- portföljdata, antal, GAV, historik, Ledger och API-nycklar ändras inte
 
 ## Uppladdning
-Ladda upp samtliga åtta appfiler till GitHub-repots rot och ersätt befintliga filer.
+
+Ladda upp samtliga åtta appfiler till GitHub-repots rot och ersätt befintliga filer. Kör därefter **Identity Engine** en gång och synkronisera live-data.
