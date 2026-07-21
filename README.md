@@ -1,26 +1,21 @@
-# Mästarklass OS 11.7.0 — Universal Identity Engine
+# Mästarklass OS 11.8.0 — Fund & ETF Intelligence
 
-Nästa lager ovanpå Global Instrument Registry och Adaptive Provider Network.
+Utökar Universal Identity Engine med rätt prismodell för varje instrumenttyp.
 
 ## Nytt
 
-- universell identitetskontroll av namn, ISIN, ticker, börs, valuta och tillgångsslag
-- Confidence Score per instrument
-- upptäckt av dubbla ISIN och ticker/börs-kombinationer
-- konfliktkontroll mot det verifierade instrumentregistret
-- säkra korrigeringsförslag som kan tillämpas med en knapp
-- manuella kopplingar lämnas alltid orörda
-- audit-logg för varje identitetskörning
-- all identitetsdata sparas endast i read-only live-lagret
+- automatisk klassificering av aktie, ETF, fond, REIT, ADR, preferensaktie och ETN/certifikat
+- börsnoterade instrument fortsätter använda livekurs från provider-nätverket
+- traditionella fonder använder senaste NAV i stället för att rapporteras som felaktig ticker
+- separat lokalt Fund NAV Center för fonder som saknar tillgänglig extern kurs
+- tydligare status: verifierad identitet kan visas även när NAV eller börskurs saknas
+- Fund & ETF Intelligence-panel i Marknad visar täckning och återstående dataluckor
+- NAV-data sparas endast i read-only live-lagret
 
 ## Säkerhet
 
-Antal, GAV, kredit, transaktioner, Portfolio Ledger, historik och API-nycklar ändras aldrig av Universal Identity Engine.
+Version 11.8.0 ändrar aldrig antal, GAV, kredit, transaktioner, Portfolio Ledger eller portföljhistorik. API-nycklar och NAV-data ligger kvar lokalt på enheten.
 
-## Efter uppladdning
+## Uppladdning
 
-1. Ladda upp samtliga åtta filer och ersätt befintliga filer.
-2. Öppna **Marknad**.
-3. Tryck **Kör Universal Identity**.
-4. Granska konflikter och tryck därefter **Tillämpa säkra förslag**.
-5. Synkronisera live-data.
+Ladda upp samtliga åtta filer till GitHub-repots rot och ersätt befintliga filer. Vänta tills GitHub Pages är klar och öppna därefter appen på nytt.
