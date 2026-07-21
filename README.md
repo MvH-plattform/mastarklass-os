@@ -1,25 +1,17 @@
-# Mästarklass OS 11.10.0 — Global Identity Resolver
+# Mästarklass OS 11.11.0 — Adaptive Data Engine
 
-Komplett ersättningsversion byggd ovanpå 11.9.0. Resolvermotorn är integrerad i `app.js` och `styles.css`; inga extra resolverfiler ska ligga i repots rot.
+Bygger vidare på 11.10.0 med intelligent prisåterhämtning och tydlig datadiagnostik.
 
 ## Nytt
-- Global Identity Resolver under **Marknad**
-- parallell sökning i lokalt Global Registry, OpenFIGI och aktiverade Twelve Data, Alpha Vantage och Finnhub
-- sammanvägd matchning av ISIN, officiellt namn, ticker, börs, valuta, instrumenttyp och andelsklass
-- konfliktkontroll mellan källor
-- tydlig granskningsvy där varje förslag godkänns innan det sparas
-- massgodkännande endast för förslag med mycket hög säkerhet
-- manuella kopplingar skyddas och skrivs inte över utan uttryckligt godkännande
-- Morningstar visas endast som framtida anslutningsplats; appen låtsas inte att en otillgänglig källa har svarat
 
-## Viktig fix
-Ta bort de gamla extrafilerna `global_identity_resolver_11_10.js` och `global_identity_resolver_11_10.css` från GitHub. Funktionerna finns nu i kärnfilerna.
-
-## Säkerhet
-Resolvern ändrar aldrig antal, GAV, marknadsvärde, kredit, transaktioner, Portfolio Ledger eller historik. Identitetsförslag skrivs enbart till det lokala read-only live-lagret efter godkännande. API-nycklar stannar lokalt på enheten.
+- testar flera tickerformat per instrument och börs
+- prioriterar tidigare fungerande provider-rutt
+- skiljer börskurs från fond-NAV
+- sparar lyckade rutter lokalt i read-only live-lagret
+- visar datadiagnostik på varje innehav: identitet, ISIN, ticker, kurs/NAV, testade källor och rekommenderad åtgärd
+- sammanfattar uppdaterade, räddade, NAV-krävande och misslyckade instrument
+- påverkar aldrig antal, GAV, marknadsvärde, kredit, transaktioner eller Portfolio Ledger
 
 ## Uppladdning
-1. Radera de två gamla extra resolverfilerna om de finns.
-2. Ladda upp de åtta filerna i detta paket till repots rot och ersätt befintliga filer.
-3. Vänta på GitHub Pages. Om deploy-steget visar `Request timeout` eller `Failed to get ID Token`, kör **Re-run jobs**; det är ett GitHub Actions-fel och inte ett fel i appfilerna.
-4. Stäng den installerade PWA:n helt och öppna den igen.
+
+Ladda upp samtliga åtta filer till GitHub-repots rot och ersätt befintliga filer. Vänta tills GitHub Pages är grön och öppna därefter PWA:n på nytt.

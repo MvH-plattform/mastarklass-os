@@ -1,6 +1,6 @@
 {
-  "version": "11.10.0",
-  "name": "Global Identity Resolver",
+  "version": "11.11.0",
+  "name": "Adaptive Data Engine",
   "released": "2026-07-21",
-  "cache": "mastarklass-os-11-10-0"
+  "cache": "mastarklass-os-11-11-0"
 }
