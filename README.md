@@ -1,6 +1,6 @@
-# Mästarklass OS 11.1.2 — Multi-Provider Live Engine
+# Mästarklass OS 11.1.3 — Multi-Provider Live Engine
 
-Bygger vidare på 11.1.1 och förstärker live-lagret med faktisk providertelemetri, timeout, retry, cache-fallback, förbättrad symbolrouting och tydligare instrumentidentitet.
+Hotfix av 11.1.2 och förstärker live-lagret med faktisk providertelemetri, timeout, retry, cache-fallback, förbättrad symbolrouting och tydligare instrumentidentitet.
 
 ## Nytt
 - Provider Health: försök, lyckade svar, fel, svarstid och tillförlitlighet
@@ -20,3 +20,8 @@ Live-lagret får aldrig skriva över antal, GAV, kredit, transaktioner, Portfoli
 
 ## Uppladdning
 Ladda upp samtliga åtta filer till GitHub-repots rot och ersätt befintliga filer.
+
+
+## Hotfix 11.1.3
+- återställer den saknade `market()`-vyn som orsakade total uppstartskrasch
+- behåller all lokal portföljdata och alla lagringsnycklar oförändrade
