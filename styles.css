@@ -156,3 +156,8 @@ input,select,textarea,button{max-width:100%}
 .instrumentIdentity{margin:18px 0;padding:18px;border:1px solid #345c7f;border-radius:22px;background:#0a172a}.identityGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:14px}
 .identityGrid span{padding:12px;border-radius:15px;background:#101d32;color:#9eabc0;overflow-wrap:anywhere}.identityGrid b{display:block;color:#fff;margin-top:5px;font-size:16px}.syncStatus.partial{border-color:#8a6534;color:#f4c86f}
 @media(max-width:350px){.identityGrid{grid-template-columns:1fr}}
+
+/* 11.3.0 Intelligent Instrument Mapping */
+.mappingIntel{border-color:#287e70;background:linear-gradient(180deg,#0c2130,#0b1928)}
+.mappingRow.verifiedMap{border-color:#26704f}.mappingRow.reviewMap{border-color:#8a6534}
+.mapStatus{display:inline-block!important;margin-top:8px!important;padding:5px 8px;border-radius:999px;background:#332714;color:#f4c86f!important;font-size:11px;font-style:normal}.mapStatus.ok{background:#123126;color:#79e4b2!important}.mapStatus.missing{background:#321521;color:#ff9bad!important}
