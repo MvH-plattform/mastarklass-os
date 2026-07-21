@@ -1,6 +1,6 @@
 {
-  "version": "11.3.0",
-  "name": "Intelligent Instrument Mapping",
+  "version": "11.4.0",
+  "name": "Auto Data Steward",
   "released": "2026-07-21",
-  "cache": "mastarklass-os-11-3-0"
+  "cache": "mastarklass-os-11-4-0"
 }
