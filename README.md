@@ -1,17 +1,17 @@
-# Mästarklass OS 11.5.0 — Adaptive Provider Network
+# Mästarklass OS 11.6.0 — Global Instrument Registry
 
-Utökar Live Intelligence med intelligent fallback, rate-limit-skydd och en ny Finnhub-adapter.
+Komplett Identity Engine ovanpå Adaptive Provider Network.
 
 ## Nytt
-- Finnhub kan aktiveras som ytterligare prisprovider med lokalt sparad API-nyckel
-- HTTP 429 ger automatisk 15 minuters cooldown i stället för upprepade anrop
-- nästa provider tar automatiskt över när en källa pausas eller misslyckas
-- Stooq Legacy är avstängd som standard i Android/PWA
-- tydlig aktiv provider-rutt och Provider Health för varje källa
-- Local Cache ligger alltid sist som säker fallback
+- versionsstyrt lokalt instrumentregister
+- primär ticker, ISIN, börs, valuta, land och tillgångstyp
+- separata providersymboler för Twelve Data, Alpha Vantage och Finnhub
+- automatisk berikning vid start och manuell Identity Engine-körning
+- Stooq Legacy stängs av vid migrering om användaren inte uttryckligen väljer den
+- befintlig portföljmasterdata, GAV, antal, transaktioner, Ledger och API-nycklar lämnas orörda
 
 ## Säkerhet
-Live-lagret är fortsatt read-only. Antal, GAV, kredit, transaktioner, Portfolio Ledger och historik ändras aldrig av provider-nätverket. API-nycklar sparas endast lokalt på enheten.
+Registry skriver endast till read-only live-mappningen. Det skapar inga order och ändrar inga innehav.
 
 ## Uppladdning
-Ladda upp samtliga åtta filer till GitHub-repots rot och ersätt befintliga filer.
+Ladda upp samtliga åtta appfiler till GitHub-repots rot och ersätt befintliga filer.
