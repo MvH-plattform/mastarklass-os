@@ -1,28 +1,29 @@
-# Mästarklass OS 11.15.7 — Direct Button Recovery
+# Mästarklass OS 11.15.8 — Deterministic Batch Engine
 
-Rättar det kvarvarande Android/PWA-felet där resolverknappen blinkade men körningen aldrig startade.
+Rättar race-felet i 11.15.7 där samma tryck kunde fångas flera gånger av inline-, pointer- och globala klickvägar. Det gjorde att statusen blinkade till men batchen inte fortsatte.
 
 ## Rättat
 
-- länklösningen från 11.15.6 är helt borttagen
-- **Kör nästa batch (max 8)** är åter en riktig HTML-knapp
-- knapptrycket fångas via inline-handler, pointer-händelse och central fallback-router
-- första återkopplingen sparas synkront som `Knapptryck mottaget…` innan något tungt arbete börjar
-- resolverstatus skrivs till lokal lagring innan instrumentlistan beräknas
-- dubbeltryck spärras i 700 ms utan att blockera normal användning
-- fel visas direkt i resolverpanelen i stället för att försvinna tyst
-- gammal `#resolver-run`-navigering och dess blinkande länkstil är borttagen
-- Live Portfolio Valuation visar konsekvent version 11.15.7
-- ny separat körstatus och service-worker-cache för 11.15.7
+- exakt en klickväg startar resolverbatchen
+- inline- och pointer-hanterare är borttagna
+- central capture-router ignorerar resolverknapparna
+- ett synkront startlås sätts innan någon asynkron väntan
+- körstatus, mål och totalantal sparas före första provideranropet
+- UI uppdateras utan helrendering under varje instrument
+- högst åtta instrument behandlas per batch
+- checkpoint sparas efter varje instrument
+- tung värderings- och AI-efteranalys körs först när batchen är klar
+- tydligt felmeddelande stannar kvar i panelen om batchen misslyckas
+- ny separat 11.15.8-körstatus och service-worker-cache
 
 ## Säkerhet
 
-11.15.7 ändrar aldrig antal, GAV, kredit, transaktioner eller Portfolio Ledger. Endast identitets-, provider- och read-only värderingsdata kan uppdateras.
+11.15.8 ändrar aldrig antal, GAV, kredit, transaktioner eller Portfolio Ledger. Endast identitets-, provider- och read-only värderingsdata kan uppdateras.
 
 ## Efter uppladdning
 
 1. Ersätt samtliga åtta filer i GitHub-repots rot.
 2. Vänta tills GitHub Pages visar grön deployment.
 3. Stäng PWA:n helt och öppna den igen.
-4. Kontrollera att 11.15.7 visas.
-5. Tryck **Kör nästa batch (max 8)**. Texten ska omedelbart ändras till **Knapptryck mottaget…** och därefter **Startar stabil batch…**.
+4. Kontrollera att 11.15.8 visas.
+5. Tryck **Kör nästa batch (max 8)**. Statusen ska stanna kvar och gå vidare till **Verifierar 1/...**.

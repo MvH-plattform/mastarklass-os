@@ -1,6 +1,6 @@
 {
-  "version": "11.15.7",
-  "name": "Direct Button Recovery",
+  "version": "11.15.8",
+  "name": "Deterministic Batch Engine",
   "released": "2026-07-22",
-  "cache": "mastarklass-os-11-15-7"
+  "cache": "mastarklass-os-11-15-8"
 }
