@@ -217,3 +217,10 @@ input,select,textarea,button{max-width:100%}
 
 /* 11.15.9 Resolver Worker Recovery */
 .resolverActionButton[aria-busy="true"]{opacity:.72;pointer-events:none}
+
+/* 11.15.11 Resolver Diagnostics */
+.resolverDiagnostics{margin-top:20px;padding:18px;border:1px solid #3b78a1;border-radius:22px;background:#061425}
+.diagMeta{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0}.diagMeta span{padding:12px;border-radius:15px;background:#101d32;color:#9eabc0}.diagMeta b{display:block;color:#fff;margin-top:5px;overflow-wrap:anywhere}
+.diagnosticConsole{max-height:360px;overflow:auto;padding:12px;border-radius:16px;background:#020815;border:1px solid #253a55;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:12px;-webkit-overflow-scrolling:touch}
+.diagLine{padding:8px;border-bottom:1px solid rgba(148,163,184,.12);color:#d8e4f2}.diagLine b{color:#7dd3fc;margin-right:7px}.diagLine small{display:block;color:#9eabc0;margin:4px 0 0 64px;overflow-wrap:anywhere}.diagLine.error{color:#ff9bad}.diagLine.warning{color:#f4c86f}.diagLine.success{color:#79e4b2}
+@media(max-width:520px){.diagMeta{grid-template-columns:1fr}.diagnosticConsole{max-height:300px}.diagLine small{margin-left:0}}

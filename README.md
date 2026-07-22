@@ -1,28 +1,26 @@
-# Mästarklass OS 11.15.10 — Resolver Start & Stop Recovery
+# Mästarklass OS 11.15.11 — Resolver Diagnostics
 
-Rättar stoppet där 11.15.9 sparade “8 instrument förbereds” men aldrig gick vidare till instrument 1.
+Diagnostikversion som visar exakt var Global Identity Resolver stannar på Android/PWA.
 
-## Rättat
+## Nytt
 
-- resolverarbetaren startas direkt utan timer mellan knapptryck och instrument 1
-- status ändras synkront till `Verifierar 1/101` före första provideranropet
-- exakt en startväg används via knappens direkta handler
-- stoppknappen använder en separat direkt handler och visar omedelbart `Stopp begärt`
-- inga dubbla resolverlyssnare skapas i den vanliga renderbindningen
-- samma lätta instrumentsnapshot används under hela batchen
-- checkpoint sparas efter varje instrument
-- varje instrument har högst nio sekunders väntetid
-- högst åtta instrument behandlas per batch
-- ny separat körstatus och service-worker-cache
+- synlig tidsstämplad körlogg direkt i resolverpanelen
+- loggar lokal mapping, Permanent Registry, Global Registry och varje extern provider före och efter anrop
+- visar aktuellt instrument och senaste steg
+- pulsräknare visar om huvudtråden fortfarande lever
+- providerfel och timeout visas med exakt feltext och svarstid
+- stoppknappen loggar om stoppflaggan verkligen skrivs
+- knapp för att kopiera hela diagnostikloggen
+- ingen extra portföljanalys eller helrendering under instrumentverifieringen
+- separat körstatus och ny service-worker-cache
 
-## Säkerhet
-
-11.15.10 ändrar aldrig antal, GAV, kredit, transaktioner eller Portfolio Ledger. Endast identitets-, provider- och read-only värderingsdata kan uppdateras.
-
-## Efter uppladdning
+## Test
 
 1. Ersätt samtliga åtta filer i GitHub-repots rot.
-2. Vänta tills GitHub Pages visar grön deployment.
+2. Vänta på grön GitHub Pages-deployment.
 3. Stäng PWA:n helt och öppna den igen.
-4. Kontrollera att 11.15.10 visas.
-5. Tryck Kör nästa batch. Status ska direkt visa Verifierar 1/101.
+4. Kontrollera att 11.15.11 visas.
+5. Kör en batch.
+6. Om den stannar, skicka en bild på den sista synliga loggraden eller använd Kopiera diagnostiklogg.
+
+Portföljens antal, GAV, kredit, transaktioner och Portfolio Ledger ändras aldrig av diagnostiken.
