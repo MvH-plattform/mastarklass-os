@@ -1,29 +1,24 @@
-# Mästarklass OS 11.15.16 — Resolver Chain Trace
+# Mästarklass OS 11.15.17 – Resolver State Recovery
 
-Diagnostikversion som bygger vidare på 11.15.15 och gör hela resolverns anropskedja synlig utan att vara beroende av full localStorage.
+Rättar det exakta fel som diagnostiken i 11.15.16 visade: körstatusen sparades inte när `localStorage` var full, trots att gränssnittet fortsatte. Workern läste därför en gammal `idle`-status med fel `runId` och avbröt före instrument 1.
 
 ## Rättat
 
-- all resolverdiagnostik använder nu exakt samma minnesbuffer i UI och kopieringsfunktionen
-- varje loggrad läggs till i ordning och ersätter aldrig tidigare rader
-- upp till 400 rader finns kvar under hela appsessionen även om lokal lagring är full
-- sessionStorage används först, localStorage som reserv och minne som sista säkra nivå
-- panelen visar vilken lagringsnivå loggen faktiskt använder
-- kopiering läser direkt från samma buffer som visas på skärmen
-- kopieringsknappen skapar inte längre en ny loggrad som kan ersätta historiken
-- startfunktion, Promise-kedja, worker, runId, snapshot, instrumentloop, providers, checkpoint och watchdogs loggas
-- watchdogs efter 250 ms, 2 s, 8 s och 20 s visar var kedjan står
-- globala JavaScript-fel och ohanterade Promise-fel skrivs i samma logg
-- resolverlogik, batchstorlek och portföljskydd är oförändrade
+- resolverns aktiva körstatus hålls alltid i minnet först
+- samma status speglas till `sessionStorage`, som är primär beständig lagring för pågående batch
+- `localStorage` används endast som extra checkpoint och får inte längre blockera körningen
+- sparningen verifieras i diagnostikloggen med faktisk lagringsnivå
+- workern läser exakt samma `runId` och `running`-status som startfunktionen skapade
+- en full lokal lagring kan inte längre orsaka `idle · id=avvikelse`
+- batchen ska nu fortsätta från `Worker 03` till snapshot, loop och instrument 1
+- stoppknappen använder samma delade körstatus
+- portföljdata, antal, GAV, kredit, transaktioner och Portfolio Ledger ändras inte
 
 ## Test
 
 1. Ersätt samtliga åtta filer i GitHub-repots rot.
 2. Vänta på grön GitHub Pages-deployment.
 3. Stäng PWA:n helt och öppna den igen.
-4. Kontrollera att 11.15.16 visas.
-5. Gå till Marknad, tryck **Rensa loggen** och sedan **Kör nästa batch (max 8)**.
-6. Vänta minst 20 sekunder.
-7. Tryck **Visa hela loggen** eller **Kopiera hela loggen**.
-
-Portföljens antal, GAV, kredit, transaktioner och Portfolio Ledger ändras inte av diagnostiken.
+4. Gå till **Marknad** och rensa loggen.
+5. Tryck **Kör nästa batch (max 8)**.
+6. Loggen ska visa `Bootstrap 07 ... lagring=sessionStorage`, därefter `Worker 03 ... running · id=match` och sedan instrumentloopen.
