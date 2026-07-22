@@ -1,24 +1,26 @@
-# Mästarklass OS 11.15.17 – Resolver State Recovery
+# Mästarklass OS 11.15.18 — Fund Identity Routing
 
-Rättar det exakta fel som diagnostiken i 11.15.16 visade: körstatusen sparades inte när `localStorage` var full, trots att gränssnittet fortsatte. Workern läste därför en gammal `idle`-status med fel `runId` och avbröt före instrument 1.
+Bygger vidare på den fungerande batchmotorn i 11.15.17 och inför en separat resolverväg för vanliga fonder.
 
-## Rättat
+## Nytt
 
-- resolverns aktiva körstatus hålls alltid i minnet först
-- samma status speglas till `sessionStorage`, som är primär beständig lagring för pågående batch
-- `localStorage` används endast som extra checkpoint och får inte längre blockera körningen
-- sparningen verifieras i diagnostikloggen med faktisk lagringsnivå
-- workern läser exakt samma `runId` och `running`-status som startfunktionen skapade
-- en full lokal lagring kan inte längre orsaka `idle · id=avvikelse`
-- batchen ska nu fortsätta från `Worker 03` till snapshot, loop och instrument 1
-- stoppknappen använder samma delade körstatus
-- portföljdata, antal, GAV, kredit, transaktioner och Portfolio Ledger ändras inte
+- klassificerar varje instrument som fond eller börshandlat innan provideranrop
+- vanliga fonder utan ticker/ISIN skickas inte längre till Finnhub, Twelve Data eller Alpha Vantage
+- fonder med ISIN kan verifieras via ISIN/OpenFIGI-vägen
+- identiska fondnamn på flera konton kan återanvända en redan verifierad fondidentitet
+- fonder utan ISIN markeras **Behöver fondidentitet** i stället för **Misslyckad**
+- fondmappningen märks med NAV-prismodell och lämnas redo för kommande NAV-källa eller manuell ISIN-komplettering
+- aktier, ETF:er, REITs och övriga börshandlade instrument behåller multi-provider-flödet
+- batchstorlek, checkpoint, paus/fortsätt och Permanent Identity Registry är oförändrade
 
-## Test
+## Säkerhet
+
+11.15.18 ändrar aldrig antal, GAV, kredit, transaktioner eller Portfolio Ledger. Endast identitets-, provider- och read-only värderingsdata kan uppdateras.
+
+## Efter uppladdning
 
 1. Ersätt samtliga åtta filer i GitHub-repots rot.
-2. Vänta på grön GitHub Pages-deployment.
+2. Vänta tills GitHub Pages visar grön deployment.
 3. Stäng PWA:n helt och öppna den igen.
-4. Gå till **Marknad** och rensa loggen.
-5. Tryck **Kör nästa batch (max 8)**.
-6. Loggen ska visa `Bootstrap 07 ... lagring=sessionStorage`, därefter `Worker 03 ... running · id=match` och sedan instrumentloopen.
+4. Kontrollera att 11.15.18 visas.
+5. Fortsätt resolverbatchen. Fonder utan ISIN ska nu räknas som **Behöver fondidentitet**, inte som providerfel.

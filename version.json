@@ -1,7 +1,6 @@
 {
-  "version": "11.15.17",
-  "name": "Resolver Chain Trace",
-  "released": "2026-07-22",
-  "cache": "mastarklass-os-11-15-13",
-  "build": "2026-07-23"
+  "version": "11.15.18",
+  "name": "Fund Identity Routing",
+  "released": "2026-07-23",
+  "cache": "mastarklass-os-11-15-18"
 }
