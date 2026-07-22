@@ -1,6 +1,6 @@
 {
-  "version": "11.15.9",
-  "name": "Resolver Worker Recovery",
+  "version": "11.15.10",
+  "name": "Resolver Start & Stop Recovery",
   "released": "2026-07-22",
-  "cache": "mastarklass-os-11-15-9"
+  "cache": "mastarklass-os-11-15-10"
 }
