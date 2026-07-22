@@ -1,4 +1,4 @@
-const CACHE='mastarklass-os-11-15-12';
+const CACHE='mastarklass-os-11-15-13';
 const ASSETS=['./','./index.html','./app.js','./styles.css','./manifest.json','./icon.svg','./version.json'];
 self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(ASSETS)).then(()=>self.skipWaiting())));
 self.addEventListener('activate',event=>event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(key=>key.startsWith('mastarklass-os-')&&key!==CACHE).map(key=>caches.delete(key)))).then(()=>self.clients.claim())));

@@ -1,6 +1,6 @@
 {
-  "version": "11.15.12",
-  "name": "Persistent Diagnostic History",
+  "version": "11.15.13",
+  "name": "Worker Bootstrap Debug",
   "released": "2026-07-22",
-  "cache": "mastarklass-os-11-15-12"
+  "cache": "mastarklass-os-11-15-13"
 }
