@@ -1,22 +1,27 @@
-# Mästarklass OS 11.12.0 — Data Confidence Engine
+# Mästarklass OS 11.13.0 — Autonomous Portfolio Intelligence
 
-Bygger vidare på 11.11.0 Adaptive Data Engine och gör portföljens intelligenslager automatiskt och tillitsstyrt.
+Bygger vidare på 11.12.0 Data Confidence Engine och gör portföljens AI mer självständig, förändringsmedveten och direkt användbar.
 
 ## Nytt
 
-- Data Confidence Score 0–100 för varje innehav
-- väger ihop identitet, ISIN, ticker, börs, valuta, instrumenttyp, källa och färskhet
-- skiljer mellan verifierad, sannolik, osäker och manuellt kontrollerad data
-- prioriterar vilka innehav som behöver åtgärdas först
-- hindrar starka Öka-råd när underlaget är för svagt
-- kör lokal Portfolio Intelligence automatiskt när appen öppnas eller återupptas
-- gör automatisk live-synk när data är äldre än 30 minuter och en provider är aktiverad
-- kör om analys, risk, diversifiering och Wealth Coach efter lyckad live-synk
+- autonom portföljskanning när appen öppnas och återupptas
+- automatisk ny analys efter lyckad live-synk
+- confidence-aware Öka, Behåll, Bevaka, Minska/Granska och Manuell kontroll
+- Smart Buy Queue och Opportunity Radar med datatillit, risk, värdering och portföljvikt
+- Concentration Engine för innehav, konton och tillgångsslag
+- automatisk morgonbrief med viktigaste åtgärd, möjlighet, risk och nästa kapital
+- lokal trendhistorik för Portfolio Intelligence, hälsa och datatillit
+- förändringssignatur och fem minuters cooldown för att undvika onödiga omräkningar
+- endast förändrade portföljlägen skapar nya trendpunkter
 - manuella knappar finns kvar för kontroll och felsökning
+
+## Automatik
+
+När appen öppnas körs först lokal analys direkt. Om live-data är äldre än 30 minuter och minst en provider är aktiverad försöker appen sedan synkronisera marknadsdata. Efter lyckad synk körs Data Confidence, risk, diversifiering, Opportunity Radar, Concentration Engine och Wealth Coach på nytt.
 
 ## Säkerhet
 
-11.12.0 arbetar endast i read-only live- och intelligenslagret. Den ändrar aldrig antal, GAV, marknadsvärde, kredit, transaktioner, Portfolio Ledger eller API-nycklar.
+11.13.0 arbetar endast i read-only live-, AI- och intelligenslagret. Den ändrar aldrig antal, GAV, marknadsvärde, kredit, transaktioner, Portfolio Ledger eller API-nycklar och skapar inga order.
 
 ## Uppladdning
 
