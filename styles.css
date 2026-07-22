@@ -224,3 +224,13 @@ input,select,textarea,button{max-width:100%}
 .diagnosticConsole{max-height:360px;overflow:auto;padding:12px;border-radius:16px;background:#020815;border:1px solid #253a55;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:12px;-webkit-overflow-scrolling:touch}
 .diagLine{padding:8px;border-bottom:1px solid rgba(148,163,184,.12);color:#d8e4f2}.diagLine b{color:#7dd3fc;margin-right:7px}.diagLine small{display:block;color:#9eabc0;margin:4px 0 0 64px;overflow-wrap:anywhere}.diagLine.error{color:#ff9bad}.diagLine.warning{color:#f4c86f}.diagLine.success{color:#79e4b2}
 @media(max-width:520px){.diagMeta{grid-template-columns:1fr}.diagnosticConsole{max-height:300px}.diagLine small{margin-left:0}}
+
+/* 11.15.12 Persistent Diagnostic History */
+.resolverDiagnostics .sectionHead small{display:block;color:#9fb1c8;margin-top:5px}
+.diagnosticConsole{max-height:420px;min-height:180px;scroll-behavior:smooth}
+.diagnosticConsole.expanded{max-height:none;overflow:visible}
+.diagLine{display:grid;grid-template-columns:34px minmax(0,1fr);gap:8px;align-items:start}
+.diagIndex{display:grid;place-items:center;width:28px;height:28px;border-radius:9px;background:#13243a;color:#8fc9ff;font:800 11px/1 system-ui}
+.diagLine>div{min-width:0}.diagLine small{margin-left:0}
+.diagnosticActions{display:grid;gap:10px;margin-top:12px}
+@media(min-width:700px){.diagnosticActions{grid-template-columns:repeat(3,minmax(0,1fr))}}
