@@ -1,6 +1,6 @@
 {
-  "version": "11.15.2",
-  "name": "Resolver Performance & Recovery",
+  "version": "11.15.3",
+  "name": "Resolver Stabilization & Recovery",
   "released": "2026-07-22",
-  "cache": "mastarklass-os-11-15-2"
+  "cache": "mastarklass-os-11-15-3"
 }

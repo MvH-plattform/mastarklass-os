@@ -1,28 +1,29 @@
-# Mästarklass OS 11.15.2 — Resolver Performance & Recovery
+# Mästarklass OS 11.15.3 — Resolver Stabilization & Recovery
 
-Bygger vidare på 11.15.1 Permanent Identity Registry och gör Global Identity Resolver snabbare, återupptagbar och stabilare i Android/PWA.
+Stabiliserar Global Identity Resolver för Android/PWA och bygger vidare på 11.15.2.
 
 ## Nytt
 
-- redan permanent lösta instrument hoppas över innan någon provider anropas
-- varje säker identitet sparas omedelbart i Permanent Identity Registry
-- körposition och resultat sparas efter varje instrument
-- avbruten eller stängd körning återställs som pausad och kan fortsätta
-- säker stoppknapp avslutar efter aktuellt instrument
-- tydlig statistik för permanenta, nya säkra, granskning, misslyckade och överhoppade
-- progress visar behandlade instrument och aktuell status
-- tillfälliga resultat komprimeras för lägre minnesanvändning
-- fastnad `running/syncing` återställs automatiskt vid nästa appstart
-- Live Portfolio Valuation, Data Confidence och Autonomous Portfolio Intelligence uppdateras efter en slutförd resolverkörning
+- resolverpanelen ändrar inte längre en aktiv körning till pausad vid vanlig omrendering
+- körning sker i små batcher om högst åtta instrument
+- lokal identitet och Global Registry kontrolleras före externa provideranrop
+- högst en sökning per extern provider och instrument
+- kortare timeout skyddar mot långsamma eller blockerade providers
+- checkpoint och granskningsresultat sparas efter varje instrument
+- resultat kan granskas även om en körning avbryts
+- permanent sparade identiteter uppdaterar värderingen direkt
+- inga tunga resolveranrop körs automatiskt vid appstart
+- ny separat körstatus gör att en trasig 11.15.2-session inte återanvänds
+- service worker använder en helt ny 11.15.3-cache
 
 ## Säkerhet
 
-11.15.2 ändrar aldrig antal, GAV, kredit, transaktioner eller Portfolio Ledger. Endast identitets-, provider- och read-only värderingsdata uppdateras.
+11.15.3 ändrar aldrig antal, GAV, kredit, transaktioner eller Portfolio Ledger. Endast identitets-, provider- och read-only värderingsdata uppdateras.
 
 ## Efter uppladdning
 
-1. Ladda upp samtliga åtta filer till GitHub-repots rot och ersätt befintliga filer.
-2. Vänta tills GitHub Pages är grön.
-3. Stäng den installerade PWA:n helt och öppna den igen.
-4. Kontrollera att appen visar version 11.15.2.
-5. Kör Global Identity Resolver. Du kan stoppa säkert och fortsätta senare.
+1. Ersätt samtliga åtta filer i GitHub-repots rot.
+2. Vänta tills GitHub Pages visar grön deployment.
+3. Stäng PWA:n helt och öppna den igen.
+4. Kontrollera att 11.15.3 visas i sidhuvudet och resolverpanelen.
+5. Kör **nästa batch (max 8)**. Granska resultatet eller fortsätt med nästa batch.
