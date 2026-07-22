@@ -209,11 +209,11 @@ input,select,textarea,button{max-width:100%}
 .resolverProgress{display:block!important}.resolverProgress .bar i{transition:width .2s ease}.globalResolverPanel .foundationActions{grid-template-columns:1fr}.globalResolverPanel button{min-height:56px}.resolverResult .notice{overflow-wrap:anywhere}
 @media(min-width:700px){.globalResolverPanel .foundationActions{grid-template-columns:repeat(3,minmax(0,1fr))}}
 
-/* 11.15.8 Direct Button Recovery */
+/* 11.15.9 Direct Button Recovery */
 .resolverActionButton{display:block;width:100%;min-height:60px;text-align:center;touch-action:manipulation;user-select:none;-webkit-tap-highlight-color:rgba(255,255,255,.18);font-size:18px;line-height:1.2;cursor:pointer}
 .resolverActionButton:active{transform:scale(.985)}
 .resolverActionButton[aria-busy="true"]{opacity:.82}
 .resolverActionButton:disabled{opacity:.55;cursor:wait}
 
-/* 11.15.8 Deterministic Batch Engine */
+/* 11.15.9 Resolver Worker Recovery */
 .resolverActionButton[aria-busy="true"]{opacity:.72;pointer-events:none}
