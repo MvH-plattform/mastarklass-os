@@ -1,23 +1,27 @@
-# Mästarklass OS 11.15.0 — Live Portfolio Valuation Engine
+# Mästarklass OS 11.15.1 — Permanent Identity Registry
 
-Bygger vidare på 11.14.1 Global Identity Resolver och gör portföljens marknadsvärde dynamiskt.
+Bygger vidare på 11.15.0 Live Portfolio Valuation Engine och rättar problemet där Global Identity Resolver hittade instrument men inte återanvände resultaten permanent.
 
 ## Nytt
 
-- beräknar aktuellt innehavsvärde som `antal × livekurs/NAV × FX`
-- prioriterar verifierad livekurs eller NAV framför statiskt marknadsvärde
-- använder senast känt marknadsvärde eller anskaffningsvärde som tydligt märkt fallback
-- räknar om portföljtotal, kontovärden och portföljvikter automatiskt
-- beräknar dagens förändring i SEK och procent där kursdata stöder det
-- visar live-, NAV-, fallback- och saknad värdetäckning
-- visar värdemetod och värdekälla i varje innehavsdetalj
-- sparar en lokal read-only värderingssnapshot för övriga intelligenslager
-- Portfolio Intelligence, koncentrationsrisk och diversifiering använder de omräknade värdena
+- nytt lokalt Permanent Identity Registry för verifierade provider-rutter
+- säkra resolverträffar sparas automatiskt efter genomförd körning
+- manuellt godkända träffar sparas både i live-mappningen och det permanenta registret
+- sparade rutter återställs automatiskt när appen öppnas
+- befintliga verifierade 11.14-rutter migreras utan att användaren behöver börja om
+- redan permanent lösta innehav hoppas över vid nästa resolver-körning
+- tydlig körprogress, exempelvis `Verifierar 54/89…`
+- permanent sparat räknas från det faktiska registret, inte från tillfälliga förslag
+- 11.15 Live Portfolio Valuation fortsätter använda livekurs/NAV, FX och fallback-värden
 
 ## Säkerhet
 
-Värderingsmotorn ändrar aldrig antal, GAV, kredit, transaktioner eller Portfolio Ledger. Live-data ligger i ett separat read-only lager. Saknas säker kurs används senast känt lokalt värde i stället för att skapa ett osäkert marknadsvärde.
+11.15.1 ändrar aldrig antal, GAV, kredit, transaktioner eller Portfolio Ledger. Endast identitets- och providerdata sparas i det separata lokala read-only live-lagret. Marknadsvärden beräknas av värderingsmotorn men skriver inte över portföljens masterdata.
 
-## Uppladdning
+## Efter uppladdning
 
-Ladda upp samtliga åtta filer i paketet till GitHub-repots rot och ersätt befintliga filer. Vänta tills GitHub Pages är grönt. Stäng därefter den installerade PWA:n helt och öppna den igen.
+1. Ladda upp samtliga åtta filer till GitHub-repots rot och ersätt befintliga filer.
+2. Vänta tills GitHub Pages är grön.
+3. Stäng den installerade PWA:n helt och öppna den igen.
+4. Kör Global Identity Resolver 11.15.1 en gång.
+5. Säkra träffar sparas automatiskt; övriga visas under Granska och godkänn.

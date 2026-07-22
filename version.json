@@ -1,6 +1,6 @@
 {
-  "version": "11.15.0",
-  "name": "Live Portfolio Valuation Engine",
+  "version": "11.15.1",
+  "name": "Permanent Identity Registry",
   "released": "2026-07-22",
-  "cache": "mastarklass-os-11-14-0"
+  "cache": "mastarklass-os-11-15-1"
 }
