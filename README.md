@@ -1,25 +1,26 @@
-# Mästarklass OS 11.15.4 — Batch Button Hotfix
+# Mästarklass OS 11.15.5 — Interaction & Performance Hotfix
 
-Rättar felet i 11.15.3 där knappen **Kör nästa batch (max 8)** kunde se aktiv ut men inte starta resolvern i Android/PWA.
+Rättar den kvarvarande knappblockeringen i Global Identity Resolver och minskar fördröjningen när Marknad öppnas.
 
 ## Rättat
 
-- resolverknappen har nu både direkt eventbindning och central fallback-router
-- klick fångas säkert även efter omrendering eller PWA-återupptagning
-- tydlig status **Startar batch…** visas omedelbart
-- synliga fel fångas och visas i resolverpanelen i stället för att klicket verkar göra ingenting
-- stopp- och granskningsknappar använder samma stabila interaktionsväg
-- fastnad live-synkstatus `syncing` återställs vid appstart
-- ny separat 11.15.4-körstatus och service-worker-cache
+- batchknappen har nu en direkt global inline-brygga utöver vanlig eventbindning
+- klick, tryck och eventdelegation kan inte längre tappa resolverstarten vid omrendering
+- knapptexten ändras direkt innan resolverarbetet börjar
+- resolver kör fortfarande högst åtta instrument per batch och sparar checkpoint efter varje instrument
+- kanoniska innehav cachas under varje rendercykel för betydligt mindre upprepad beräkning
+- automatisk tung live-/AI-synk körs inte längre direkt vid appstart eller varje återgång till appen
+- fastnad `syncing` återställs både i synkstatus och read-only live-lagret
+- helt ny service-worker-cache för 11.15.5
 
 ## Säkerhet
 
-11.15.4 ändrar aldrig antal, GAV, kredit, transaktioner eller Portfolio Ledger. Endast identitets-, provider- och read-only värderingsdata kan uppdateras.
+11.15.5 ändrar aldrig antal, GAV, kredit, transaktioner eller Portfolio Ledger. Endast identitets-, provider- och read-only värderingsdata kan uppdateras.
 
 ## Efter uppladdning
 
 1. Ersätt samtliga åtta filer i GitHub-repots rot.
 2. Vänta tills GitHub Pages visar grön deployment.
 3. Stäng PWA:n helt och öppna den igen.
-4. Kontrollera att 11.15.4 visas.
+4. Kontrollera att 11.15.5 visas.
 5. Tryck **Kör nästa batch (max 8)**. Knappen ska direkt visa **Startar batch…**.
