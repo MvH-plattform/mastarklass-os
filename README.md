@@ -1,22 +1,23 @@
-# Mästarklass OS 11.14.1 — Resolver Execution & Live Valuation
+# Mästarklass OS 11.15.0 — Live Portfolio Valuation Engine
 
-Korrigeringsversion ovanpå 11.14.0 som aktiverar resolverflödet och kopplar verifierade livekurser till portföljens dynamiska värdering.
+Bygger vidare på 11.14.1 Global Identity Resolver och gör portföljens marknadsvärde dynamiskt.
 
 ## Nytt
 
-- Global Identity Resolver går igenom hela den börshandlade portföljen och visar löpande framsteg.
-- Manuellt sparade ISIN och befintliga mappingar bevaras när instrumentregistret byggs om.
-- Mycket säkra resolverträffar sparas automatiskt som permanenta read-only-rutter.
-- Automatisk livesynk och ny Portfolio Intelligence-analys efter resolverns körning.
-- Marknadsvärde prioriterar `antal × livekurs × FX`; senast känt värde används endast som fallback.
-- Portföljtotal, vikter, koncentration och AI-analyser använder den dynamiskt beräknade hybridvärderingen.
-- Portföljsidan visar live-täckning, dagens förändring, Ledger-bas och senaste värdering.
-- Kurser matchas i första hand via instrumentnyckel och därefter via normaliserade providersymboler.
+- beräknar aktuellt innehavsvärde som `antal × livekurs/NAV × FX`
+- prioriterar verifierad livekurs eller NAV framför statiskt marknadsvärde
+- använder senast känt marknadsvärde eller anskaffningsvärde som tydligt märkt fallback
+- räknar om portföljtotal, kontovärden och portföljvikter automatiskt
+- beräknar dagens förändring i SEK och procent där kursdata stöder det
+- visar live-, NAV-, fallback- och saknad värdetäckning
+- visar värdemetod och värdekälla i varje innehavsdetalj
+- sparar en lokal read-only värderingssnapshot för övriga intelligenslager
+- Portfolio Intelligence, koncentrationsrisk och diversifiering använder de omräknade värdena
 
-## Skyddad masterdata
+## Säkerhet
 
-Versionen ändrar inte antal, GAV, transaktioner, kredit eller Portfolio Ledger. Marknadsvärdet är ett beräknat presentations- och analysvärde som uppdateras från livekurs/NAV och FX.
+Värderingsmotorn ändrar aldrig antal, GAV, kredit, transaktioner eller Portfolio Ledger. Live-data ligger i ett separat read-only lager. Saknas säker kurs används senast känt lokalt värde i stället för att skapa ett osäkert marknadsvärde.
 
 ## Uppladdning
 
-Ladda upp samtliga åtta filer till GitHub-repots rot och ersätt befintliga filer. Vänta tills GitHub Pages är grön, stäng PWA:n helt och öppna den igen.
+Ladda upp samtliga åtta filer i paketet till GitHub-repots rot och ersätt befintliga filer. Vänta tills GitHub Pages är grönt. Stäng därefter den installerade PWA:n helt och öppna den igen.
