@@ -1,6 +1,6 @@
 {
-  "version": "11.14.0",
-  "name": "Global Identity Resolver",
+  "version": "11.14.1",
+  "name": "Resolver Execution & Live Valuation",
   "released": "2026-07-22",
-  "cache": "mastarklass-os-11-14-0"
+  "cache": "mastarklass-os-11-14-1"
 }

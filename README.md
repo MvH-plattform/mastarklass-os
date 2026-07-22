@@ -1,23 +1,22 @@
-# Mästarklass OS 11.14.0 — Global Identity Resolver
+# Mästarklass OS 11.14.1 — Resolver Execution & Live Valuation
 
-Bygger vidare på 11.13.0 Autonomous Portfolio Intelligence och löser den sista stora identitetsbarriären före full livevärdering.
+Korrigeringsversion ovanpå 11.14.0 som aktiverar resolverflödet och kopplar verifierade livekurser till portföljens dynamiska värdering.
 
 ## Nytt
 
-- verifierar instrument via ISIN när det finns
-- testar alternativa tickerformat, inklusive svenska `.ST`, `.STO`, bindestreck och mellanslag
-- testar flera börsvarianter och normaliserar Stockholm, NYSE, Nasdaq, LSE och Xetra
-- söker parallellt i Global Registry, OpenFIGI, Twelve Data, Alpha Vantage och Finnhub
-- väger namn, ISIN, ticker, börs, valuta och instrumenttyp till en gemensam säkerhetspoäng
-- upptäcker konflikter mellan starka providerträffar
-- sparar godkänd provider, ticker, ISIN, börs och valuta som permanent read-only rutt
-- återanvänder permanenta rutter vid framtida live-synk
-- bevarar manuella kopplingar om användaren inte uttryckligen godkänner ersättning
+- Global Identity Resolver går igenom hela den börshandlade portföljen och visar löpande framsteg.
+- Manuellt sparade ISIN och befintliga mappingar bevaras när instrumentregistret byggs om.
+- Mycket säkra resolverträffar sparas automatiskt som permanenta read-only-rutter.
+- Automatisk livesynk och ny Portfolio Intelligence-analys efter resolverns körning.
+- Marknadsvärde prioriterar `antal × livekurs × FX`; senast känt värde används endast som fallback.
+- Portföljtotal, vikter, koncentration och AI-analyser använder den dynamiskt beräknade hybridvärderingen.
+- Portföljsidan visar live-täckning, dagens förändring, Ledger-bas och senaste värdering.
+- Kurser matchas i första hand via instrumentnyckel och därefter via normaliserade providersymboler.
 
-## Säkerhet
+## Skyddad masterdata
 
-11.14.0 ändrar aldrig antal, GAV, marknadsvärde, kredit, transaktioner, Portfolio Ledger eller API-nycklar. Endast identitets- och providerdata i det lokala read-only live-lagret kan uppdateras.
+Versionen ändrar inte antal, GAV, transaktioner, kredit eller Portfolio Ledger. Marknadsvärdet är ett beräknat presentations- och analysvärde som uppdateras från livekurs/NAV och FX.
 
 ## Uppladdning
 
-Ladda upp samtliga åtta filer till GitHub-repots rot och ersätt befintliga filer. Vänta tills GitHub Pages är grön. Stäng sedan den installerade PWA:n helt och öppna den på nytt.
+Ladda upp samtliga åtta filer till GitHub-repots rot och ersätt befintliga filer. Vänta tills GitHub Pages är grön, stäng PWA:n helt och öppna den igen.
