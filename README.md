@@ -1,26 +1,25 @@
-# Mästarklass OS 11.15.18 — Fund Identity Routing
+# Mästarklass OS 11.15.19 — Persistent Resolver Recovery
 
-Bygger vidare på den fungerande batchmotorn i 11.15.17 och inför en separat resolverväg för vanliga fonder.
+Återställer den fungerande batchmotorn från 11.15.17 och behåller fond-routing utan regressionen i 11.15.18.
 
-## Nytt
+## Rättat
 
-- klassificerar varje instrument som fond eller börshandlat innan provideranrop
-- vanliga fonder utan ticker/ISIN skickas inte längre till Finnhub, Twelve Data eller Alpha Vantage
-- fonder med ISIN kan verifieras via ISIN/OpenFIGI-vägen
-- identiska fondnamn på flera konton kan återanvända en redan verifierad fondidentitet
-- fonder utan ISIN markeras **Behöver fondidentitet** i stället för **Misslyckad**
-- fondmappningen märks med NAV-prismodell och lämnas redo för kommande NAV-källa eller manuell ISIN-komplettering
-- aktier, ETF:er, REITs och övriga börshandlade instrument behåller multi-provider-flödet
-- batchstorlek, checkpoint, paus/fortsätt och Permanent Identity Registry är oförändrade
+- högst åtta instrument behandlas per batch
+- checkpoint och resultat sparas efter varje instrument
+- paus/fortsätt fungerar efter omladdning
+- full Resolver Chain Trace finns kvar och kan kopieras
+- traditionella fonder utan ISIN skickas inte till aktieproviders
+- dessa sparas som **Behöver fondidentitet**, inte som misslyckade
+- säkra träffar sparas direkt i Permanent Identity Registry
+- granskningsresultat ligger kvar efter sidbyte och omstart
+- gammal oförenlig 11.15.18-körstatus återställs automatiskt
+- antal, GAV, kredit, transaktioner och Portfolio Ledger ändras aldrig
 
-## Säkerhet
-
-11.15.18 ändrar aldrig antal, GAV, kredit, transaktioner eller Portfolio Ledger. Endast identitets-, provider- och read-only värderingsdata kan uppdateras.
-
-## Efter uppladdning
+## Test
 
 1. Ersätt samtliga åtta filer i GitHub-repots rot.
 2. Vänta tills GitHub Pages visar grön deployment.
 3. Stäng PWA:n helt och öppna den igen.
-4. Kontrollera att 11.15.18 visas.
-5. Fortsätt resolverbatchen. Fonder utan ISIN ska nu räknas som **Behöver fondidentitet**, inte som providerfel.
+4. Kontrollera att 11.15.19 visas.
+5. Gå till Marknad och tryck **Kör nästa batch (max 8)**.
+6. Kontrollera att körningen pausar efter högst åtta instrument och att räknarna ligger kvar efter att du lämnat sidan och återvänder.

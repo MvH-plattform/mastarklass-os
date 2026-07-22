@@ -1,6 +1,7 @@
 {
-  "version": "11.15.18",
-  "name": "Fund Identity Routing",
+  "version": "11.15.19",
+  "name": "Persistent Resolver Recovery",
   "released": "2026-07-23",
-  "cache": "mastarklass-os-11-15-18"
+  "cache": "mastarklass-os-11-15-19",
+  "build": "2026-07-23"
 }
