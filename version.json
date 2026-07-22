@@ -1,6 +1,6 @@
 {
-  "version": "11.15.13",
-  "name": "Worker Bootstrap Debug",
+  "version": "11.15.14",
+  "name": "Append-Only Bootstrap Trace",
   "released": "2026-07-22",
   "cache": "mastarklass-os-11-15-13"
 }
