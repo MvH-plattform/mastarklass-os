@@ -1,6 +1,7 @@
 {
-  "version": "11.15.15",
-  "name": "Worker Bootstrap Debug",
+  "version": "11.15.16",
+  "name": "Resolver Chain Trace",
   "released": "2026-07-22",
-  "cache": "mastarklass-os-11-15-13"
+  "cache": "mastarklass-os-11-15-13",
+  "build": "2026-07-23"
 }
