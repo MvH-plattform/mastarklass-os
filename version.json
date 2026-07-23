@@ -1,6 +1,7 @@
 {
-  "version": "11.15.23",
-  "name": "Resolver Target & Startup Recovery",
+  "version": "11.15.24",
+  "name": "Verified Resolver Recovery",
   "released": "2026-07-23",
-  "cache": "mastarklass-os-11-15-23"
+  "cache": "mastarklass-os-11-15-24",
+  "build": "2026-07-23"
 }
