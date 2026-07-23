@@ -1,21 +1,20 @@
-# Mästarklass OS 11.15.21 — Permanent Registry Save Fix
+# Mästarklass OS 11.15.22 — Resolver Recovery Release
 
-Ren stabilitetsrelease för knappen **Godkänn och spara permanent**.
+Kontrollerad återställningsrelease efter regressionen i 11.15.21. Bygget återställer den stabila batchmotorn och behåller verifierad permanent lagring.
 
 ## Rättat
 
-- knapptrycket hanteras direkt och kan inte försvinna genom modalens övriga klickhantering
-- vald kandidat valideras före lagring
-- ticker `0`, saknad valuta och uppenbart fel marknad blockeras
-- identiteten skrivs permanent till `localStorage`
-- lagringen verifieras genom omedelbar återläsning
-- först efter godkänd återläsning tas instrumentet bort från granskningslistan
-- **För granskning** minskar och **Permanent sparade** ökar direkt
-- tydlig grön bekräftelse visar namn, ticker, börs och valuta
-- scrollpositionen i granskningsfönstret behålls
-- separat flik visar alla **Sparade permanent**
-- sparade identiteter återställs till live-lagret efter omstart
-- batchmotor, checkpoint, paus/fortsätt och max åtta instrument per batch är oförändrade
+- exakt högst åtta instrument behandlas per batch
+- körningen pausar efter varje batch och kan fortsätta från korrekt checkpoint
+- **Stoppa säkert** fungerar mellan instrument och sparar aktuell position
+- resolverresultat skrivs till beständig körstatus efter varje instrument
+- **Granska resultat** aktiveras så snart kandidater finns
+- säkra träffar, granskningsposter och poster utan träff finns kvar efter sidbyte och omstart
+- Permanent Registry återläses vid appstart
+- godkänd identitet verifieras genom direkt återläsning innan granskningsposten tas bort
+- räknarna **Permanent sparade**, **För granskning** och **Återstår** uppdateras direkt
+- full Resolver Chain Trace behålls
+- tung automatisk efteranalys skjuts upp vid appstart för snabbare navigering till Marknad
 
 ## Säkerhet
 
@@ -26,8 +25,8 @@ Versionen ändrar aldrig antal, GAV, kredit, transaktioner eller Portfolio Ledge
 1. Ersätt samtliga åtta filer i GitHub-repots rot.
 2. Vänta tills GitHub Pages visar grön deployment.
 3. Stäng PWA:n helt och öppna den igen.
-4. Kontrollera att version **11.15.21** visas.
-5. Kör en batch och öppna **Granska resultat**.
-6. Godkänn exempelvis Broadcom.
-7. Bekräfta att posten försvinner, räknaren ökar och instrumentet finns under **Sparade permanent**.
-8. Starta om appen och kontrollera att det fortfarande är sparat.
+4. Kontrollera att version **11.15.22** visas.
+5. Kör **nästa batch (max 8)** och kontrollera att den pausar efter högst åtta instrument.
+6. Öppna **Granska resultat** och godkänn en tydligt korrekt kandidat.
+7. Kontrollera att kandidaten försvinner från granskningen och visas under **Sparade permanent**.
+8. Starta om appen och kontrollera att checkpoint, granskningsresultat och permanenta identiteter finns kvar.

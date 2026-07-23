@@ -1,6 +1,6 @@
 {
-  "version": "11.15.21",
-  "name": "Permanent Registry Save Fix",
+  "version": "11.15.22",
+  "name": "Resolver Recovery Release",
   "released": "2026-07-23",
-  "cache": "mastarklass-os-11-15-21"
+  "cache": "mastarklass-os-11-15-22"
 }
