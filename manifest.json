@@ -1,6 +1,6 @@
 {
-  "name": "Mästarklass OS 11.15.19",
-  "short_name": "Mästarklass 11.15.19",
+  "name": "Mästarklass OS 11.15.20",
+  "short_name": "Mästarklass 11.15.20",
   "start_url": "./?v=11.15.19",
   "display": "standalone",
   "background_color": "#06101d",
@@ -13,5 +13,6 @@
       "purpose": "any maskable"
     }
   ],
-  "version": "11.15.19"
+  "version": "11.15.19",
+  "description": "Permanent Registry Recovery med verifierad lagring, återläsning, validering och ångra-funktion."
 }

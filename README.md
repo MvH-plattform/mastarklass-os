@@ -1,25 +1,32 @@
-# Mästarklass OS 11.15.19 — Persistent Resolver Recovery
+# Mästarklass OS 11.15.20 — Permanent Registry Recovery
 
-Återställer den fungerande batchmotorn från 11.15.17 och behåller fond-routing utan regressionen i 11.15.18.
+Återställer och säkrar hela flödet från resolverresultat till permanent identitet.
 
 ## Rättat
 
-- högst åtta instrument behandlas per batch
-- checkpoint och resultat sparas efter varje instrument
-- paus/fortsätt fungerar efter omladdning
-- full Resolver Chain Trace finns kvar och kan kopieras
-- traditionella fonder utan ISIN skickas inte till aktieproviders
-- dessa sparas som **Behöver fondidentitet**, inte som misslyckade
-- säkra träffar sparas direkt i Permanent Identity Registry
-- granskningsresultat ligger kvar efter sidbyte och omstart
-- gammal oförenlig 11.15.18-körstatus återställs automatiskt
-- antal, GAV, kredit, transaktioner och Portfolio Ledger ändras aldrig
+- godkänd identitet sparas permanent i `localStorage` och verifieras genom direkt återläsning
+- sparade identiteter återställs till live-lagret efter omstart
+- godkänt instrument försvinner omedelbart från granskningslistan
+- räknarna **För granskning**, **Permanent sparade** och **Återstår** uppdateras direkt
+- scrollpositionen i granskningsfönstret behålls efter godkännande
+- tydlig bekräftelse visar namn, ticker, börs och valuta
+- separat flik **Sparade permanent** visar alla låsta identiteter
+- **Ångra permanent sparning** återför instrumentet till resolverflödet
+- ticker `0` blockeras
+- valuta, börs, konto och aktieslag valideras före lagring
+- amerikanska Montrose-innehav prioriterar USA-notering och USD
+- A-, B-, D- och preferensaktier skiljs strikt; konflikt kräver manuell granskning
+- batchmotor, checkpoint, diagnostik och Portfolio Ledger är oförändrade
 
-## Test
+## Säkerhet
+
+Versionen ändrar aldrig antal, GAV, kredit, transaktioner eller Portfolio Ledger. Endast identitets-, provider- och read-only-värderingsdata kan uppdateras.
+
+## Efter uppladdning
 
 1. Ersätt samtliga åtta filer i GitHub-repots rot.
 2. Vänta tills GitHub Pages visar grön deployment.
 3. Stäng PWA:n helt och öppna den igen.
-4. Kontrollera att 11.15.19 visas.
-5. Gå till Marknad och tryck **Kör nästa batch (max 8)**.
-6. Kontrollera att körningen pausar efter högst åtta instrument och att räknarna ligger kvar efter att du lämnat sidan och återvänder.
+4. Kontrollera att 11.15.20 visas.
+5. Öppna **Granska resultat**, godkänn ett instrument och kontrollera att det försvinner från listan och syns under **Sparade permanent**.
+6. Starta om appen och kontrollera att räknaren **Permanent sparade** ligger kvar.

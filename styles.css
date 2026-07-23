@@ -234,3 +234,6 @@ input,select,textarea,button{max-width:100%}
 .diagLine>div{min-width:0}.diagLine small{margin-left:0}
 .diagnosticActions{display:grid;gap:10px;margin-top:12px}
 @media(min-width:700px){.diagnosticActions{grid-template-columns:repeat(3,minmax(0,1fr))}}
+
+/* 11.15.20 Permanent Registry Recovery */
+.resolverTabs{display:flex;gap:10px;overflow:auto;margin:18px 0 14px;padding-bottom:2px}.resolverTabs button{white-space:nowrap;min-height:46px}.resolverSaveNotice{position:sticky;top:0;z-index:4;margin:12px 0;padding:14px 16px;border-radius:16px;background:#123c31;border:1px solid #2ba77a;color:#dfffee;font-weight:800;box-shadow:0 10px 24px #0007}.resolverResult[data-review-key]{scroll-margin-top:90px}.resolverResult .secondary[data-resolver-undo]{margin-top:14px;width:100%}
