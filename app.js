@@ -1,5 +1,5 @@
 (()=>{'use strict';
-const VERSION='11.15.20';
+const VERSION='11.15.21';
 const DATA_KEY='mastarklass_os_10_data';
 const LIVE_KEY='mastarklass_os_live_readonly_v1';
 const SETTINGS_KEY='mastarklass_os_10_settings';
@@ -24,20 +24,12 @@ const AUTONOMOUS_INTELLIGENCE_KEY='mastarklass_os_11_12_autonomous_intelligence'
 const AUTONOMOUS_PORTFOLIO_KEY='mastarklass_os_11_13_autonomous_portfolio';
 const INTELLIGENCE_TREND_KEY='mastarklass_os_11_13_intelligence_trend';
 const LIVE_VALUATION_KEY='mastarklass_os_11_15_live_valuation';
-const RESOLVER_RUN_KEY='mastarklass_os_11_15_17_resolver_run';
-const RESOLVER_RUN_SESSION_KEY='mastarklass_os_11_15_17_resolver_run_session';
-let resolverRunMemory=null,resolverRunStorage='memory';
-const RESOLVER_DIAG_KEY='mastarklass_os_11_15_16_resolver_diag';
-const RESOLVER_DIAG_LINES_KEY='mastarklass_os_11_15_16_resolver_diag_lines';
+const RESOLVER_RUN_KEY='mastarklass_os_11_15_2_resolver_run';
 const NAV=[['home','🏠','Hem'],['portfolio','📊','Portfölj'],['market','🌍','Marknad'],['analysis','🧠','Analys'],['ideas','💡','Idéer'],['goals','🎯','Mål'],['more','☰','Mer']];
 const DEFAULTS={portfolio:{net:0,monthly:9000,credit:0},holdings:[],accounts:[],goals:{capital:7500000,annualDividend:480000},monthlyPlan:{total:9000},marketCenter:{items:[]},ideaBank:[],aiRadar:[],reports:[],journal:[]};
 const ADMIN_DEFAULT={overrides:{},newHoldings:[],credits:{},audit:[]};
 let data=structuredClone(DEFAULTS),admin=structuredClone(ADMIN_DEFAULT),transactions=[],ledger=[],screen='home',sourceKey=null;
 let query='',typeFilter='all',accountFilter='all',sortMode='value_desc',portfolioTab='overview',intelFilter='all';
-let resolverWorkerActive=false,resolverStartLocked=false,resolverHeartbeatTimer=null,resolverBootstrapWatchdogs=[];
-let resolverTraceBuffer=[];
-let resolverTraceStorage='memory';
-let canonicalCache=null;
 
 const parse=x=>{try{return JSON.parse(x)}catch{return null}};
 const num=x=>{if(x===null||x===undefined||x==='')return 0;if(typeof x==='number')return Number.isFinite(x)?x:0;const s=String(x).replace(/\s/g,'').replace(/[^\d,.\-]/g,'');if(!s)return 0;const n=Number((s.includes(',')&&s.includes('.'))?s.replace(/\./g,'').replace(',','.'):s.replace(',','.'));return Number.isFinite(n)?n:0};
@@ -216,7 +208,7 @@ function assetType(h){return text(h,['assetType','type','category','tillgangssla
 function holdingName(h){return text(h,['name','securityName','title','instrumentName','symbol','ticker'],'Innehav')}
 function identity(h,i=0){return String(h.id||h.uuid||`${accountName(h)}|${holdingName(h)}|${text(h,['currency','valuta'],'SEK')}|${i}`).toLowerCase()}
 function rawHoldings(){return [...(data.holdings||[]).map((h,i)=>({...h,_baseIndex:i,_key:identity(h,i)})),...(admin.newHoldings||[]).map((h,i)=>({...h,_newIndex:i,_key:h._key||identity(h,'new'+i)}))]}
-function canonicalHoldings(){if(canonicalCache)return canonicalCache;canonicalCache=rawHoldings().map((base,i)=>{const h={...base,...(admin.overrides[base._key]||{})};const r=holdingValue(h);return {...h,_i:i,_value:r.value,_method:r.method,_valuation:r.valuation,_name:holdingName(h),_account:accountName(h),_type:assetType(h),_qty:quantity(h),_gav:gav(h),_fx:fxFor(h),_quote:quoteFor(h)}});return canonicalCache}
+function canonicalHoldings(){return rawHoldings().map((base,i)=>{const h={...base,...(admin.overrides[base._key]||{})};const r=holdingValue(h);return {...h,_i:i,_value:r.value,_method:r.method,_valuation:r.valuation,_name:holdingName(h),_account:accountName(h),_type:assetType(h),_qty:quantity(h),_gav:gav(h),_fx:fxFor(h),_quote:quoteFor(h)}})}
 function declaredTotal(){return nval(data.portfolio||{},['net','total','totalValue','marketValue','value'])||(data.accounts||[]).reduce((s,a)=>s+nval(a,['value','marketValue','totalValue','balance']),0)}
 function calculatedTotal(){return canonicalHoldings().reduce((s,h)=>s+h._value,0)}
 function total(){const calc=calculatedTotal();return calc||declaredTotal()}
@@ -229,7 +221,7 @@ function liveValuationSnapshot({persist=true}={}){
  const snapshot={version:VERSION,updatedAt:new Date().toISOString(),totalValue,dayChange,dayPct:totalValue-dayChange?dayChange/(totalValue-dayChange)*100:0,liveCount:live.length,navCount:nav.length,fallbackCount:fallback.length,missingCount:missing.length,coverageValue,coverageCount,accountValues,largestWeight:top&&totalValue?top._value/totalValue*100:0};
  if(persist)safeSet(LIVE_VALUATION_KEY,JSON.stringify(snapshot));return snapshot;
 }
-function valuationHero(){const v=liveValuationSnapshot();return `<section class="hero valuationHero"><div class="eyebrow">Live Portfolio Valuation 11.15.20</div><h2>${kr(v.totalValue)}</h2><p>${v.liveCount} livekurser · ${v.navCount} NAV · ${v.fallbackCount} senast kända värden · ${v.missingCount} saknar värde.</p><div class="grid"><div class="card metric"><span>Live-täckning</span><b>${pct(v.coverageValue)}</b><small>${pct(v.coverageCount)} av innehaven</small></div><div class="card metric"><span>Dagens förändring</span><b class="${v.dayChange>=0?'positive':'negative'}">${v.dayChange>=0?'+':''}${kr(v.dayChange)}</b><small>${v.dayPct>=0?'+':''}${pct(v.dayPct)}</small></div><div class="card metric"><span>Största vikt</span><b>${pct(v.largestWeight)}</b></div><div class="card metric"><span>Senast värderad</span><b>${new Date(v.updatedAt).toLocaleTimeString('sv-SE',{hour:'2-digit',minute:'2-digit'})}</b></div></div></section>`}
+function valuationHero(){const v=liveValuationSnapshot();return `<section class="hero valuationHero"><div class="eyebrow">Live Portfolio Valuation 11.15.21</div><h2>${kr(v.totalValue)}</h2><p>${v.liveCount} livekurser · ${v.navCount} NAV · ${v.fallbackCount} senast kända värden · ${v.missingCount} saknar värde.</p><div class="grid"><div class="card metric"><span>Live-täckning</span><b>${pct(v.coverageValue)}</b><small>${pct(v.coverageCount)} av innehaven</small></div><div class="card metric"><span>Dagens förändring</span><b class="${v.dayChange>=0?'positive':'negative'}">${v.dayChange>=0?'+':''}${kr(v.dayChange)}</b><small>${v.dayPct>=0?'+':''}${pct(v.dayPct)}</small></div><div class="card metric"><span>Största vikt</span><b>${pct(v.largestWeight)}</b></div><div class="card metric"><span>Senast värderad</span><b>${new Date(v.updatedAt).toLocaleTimeString('sv-SE',{hour:'2-digit',minute:'2-digit'})}</b></div></div></section>`}
 function diagnostics(){const hs=canonicalHoldings(),declared=declaredTotal(),calc=calculatedTotal(),unresolved=hs.filter(h=>!h._value);return {declared,calc,diff:declared?declared-calc:0,unresolved,missingGav:hs.filter(h=>!h._gav).length,missingQty:hs.filter(h=>!h._qty).length}}
 function navigateTo(next,{replace=false}={}){
  if(!NAV.some(x=>x[0]===next))next='home';
@@ -598,7 +590,7 @@ function riskRadar(ip,health){const risks=[];if(health.creditRatio>12)risks.push
 function wealthCoach(ip,health,plan){const advice=[];if(plan.creditUsed>0)advice.push({tone:'caution',title:'Minska kredit före nya köp',text:`Väg in ${kr(plan.creditUsed)} utnyttjad kredit. Av nästa månadskapital bör ${kr(plan.debt)} gå till kreditreduktion enligt skyddsreglerna.`});if(health.largest>12)advice.push({tone:'risk',title:'Sänk koncentrationsrisken',text:`Största innehavet väger ${pct(health.largest)}. Undvik att öka det tills portföljvikten är mer balanserad.`});if(ip.data<80)advice.push({tone:'caution',title:'Komplettera beslutsdata',text:`Datatäckningen är ${ip.data} %. Prioritera ticker, sektor, värdering och utdelningsdata före större beslut.`});plan.rows.slice(0,2).forEach((top,i)=>advice.push({tone:'good',title:`${i?'Alternativ':'Nästa bästa handling'}: ${top._name}`,text:`Simulerad lokal allokering ${kr(top.amount)}. ${top.reasons.slice(0,2).join(' · ')}.`}));if(!advice.length)advice.push({tone:'neutral',title:'Behåll planen',text:'Inga hårda riskspärrar identifieras. Fortsätt följa månadsplanen och verifiera underlaget före köp.'});return advice.slice(0,5)}
 function goalIntelligence(){const current=total(),monthly=num(data.portfolio?.monthly)||num(data.monthlyPlan?.total)||9000,capital=num(data.goals?.capital)||7500000;return [{label:'500 000 kr',goal:500000},{label:'1 000 000 kr',goal:1000000},{label:'Kapitalmålet',goal:capital}].map(x=>({...x,years:yearsToGoal(current,monthly,x.goal),progress:x.goal?Math.min(100,current/x.goal*100):0}))}
 function providerRegistry(){const l=liveState(),providers=Array.isArray(l.providers)?l.providers:[],quotes=Array.isArray(l.quotes)?l.quotes:[],fx=l.fx||l.rates||{},lastSync=l.lastSync||l.updatedAt||l.timestamp||'';let code='ready',status='Förberett';if(typeof navigator!=='undefined'&&!navigator.onLine){code='offline';status='Offline'}else if(l.syncing){code='syncing';status='Synkroniserar'}else if(providers.length&&(quotes.length||Object.keys(fx).length)){code='connected';status='Live-data ansluten'}else if(providers.length){code='pilot';status='Provider-pilot'}return {providers,quotes,fx,lastSync,code,status}}
-function wealthDashboard(){const ip=intelligencePortfolio(),health=wealthHealth(ip),plan=allocationPlan(ip),coach=wealthCoach(ip,health,plan),goals=goalIntelligence(),risks=riskRadar(ip,health),registry=providerRegistry();return `<section class="hero wealthHero"><div class="eyebrow">Mästarklass OS 11.15.20 · Permanent Registry Recovery</div><h2>Din förmögenhetsplan, förklarad.</h2><p>Lokalt, spårbart och read-only. Wealth Intelligence använder Portfolio Ledger, masterdata och skyddsregler utan att skapa order eller ändra dina innehav.</p><div class="wealthHeroGrid"><div><span>Portfolio Health</span><b>${health.score}/100</b></div><div><span>Intelligence</span><b>${ip.grade} · ${ip.score}</b></div><div><span>Nästa kapital</span><b>${kr(plan.monthly)}</b></div><div class="liveState ${registry.code}"><span>Live-lager</span><b><i></i>${registry.status}</b></div></div></section>${autonomousPortfolioPanel({compact:true})}<section class="section coachStack"><div class="sectionHead"><div><div class="eyebrow">Wealth Coach 11.1.2.1</div><h2>Prioriterade råd</h2></div><small>${coach.length} råd</small></div><div class="coachAdviceList">${coach.map((x,i)=>`<article class="coachAdvice ${x.tone}"><span>${i+1}</span><div><h3>${esc(x.title)}</h3><p>${esc(x.text)}</p></div></article>`).join('')}</div></section><section class="section"><h2>Portföljhälsa</h2><div class="healthGrid">${[['Diversifiering',health.diversification],['Belåning',health.leverage],['Koncentration',health.concentration],['Datakvalitet',health.data],['Utdelningsstyrka',health.dividend],['Likviditet',health.liquidity]].map(([l,v])=>`<div class="healthItem"><div><span>${l}</span><b>${v}</b></div><div class="bar"><i style="width:${v}%"></i></div></div>`).join('')}</div></section><section class="section"><h2>Målprognos</h2><div class="goalTimeline">${goals.map(g=>`<div class="goalForecast"><div><b>${g.label}</b><small>${pct(g.progress)} uppnått</small></div><strong>${fmtYears(g.years)}</strong></div>`).join('')}</div><p class="disclaimer">Prognosen använder 7 % antagen årlig avkastning och nuvarande månadssparande. Det är en simulering, inte en garanti.</p></section><section class="section"><h2>Riskradar</h2><div class="riskList">${risks.map(r=>`<div class="riskItem ${r.level}"><b>${esc(r.title)}</b><p>${esc(r.text)}</p></div>`).join('')}</div></section><section class="section"><h2>Möjlighetsmotor</h2>${plan.rows.length?`<div class="allocationList">${plan.rows.map((x,i)=>allocationRow(x,i+1)).join('')}</div>`:`<div class="notice">Ingen investeringskandidat passerar nuvarande skyddsregler. Kreditreduktion, buffert eller bättre data prioriteras.</div>`}<p class="disclaimer">Förslagen är lokala beslutsunderlag. Ingen handel utförs.</p></section>`}
+function wealthDashboard(){const ip=intelligencePortfolio(),health=wealthHealth(ip),plan=allocationPlan(ip),coach=wealthCoach(ip,health,plan),goals=goalIntelligence(),risks=riskRadar(ip,health),registry=providerRegistry();return `<section class="hero wealthHero"><div class="eyebrow">Mästarklass OS 11.15.21 · Resolver Performance & Recovery</div><h2>Din förmögenhetsplan, förklarad.</h2><p>Lokalt, spårbart och read-only. Wealth Intelligence använder Portfolio Ledger, masterdata och skyddsregler utan att skapa order eller ändra dina innehav.</p><div class="wealthHeroGrid"><div><span>Portfolio Health</span><b>${health.score}/100</b></div><div><span>Intelligence</span><b>${ip.grade} · ${ip.score}</b></div><div><span>Nästa kapital</span><b>${kr(plan.monthly)}</b></div><div class="liveState ${registry.code}"><span>Live-lager</span><b><i></i>${registry.status}</b></div></div></section>${autonomousPortfolioPanel({compact:true})}<section class="section coachStack"><div class="sectionHead"><div><div class="eyebrow">Wealth Coach 11.1.2.1</div><h2>Prioriterade råd</h2></div><small>${coach.length} råd</small></div><div class="coachAdviceList">${coach.map((x,i)=>`<article class="coachAdvice ${x.tone}"><span>${i+1}</span><div><h3>${esc(x.title)}</h3><p>${esc(x.text)}</p></div></article>`).join('')}</div></section><section class="section"><h2>Portföljhälsa</h2><div class="healthGrid">${[['Diversifiering',health.diversification],['Belåning',health.leverage],['Koncentration',health.concentration],['Datakvalitet',health.data],['Utdelningsstyrka',health.dividend],['Likviditet',health.liquidity]].map(([l,v])=>`<div class="healthItem"><div><span>${l}</span><b>${v}</b></div><div class="bar"><i style="width:${v}%"></i></div></div>`).join('')}</div></section><section class="section"><h2>Målprognos</h2><div class="goalTimeline">${goals.map(g=>`<div class="goalForecast"><div><b>${g.label}</b><small>${pct(g.progress)} uppnått</small></div><strong>${fmtYears(g.years)}</strong></div>`).join('')}</div><p class="disclaimer">Prognosen använder 7 % antagen årlig avkastning och nuvarande månadssparande. Det är en simulering, inte en garanti.</p></section><section class="section"><h2>Riskradar</h2><div class="riskList">${risks.map(r=>`<div class="riskItem ${r.level}"><b>${esc(r.title)}</b><p>${esc(r.text)}</p></div>`).join('')}</div></section><section class="section"><h2>Möjlighetsmotor</h2>${plan.rows.length?`<div class="allocationList">${plan.rows.map((x,i)=>allocationRow(x,i+1)).join('')}</div>`:`<div class="notice">Ingen investeringskandidat passerar nuvarande skyddsregler. Kreditreduktion, buffert eller bättre data prioriteras.</div>`}<p class="disclaimer">Förslagen är lokala beslutsunderlag. Ingen handel utförs.</p></section>`}
 
 
 
@@ -671,37 +663,15 @@ function identityRebuildPanel(){const st=identityRebuildState(),p=st.lastRun?st:
 /* 11.14.0 Global Identity Resolver — permanent multi-provider identity routes */
 function globalResolverState(){return merge({version:'11.14.0',status:'idle',lastRun:'',scanned:0,resolved:0,review:0,unresolved:0,errors:0,suggestions:[],routes:{},audit:[]},parse(safeGet(GLOBAL_RESOLVER_KEY))||{})}
 function persistGlobalResolver(x){safeSet(GLOBAL_RESOLVER_KEY,JSON.stringify(x))}
-function permanentIdentityRegistry(){return merge({version:'11.15.20',updatedAt:'',routes:{},audit:[]},parse(safeGet(PERMANENT_IDENTITY_KEY))||{})}
-function persistPermanentIdentityRegistry(x){x.version='11.15.20';x.updatedAt=new Date().toISOString();safeSet(PERMANENT_IDENTITY_KEY,JSON.stringify(x))}
-function routeIsUsable(route){
- const ticker=String(route?.ticker||'').trim();
- const isin=String(route?.isin||'').trim().toUpperCase();
- return Boolean(route&&(ticker||isin)&&ticker!=='0'&&route.currency&&route.provider)
-}
-function holdingForIdentityKey(key,row){return canonicalHoldings().find(h=>h._key===key)||row||{}}
-function shareClassToken(x){const v=String(x||'').toUpperCase().replace(/[.\-]/g,' ');const m=v.match(/(?:^|\s)(PREF|PREFERENCE|A|B|D)(?:\s|$)/);return m?m[1].replace('PREFERENCE','PREF'):''}
-function validatePermanentRoute(key,row,candidate){
- const holding=holdingForIdentityKey(key,row),ticker=String(candidate?.ticker||'').trim(),isin=String(candidate?.isin||'').trim().toUpperCase(),exchange=String(candidate?.exchange||'').trim(),currency=String(candidate?.currency||row?.currency||'').trim().toUpperCase(),account=String(holding._account||row?.account||'');
- const errors=[],warnings=[];
- if(!ticker&&!isin)errors.push('Ticker eller ISIN saknas.');
- if(ticker==='0')errors.push('Ticker 0 är ogiltig och får inte sparas.');
- if(!currency)errors.push('Valuta saknas.');
- if(!candidate?.provider)errors.push('Provider saknas.');
- const wantedClass=shareClassToken(`${holding._name||row?.name||''} ${holding._ticker||row?.ticker||''}`),gotClass=shareClassToken(`${ticker} ${candidate?.name||''}`);
- if(wantedClass&&gotClass&&wantedClass!==gotClass)errors.push(`Aktieslagskonflikt: innehavet är ${wantedClass}, kandidaten är ${gotClass}.`);
- const american=/Montrose/i.test(account)&&String(holding._currency||row?.currency||'').toUpperCase()==='USD';
- if(american&&!/(NYSE|NASDAQ|AMEX|UNITED STATES|US)/i.test(exchange))warnings.push('Amerikanskt Montrose-innehav bör normalt använda USA-notering.');
- if(american&&currency!=='USD')errors.push('Amerikanskt Montrose-innehav måste sparas i USD.');
- if(/Avanza|Länsförsäkringar|SAVR/i.test(account)&&String(holding._currency||row?.currency||'').toUpperCase()==='SEK'&&currency!=='SEK')warnings.push('Valutan avviker från innehavets SEK-konto.');
- return {ok:errors.length===0,errors,warnings,ticker,isin,exchange,currency};
-}
-
+function permanentIdentityRegistry(){return merge({version:'11.15.21',updatedAt:'',routes:{},audit:[]},parse(safeGet(PERMANENT_IDENTITY_KEY))||{})}
+function persistPermanentIdentityRegistry(x){x.version='11.15.21';x.updatedAt=new Date().toISOString();safeSet(PERMANENT_IDENTITY_KEY,JSON.stringify(x))}
+function routeIsUsable(route){return Boolean(route&&(route.ticker||route.isin)&&route.currency&&route.provider)}
 function permanentRouteFor(key){return permanentIdentityRegistry().routes?.[key]||null}
 function savePermanentIdentityRoute(key,route,meta={}){
  if(!key||!routeIsUsable(route))return false;
  const registry=permanentIdentityRegistry(),previous=registry.routes?.[key]||null;
  registry.routes=registry.routes||{};
- registry.routes[key]={...previous,...route,locked:true,registryVersion:'11.15.8',savedAt:new Date().toISOString(),source:meta.source||route.source||'global-resolver'};
+ registry.routes[key]={...previous,...route,locked:true,registryVersion:'11.15.21',savedAt:new Date().toISOString(),source:meta.source||route.source||'global-resolver'};
  registry.audit=[{date:new Date().toISOString(),key,provider:route.provider,ticker:route.ticker||'',isin:route.isin||'',action:previous?'updated':'created'},...(registry.audit||[])].slice(0,300);
  persistPermanentIdentityRegistry(registry);return true
 }
@@ -709,12 +679,12 @@ function hydratePermanentIdentityRoutes(){
  const registry=permanentIdentityRegistry();let restored=0,migrated=0;
  for(const [key,route] of Object.entries(registry.routes||{})){
   if(!routeIsUsable(route))continue;const current=liveFoundation.mappings[key]||{};
-  if(!current.permanentRoute||!current.verified){liveFoundation.mappings[key]={...current,...route,permanentRoute:route,verified:true,identityStatus:'verified',identityConfidence:num(route.confidence)||96,resolverVersion:'11.15.20',source:'permanent-identity-registry-11.15.20',updatedAt:new Date().toISOString()};restored++}
+  if(!current.permanentRoute||!current.verified){liveFoundation.mappings[key]={...current,...route,permanentRoute:route,verified:true,identityStatus:'verified',identityConfidence:num(route.confidence)||96,resolverVersion:'11.15.21',source:'permanent-identity-registry-11.15.21',updatedAt:new Date().toISOString()};restored++}
  }
  const state=globalResolverState();
  for(const [key,route] of Object.entries(state.routes||{})){if(routeIsUsable(route)&&!registry.routes?.[key]){savePermanentIdentityRoute(key,route,{source:'migration-global-resolver'});migrated++}}
  for(const [key,m] of Object.entries(liveFoundation.mappings||{})){const route=m.permanentRoute||(m.verified&&num(m.identityConfidence||m.confidence)>=92?{provider:m.provider||'Verified mapping',ticker:m.ticker||'',isin:m.isin||'',exchange:m.exchange||'',currency:m.currency||'SEK',figi:m.figi||'',confidence:num(m.identityConfidence||m.confidence)||92,verifiedAt:m.verifiedAt||m.updatedAt||new Date().toISOString()}:null);if(routeIsUsable(route)&&!permanentIdentityRegistry().routes?.[key]){savePermanentIdentityRoute(key,route,{source:'migration-live-foundation'});migrated++}}
- if(restored||migrated){persistLiveFoundation();liveEvent('success','Permanent Identity Registry 11.15.8',`${restored} rutter återställda · ${migrated} migrerade`,{})}
+ if(restored||migrated){persistLiveFoundation();liveEvent('success','Permanent Identity Registry 11.15.21',`${restored} rutter återställda · ${migrated} migrerade`,{})}
  return {restored,migrated,total:Object.keys(permanentIdentityRegistry().routes||{}).length}
 }
 function resolverCandidateKey(c){return `${String(c.isin||'').toUpperCase()}|${String(c.ticker||'').toUpperCase()}|${normalizeInstrumentName(c.exchange||'')}|${normalizeInstrumentName(c.name||'')}`}
@@ -736,316 +706,56 @@ function resolverScore(item,c){
  if(tickerVariants(item).some(t=>t.replace(/[. -]/g,'')===String(c.ticker||'').toUpperCase().replace(/[. -]/g,'')))score+=16;if(c.provider==='Global Registry')score=Math.max(score,98);if(c.provider==='OpenFIGI'&&c.isin)score+=4;if(c.providerScore)score+=Math.min(8,num(c.providerScore)/12);
  return Math.max(0,Math.min(100,Math.round(score)))
 }
-async function openFigiRequest(payload){const cfg=providerConfig(),ctrl=new AbortController(),timer=setTimeout(()=>ctrl.abort(),5000),headers={'Content-Type':'application/json'};if(cfg.openFigiKey)headers['X-OPENFIGI-APIKEY']=cfg.openFigiKey;try{const res=await fetch('https://api.openfigi.com/v3/mapping',{method:'POST',headers,body:JSON.stringify(payload.slice(0,2)),signal:ctrl.signal,cache:'no-store'});if(!res.ok)throw new Error(`OpenFIGI HTTP ${res.status}`);return await res.json()}finally{clearTimeout(timer)}}
+async function openFigiRequest(payload){const cfg=providerConfig(),ctrl=new AbortController(),timer=setTimeout(()=>ctrl.abort(),11000),headers={'Content-Type':'application/json'};if(cfg.openFigiKey)headers['X-OPENFIGI-APIKEY']=cfg.openFigiKey;try{const res=await fetch('https://api.openfigi.com/v3/mapping',{method:'POST',headers,body:JSON.stringify(payload),signal:ctrl.signal,cache:'no-store'});if(!res.ok)throw new Error(`OpenFIGI HTTP ${res.status}`);return await res.json()}finally{clearTimeout(timer)}}
 async function searchOpenFigiPost(item){
- const jobs=[];if(validIsin(item.isin))jobs.push({idType:'ID_ISIN',idValue:String(item.isin).toUpperCase()});const first=tickerVariants(item)[0];if(first)jobs.push({idType:'TICKER',idValue:first.replace(/\.(ST|STO)$/,''),exchCode:normalizedExchange(item.exchange)==='STO'?'SS':undefined});
- if(!jobs.length)return[];const x=await openFigiRequest(jobs);return x.flatMap((r,i)=>(r.data||[]).slice(0,4).map(z=>({ticker:z.ticker||jobs[i].idValue,name:z.name||z.securityDescription||'',exchange:z.exchCode||z.marketSector||'',currency:z.currency||item.currency||'',type:z.securityType2||z.securityType||'',isin:(z.securityIdentifiers||[]).find(q=>q.idType==='ID_ISIN')?.idValue||(jobs[i].idType==='ID_ISIN'?jobs[i].idValue:''),figi:z.figi||'',provider:'OpenFIGI'})))
+ const jobs=[];if(validIsin(item.isin))jobs.push({idType:'ID_ISIN',idValue:String(item.isin).toUpperCase()});for(const t of tickerVariants(item).slice(0,5))jobs.push({idType:'TICKER',idValue:t.replace(/\.(ST|STO)$/,''),exchCode:normalizedExchange(item.exchange)==='STO'?'SS':undefined});
+ if(!jobs.length)return[];const x=await openFigiRequest(jobs);return x.flatMap((r,i)=>(r.data||[]).slice(0,5).map(z=>({ticker:z.ticker||jobs[i].idValue,name:z.name||z.securityDescription||'',exchange:z.exchCode||z.marketSector||'',currency:z.currency||item.currency||'',type:z.securityType2||z.securityType||'',isin:(z.securityIdentifiers||[]).find(q=>q.idType==='ID_ISIN')?.idValue||(jobs[i].idType==='ID_ISIN'?jobs[i].idValue:''),figi:z.figi||'',provider:'OpenFIGI'})))
 }
-async function searchFinnhubInstrument(item){const key=providerConfig().finnhubKey;if(!key)return[];const q=item.isin||tickerVariants(item)[0]||item.name;if(!q)return[];const url=`https://finnhub.io/api/v1/search?q=${encodeURIComponent(q)}&token=${encodeURIComponent(key)}`;const res=await fetchWithPolicy(url,{provider:'finnhub',timeoutMs:5000,retries:0}),x=await res.json();return (x.result||[]).slice(0,6).map(r=>({ticker:r.symbol||'',name:r.description||'',exchange:r.primaryExchange||'',currency:item.currency||'',type:r.type||'',provider:'Finnhub'}))}
-async function searchTwelveDataResolver(item){const key=providerConfig().twelveDataKey;if(!key)return[];const q=item.isin||tickerVariants(item)[0]||item.name;if(!q)return[];const url=`https://api.twelvedata.com/symbol_search?symbol=${encodeURIComponent(q)}&apikey=${encodeURIComponent(key)}&outputsize=6`;const res=await fetchWithPolicy(url,{provider:'twelvedata',timeoutMs:5000,retries:0}),x=await res.json();if(x.status==='error')return[];return (x.data||[]).slice(0,6).map(r=>({ticker:r.symbol,name:r.instrument_name||r.name||'',exchange:r.exchange||r.mic_code||'',currency:r.currency||item.currency||'',type:r.instrument_type||'',provider:'Twelve Data'}))}
-async function searchAlphaVantageResolver(item){const key=providerConfig().alphaVantageKey;if(!key)return[];const q=item.isin||tickerVariants(item)[0]||item.name;if(!q)return[];const url=`https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=${encodeURIComponent(q)}&apikey=${encodeURIComponent(key)}`;const res=await fetchWithPolicy(url,{provider:'alphavantage',timeoutMs:5000,retries:0}),x=await res.json();if(x.Note||x.Information)return[];return (x.bestMatches||[]).slice(0,6).map(r=>({ticker:r['1. symbol'],name:r['2. name'],type:r['3. type'],exchange:r['4. region'],currency:r['8. currency']||item.currency||'',provider:'Alpha Vantage',providerScore:num(r['9. matchScore'])*100}))}
+async function searchFinnhubInstrument(item){const key=providerConfig().finnhubKey;if(!key)return[];const qs=[item.isin,...tickerVariants(item).slice(0,4),item.name].filter(Boolean),all=[];for(const q of qs){const url=`https://finnhub.io/api/v1/search?q=${encodeURIComponent(q)}&token=${encodeURIComponent(key)}`;const res=await fetchWithPolicy(url,{provider:'finnhub',timeoutMs:8000,retries:0}),x=await res.json();all.push(...(x.result||[]).slice(0,8).map(r=>({ticker:r.symbol||'',name:r.description||'',exchange:r.primaryExchange||'',currency:item.currency||'',type:r.type||'',provider:'Finnhub'})))}return all}
+async function searchTwelveDataResolver(item){const key=providerConfig().twelveDataKey;if(!key)return[];const all=[];for(const q of [item.isin,...tickerVariants(item).slice(0,5),item.name].filter(Boolean)){const url=`https://api.twelvedata.com/symbol_search?symbol=${encodeURIComponent(q)}&apikey=${encodeURIComponent(key)}&outputsize=8`;const res=await fetchWithPolicy(url,{provider:'twelvedata',timeoutMs:8000,retries:0}),x=await res.json();if(x.status==='error')continue;all.push(...(x.data||[]).map(r=>({ticker:r.symbol,name:r.instrument_name||r.name||'',exchange:r.exchange||r.mic_code||'',currency:r.currency||item.currency||'',type:r.instrument_type||'',provider:'Twelve Data'})))}return all}
+async function searchAlphaVantageResolver(item){const key=providerConfig().alphaVantageKey;if(!key)return[];const all=[];for(const q of [item.isin,...tickerVariants(item).slice(0,4),item.name].filter(Boolean)){const url=`https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=${encodeURIComponent(q)}&apikey=${encodeURIComponent(key)}`;const res=await fetchWithPolicy(url,{provider:'alphavantage',timeoutMs:9000,retries:0}),x=await res.json();if(x.Note||x.Information)continue;all.push(...(x.bestMatches||[]).map(r=>({ticker:r['1. symbol'],name:r['2. name'],type:r['3. type'],exchange:r['4. region'],currency:r['8. currency']||item.currency||'',provider:'Alpha Vantage',providerScore:num(r['9. matchScore'])*100})))}return all}
 function localResolverCandidates(item){const hit=registryMatch(item);if(!hit)return[];const e=hit.entry;return [{ticker:e.ticker,isin:e.isin,name:e.names?.[0]||item.name,exchange:e.exchange,currency:e.currency,type:e.type,providerSymbols:e.providerSymbols,provider:'Global Registry'}]}
-function loadResolverTraceBuffer(){
- if(resolverTraceBuffer.length)return resolverTraceBuffer;
- const sources=[()=>sessionStorage.getItem(RESOLVER_DIAG_LINES_KEY),()=>safeGet(RESOLVER_DIAG_LINES_KEY)];
- for(const get of sources){try{const parsed=parse(get());if(Array.isArray(parsed)){resolverTraceBuffer=parsed.slice(-400);resolverTraceStorage=get===sources[0]?'sessionStorage':'localStorage';break}}catch{}}
- return resolverTraceBuffer
-}
-function resolverDiagnosticLines(){return loadResolverTraceBuffer().slice()}
-function resolverDiagnosticState(){
- let raw={};try{raw=parse(safeGet(RESOLVER_DIAG_KEY))||{}}catch{}
- const meta=merge({version:'11.15.20',startedAt:'',updatedAt:'',heartbeat:0,currentInstrument:'',currentStep:'',expanded:false,storage:resolverTraceStorage},raw);
- meta.lines=resolverDiagnosticLines();meta.storage=resolverTraceStorage;return meta
-}
-function persistResolverDiagnosticMeta(x){
- const meta={version:'11.15.20',startedAt:x?.startedAt||'',updatedAt:new Date().toISOString(),heartbeat:num(x?.heartbeat),currentInstrument:x?.currentInstrument||'',currentStep:x?.currentStep||'',expanded:!!x?.expanded,storage:resolverTraceStorage};
- try{safeSet(RESOLVER_DIAG_KEY,JSON.stringify(meta))}catch{}return meta
-}
-function persistResolverDiagnosticLines(lines){
- resolverTraceBuffer=(Array.isArray(lines)?lines:[]).slice(-400);
- const payload=JSON.stringify(resolverTraceBuffer);
- let saved=false;
- try{sessionStorage.setItem(RESOLVER_DIAG_LINES_KEY,payload);resolverTraceStorage='sessionStorage';saved=true}catch{}
- if(!saved){try{if(safeSet(RESOLVER_DIAG_LINES_KEY,payload)){resolverTraceStorage='localStorage';saved=true}}catch{}}
- if(!saved)resolverTraceStorage='memory';
- return resolverTraceBuffer
-}
-function resolverDiag(step,detail='',level='info'){
- try{
-  const now=new Date(),lines=resolverTraceBuffer.length?resolverTraceBuffer:loadResolverTraceBuffer();
-  const line={seq:(lines.at(-1)?.seq||0)+1,id:`${now.getTime()}-${Math.random().toString(36).slice(2,7)}`,time:now.toLocaleTimeString('sv-SE',{hour:'2-digit',minute:'2-digit',second:'2-digit'}),step:String(step||''),detail:String(detail||''),level};
-  const saved=persistResolverDiagnosticLines([...lines,line]);
-  let d=resolverDiagnosticState();d.currentStep=line.step;d.updatedAt=now.toISOString();d.lines=saved;persistResolverDiagnosticMeta(d);updateResolverDiagnosticUI(d);
-  try{console.log('[Resolver trace]',line.seq,line.step,line.detail)}catch{}return line
- }catch(error){try{console.error('[Resolver trace failed]',error)}catch{}return null}
-}
-function resolverBootstrapDiag(step,detail='',level='info'){return resolverDiag(step,detail,level)}
-function clearResolverBootstrapWatchdogs(){resolverBootstrapWatchdogs.forEach(id=>clearTimeout(id));resolverBootstrapWatchdogs=[]}
-function armResolverBootstrapWatchdogs(runId){
- clearResolverBootstrapWatchdogs();
- [[250,'Watchdog 250 ms'],[2000,'Watchdog 2 s'],[8000,'Watchdog 8 s'],[20000,'Watchdog 20 s']].forEach(([ms,label])=>{const id=setTimeout(()=>{try{const run=resolverRunState(),d=resolverDiagnosticState();resolverBootstrapDiag(label,`run=${run.status} ${run.processed}/${run.total} · steg=${d.currentStep||'–'} · id=${run.runId===runId?'match':'avvikelse'} · logg=${resolverTraceBuffer.length} · lagring=${resolverTraceStorage}`,ms>=8000?'warning':'info')}catch(error){resolverBootstrapDiag(label,String(error?.message||error),'error')}},ms);resolverBootstrapWatchdogs.push(id)})
-}
-function installResolverBootstrapGuards(){
- if(window.__mkResolverBootstrapGuards)return;window.__mkResolverBootstrapGuards=true;
- window.addEventListener('error',event=>resolverBootstrapDiag('GLOBAL ERROR',`${event.message||'okänt fel'} · ${event.filename||''}:${event.lineno||0}:${event.colno||0}`,'error'));
- window.addEventListener('unhandledrejection',event=>resolverBootstrapDiag('UNHANDLED REJECTION',String(event.reason?.stack||event.reason?.message||event.reason||'okänt fel'),'error'));
- resolverBootstrapDiag('TRACE 00 Vakter installerade',`lagring=${resolverTraceStorage}`,'success')
-}
-function resetResolverDiagnostics(){
- const d=resolverDiagnosticState();d.startedAt=new Date().toISOString();d.heartbeat=0;d.currentInstrument='';d.currentStep='Ny batch';persistResolverDiagnosticMeta(d);
- resolverDiag('════════ NY TRACE-SESSION ════════',`Version ${VERSION} · befintliga rader ${resolverTraceBuffer.length} · lagring ${resolverTraceStorage}`,'success');return resolverDiagnosticState()
-}
-function diagnosticLineHtml(x,index){return `<div class="diagLine ${esc(x.level||'info')}"><span class="diagIndex">${esc(x.seq||index+1)}</span><div><b>${esc(x.time)}</b> ${esc(x.step)}${x.detail?`<small>${esc(x.detail)}</small>`:''}</div></div>`}
-function updateResolverDiagnosticUI(d=resolverDiagnosticState()){
- const log=document.getElementById('resolverDiagnosticLog'),beat=document.getElementById('resolverHeartbeat'),step=document.getElementById('resolverCurrentStep'),instrument=document.getElementById('resolverCurrentInstrument'),count=document.getElementById('resolverDiagnosticCount'),toggle=document.getElementById('toggleResolverDiagnosticLog'),storage=document.getElementById('resolverDiagnosticStorage');
- if(beat)beat.textContent=String(d.heartbeat||0);if(step)step.textContent=d.currentStep||'Redo';if(instrument)instrument.textContent=d.currentInstrument||'–';if(count)count.textContent=String((d.lines||[]).length);if(storage)storage.textContent=resolverTraceStorage;
- if(log){const near=log.scrollHeight-log.scrollTop-log.clientHeight<80;log.classList.toggle('expanded',!!d.expanded);log.innerHTML=(d.lines||[]).map(diagnosticLineHtml).join('')||'<div class="empty">Ingen diagnostik ännu.</div>';if(near||!d.expanded)log.scrollTop=log.scrollHeight}
- if(toggle)toggle.textContent=d.expanded?'Komprimera loggen':'Visa hela loggen'
-}
-function startResolverHeartbeat(){stopResolverHeartbeat();resolverHeartbeatTimer=setInterval(()=>{const d=resolverDiagnosticState();d.heartbeat=num(d.heartbeat)+1;persistResolverDiagnosticMeta(d);const beat=document.getElementById('resolverHeartbeat');if(beat)beat.textContent=String(d.heartbeat)},1000)}
-function stopResolverHeartbeat(){if(resolverHeartbeatTimer){clearInterval(resolverHeartbeatTimer);resolverHeartbeatTimer=null}}
-async function copyResolverDiagnostics(){
- const lines=resolverDiagnosticLines(),d=resolverDiagnosticState(),run=resolverRunState();
- const text=[`Mästarklass OS ${VERSION} Resolver Chain Trace`,`Rader: ${lines.length}`,`Lagring: ${resolverTraceStorage}`,`Status: ${run.status} ${run.processed}/${run.total}`,`RunId: ${run.runId||'–'}`,`Instrument: ${d.currentInstrument||'–'}`,`Steg: ${d.currentStep||'–'}`,'',...lines.map((x,i)=>`${String(x.seq||i+1).padStart(3,'0')} ${x.time} [${x.level||'info'}] ${x.step}${x.detail?' — '+x.detail:''}`)].join('\n');
- try{await navigator.clipboard.writeText(text);const el=document.getElementById('resolverCurrentStep');if(el)el.textContent=`Kopierad: ${lines.length} rader`;return true}catch(error){resolverDiag('Kopiering misslyckades',String(error?.message||error),'error');return false}
-}
-function toggleResolverDiagnosticLog(){
- const d=resolverDiagnosticState();d.expanded=!d.expanded;persistResolverDiagnosticMeta(d);
- const log=document.getElementById('resolverDiagnosticLog'),toggle=document.getElementById('toggleResolverDiagnosticLog');if(log)log.classList.toggle('expanded',d.expanded);if(toggle)toggle.textContent=d.expanded?'Komprimera loggen':'Visa hela loggen';return false
-}
-function clearResolverDiagnosticLog(){resolverTraceBuffer=[];persistResolverDiagnosticLines([]);const d=resolverDiagnosticState();d.heartbeat=0;d.currentInstrument='';d.currentStep='Logg rensad';persistResolverDiagnosticMeta(d);updateResolverDiagnosticUI({...d,lines:[]});return false}
-window.mkCopyResolverDiagnostics=function(event){event?.preventDefault?.();event?.stopPropagation?.();void copyResolverDiagnostics();return false};
-window.mkToggleResolverDiagnosticLog=function(event){event?.preventDefault?.();event?.stopPropagation?.();return toggleResolverDiagnosticLog()};
-window.mkClearResolverDiagnosticLog=function(event){event?.preventDefault?.();event?.stopPropagation?.();return clearResolverDiagnosticLog()};
-function resolverRunDefaults(){return {version:'11.15.20',status:'idle',runId:'',startedAt:'',updatedAt:'',completedAt:'',cursor:0,total:0,processed:0,skipped:0,permanent:0,newSafe:0,review:0,fundPending:0,failed:0,errors:0,stopRequested:false,targetKeys:[],targetItems:[],suggestions:[],message:''}}
-function resolverRunState(){
- let raw=resolverRunMemory;
- if(!raw){try{raw=parse(sessionStorage.getItem(RESOLVER_RUN_SESSION_KEY))||null;if(raw)resolverRunStorage='sessionStorage'}catch{}}
- if(!raw){try{raw=parse(safeGet(RESOLVER_RUN_KEY))||null;if(raw)resolverRunStorage='localStorage'}catch{}}
- let run=merge(resolverRunDefaults(),raw||{});
- if(run.version!==VERSION){run=resolverRunDefaults();resolverRunStorage='memory'}
- resolverRunMemory=run;
- return run
-}
-function persistResolverRun(x){
- const run=merge(resolverRunDefaults(),x||{});run.version=VERSION;run.updatedAt=new Date().toISOString();
- resolverRunMemory=run;resolverRunStorage='memory';
- const payload=JSON.stringify(run);
- try{sessionStorage.setItem(RESOLVER_RUN_SESSION_KEY,payload);resolverRunStorage='sessionStorage'}catch{}
- try{if(safeSet(RESOLVER_RUN_KEY,payload)&&resolverRunStorage==='memory')resolverRunStorage='localStorage'}catch{}
- return run
-}
-function recoverResolverRun({boot=false}={}){const x=resolverRunState();if(boot&&x.status==='running'){x.status='paused';x.stopRequested=false;x.message='Föregående körning avbröts. Fortsätt från senaste checkpoint.';persistResolverRun(x)}return x}
-function requestResolverStop(){resolverDiag('Stoppknapp tryckt','Stoppflagga skrivs');const x=resolverRunState();if(x.status!=='running'){const msg=document.getElementById('resolverMessage');if(msg)msg.textContent='Ingen aktiv batch att stoppa.';return false}x.stopRequested=true;x.message='Stopp begärt. Avslutar efter aktuellt instrument…';persistResolverRun(x);syncResolverSummary(x);updateResolverProgressUI(x);setResolverStatusLabel('Stoppar');const stop=document.getElementById('stopGlobalResolver');if(stop){stop.textContent='Stoppar…';stop.disabled=true}return true}
-function compactResolverSuggestion(row){return {...row,candidates:(row.candidates||[]).slice(0,4),variants:(row.variants||[]).slice(0,4),errors:(row.errors||[]).slice(0,3)} }
-function refreshValuationAfterResolver(){try{liveValuationSnapshot({persist:true})}catch(error){console.warn('Värdering kunde inte uppdateras',error)}}
+function resolverRunState(){return merge({version:'11.15.21',status:'idle',runId:'',startedAt:'',updatedAt:'',completedAt:'',cursor:0,total:0,processed:0,skipped:0,permanent:0,newSafe:0,review:0,failed:0,errors:0,stopRequested:false,targetKeys:[],suggestions:[]},parse(safeGet(RESOLVER_RUN_KEY))||{})}
+function persistResolverRun(x){x.version='11.15.21';x.updatedAt=new Date().toISOString();safeSet(RESOLVER_RUN_KEY,JSON.stringify(x));return x}
+function recoverResolverRun(){const x=resolverRunState();if(x.status==='running'){x.status='paused';x.stopRequested=false;x.message='Föregående körning avbröts. Tryck kör för att fortsätta.';persistResolverRun(x)}return x}
+function requestResolverStop(){const x=resolverRunState();if(x.status!=='running')return;x.stopRequested=true;x.message='Stoppar säkert efter aktuellt instrument…';persistResolverRun(x);const b=document.getElementById('stopGlobalResolver');if(b){b.disabled=true;b.textContent='Stoppar…'}}
+function compactResolverSuggestion(row){return {...row,candidates:(row.candidates||[]).slice(0,4),variants:(row.variants||[]).slice(0,6),errors:(row.errors||[]).slice(0,3)}}
+function refreshValuationAfterResolver(){try{liveValuationSnapshot({persist:true});runDataConfidenceEngine({reason:'resolver-11.15.21'});runAutonomousPortfolioScan({reason:'resolver-11.15.21',force:true})}catch(error){console.warn('Efteranalys kunde inte köras',error)}}
 function resolverTargets(){const routes=permanentIdentityRegistry().routes||{};return instrumentMappingCoverage().items.filter(item=>{if(routeIsUsable(routes[item.key]))return false;const m=liveFoundation.mappings[item.key]||{},cls=classifyInstrument(canonicalHoldings().find(h=>h._key===item.key)||item).code;return !m.verified||num(m.identityConfidence||m.confidence)<92||(!m.ticker&&!m.isin)||(!m.isin&&cls!=='fund'&&!m.ticker)})}
-function withDeadline(promise,ms,label='provider'){let timer;return Promise.race([promise,new Promise((_,reject)=>{timer=setTimeout(()=>reject(new Error(`${label} timeout`)),ms)})]).finally(()=>clearTimeout(timer))}
 async function resolveOneInstrument(item){
- resolverDiag('Instrument laddat',`${item.name} · ${item.ticker||'ingen ticker'} · ${item.isin||'inget ISIN'}`);
- const d=resolverDiagnosticState();d.currentInstrument=item.name||item.key;persistResolverDiagnosticMeta(d);updateResolverDiagnosticUI(d);
- resolverDiag('Lokal mapping start',item.key);
- const m=liveFoundation.mappings[item.key]||{};item={...item,ticker:m.ticker||item.ticker||'',isin:m.isin||item.isin||'',exchange:m.exchange||item.exchange||''};
- resolverDiag('Lokal mapping klar',`${item.ticker||'–'} · ${item.isin||'–'} · ${item.exchange||'–'}`);
- const instrumentClass=classifyInstrument(canonicalHoldings().find(h=>h._key===item.key)||item).code;
- if(instrumentClass==='fund'&&!validIsin(item.isin)){
-  resolverDiag('Fond-routing','Traditionell fond utan ISIN: aktieproviders hoppas över','warning');
-  return {key:item.key,name:item.name,account:item.account,assetType:item.assetType,currency:item.currency,best:null,candidates:[],confidence:0,margin:0,conflict:false,autoSafe:false,fundPending:true,variants:tickerVariants(item),exchanges:exchangeVariants(item),errors:[]};
- }
- let candidates=[],errors=[];
- resolverDiag('Global Registry start',item.name);
- try{candidates=[...localResolverCandidates(item)];resolverDiag('Global Registry klar',`${candidates.length} kandidater`)}catch(error){errors.push(`Global Registry: ${String(error?.message||error)}`);resolverDiag('Global Registry fel',String(error?.message||error),'error')}
- resolverDiag('Poängsättning lokal start',`${candidates.length} kandidater`);
- let unique=candidates.map(c=>({...c,score:resolverScore(item,c)})).sort((a,b)=>b.score-a.score);
- resolverDiag('Poängsättning lokal klar',unique[0]?`${unique[0].ticker||unique[0].isin} · ${unique[0].score}%`:'ingen träff');
- if(unique[0]&&unique[0].score>=98){resolverDiag('Lokal säker träff','Externa providers hoppas över','success');return {key:item.key,name:item.name,account:item.account,assetType:item.assetType,currency:item.currency,best:unique[0],candidates:unique.slice(0,4),confidence:unique[0].score,margin:100,conflict:false,autoSafe:true,variants:tickerVariants(item),exchanges:exchangeVariants(item),errors}}
- const cfg=providerConfig();
- const providers=[];
- if(cfg.twelveDataKey)providers.push(['Twelve Data',()=>searchTwelveDataResolver(item)]);else resolverDiag('Twelve Data hoppas över','API-nyckel saknas');
- if(cfg.alphaVantageKey)providers.push(['Alpha Vantage',()=>searchAlphaVantageResolver(item)]);else resolverDiag('Alpha Vantage hoppas över','API-nyckel saknas');
- if(cfg.finnhubKey)providers.push(['Finnhub',()=>searchFinnhubInstrument(item)]);else resolverDiag('Finnhub hoppas över','API-nyckel saknas');
- providers.push(['OpenFIGI',()=>searchOpenFigiPost(item)]);
- for(const [name,fn] of providers){
-  const liveRun=resolverRunState();if(liveRun.stopRequested){resolverDiag('Stopp upptäckt',`före ${name}`,'warning');break}
-  resolverDiag(`${name} start`,`${item.ticker||item.isin||item.name}`);
-  const began=Date.now();
-  try{const rows=await withDeadline(Promise.resolve().then(fn),6500,name);candidates.push(...(rows||[]));resolverDiag(`${name} klar`,`${rows?.length||0} kandidater · ${Date.now()-began} ms`,'success')}
-  catch(error){const msg=String(error?.message||error);errors.push(`${name}: ${msg}`);resolverDiag(`${name} fel`,`${msg} · ${Date.now()-began} ms`,'error')}
- }
- resolverDiag('Sammanställning start',`${candidates.length} kandidater`);
- unique=[...new Map(candidates.filter(c=>c.ticker||c.isin).map(c=>[resolverCandidateKey(c),c])).values()].map(c=>({...c,score:resolverScore(item,c)})).sort((a,b)=>b.score-a.score);
- const best=unique[0]||null,second=unique[1]||null,margin=best?best.score-num(second?.score):0,conflict=Boolean(best&&second&&best.score>=90&&second.score>=90&&normalizeInstrumentName(best.ticker)!==normalizeInstrumentName(second.ticker));
- const autoSafe=Boolean(best&&best.score>=96&&!conflict&&(validIsin(best.isin)||best.provider==='Global Registry'||margin>=6));
- resolverDiag('Sammanställning klar',best?`${best.ticker||best.isin} · ${best.score}% · ${autoSafe?'säker':'granskning'}`:'ingen träff',best?'success':'warning');
- return {key:item.key,name:item.name,account:item.account,assetType:item.assetType,currency:item.currency,best,candidates:unique.slice(0,4),confidence:best?.score||0,margin,conflict,autoSafe,variants:tickerVariants(item),exchanges:exchangeVariants(item),errors}
+ const m=liveFoundation.mappings[item.key]||{};item={...item,ticker:m.ticker||item.ticker||'',isin:m.isin||item.isin||'',exchange:m.exchange||item.exchange||''};let candidates=[...localResolverCandidates(item)],errors=[];const jobs=[];if(providerConfig().twelveDataKey)jobs.push(searchTwelveDataResolver(item));if(providerConfig().alphaVantageKey)jobs.push(searchAlphaVantageResolver(item));if(providerConfig().finnhubKey)jobs.push(searchFinnhubInstrument(item));jobs.push(searchOpenFigiPost(item));
+ const settled=await Promise.allSettled(jobs);for(const r of settled){if(r.status==='fulfilled')candidates.push(...r.value);else errors.push(String(r.reason?.message||r.reason))}
+ const unique=[...new Map(candidates.filter(c=>c.ticker||c.isin).map(c=>[resolverCandidateKey(c),c])).values()].map(c=>({...c,score:resolverScore(item,c)})).sort((a,b)=>b.score-a.score);const best=unique[0]||null,second=unique[1]||null,margin=best?best.score-num(second?.score):0;const conflict=Boolean(best&&second&&best.score>=88&&second.score>=88&&normalizeInstrumentName(best.ticker)!==normalizeInstrumentName(second.ticker));const autoSafe=Boolean(best&&best.score>=96&&margin>=4&&!conflict&&(validIsin(best.isin)||best.score>=98));
+ return {key:item.key,name:item.name,account:item.account,assetType:item.assetType,currency:item.currency,best,candidates:unique.slice(0,8),confidence:best?.score||0,margin,conflict,autoSafe,variants:tickerVariants(item),exchanges:exchangeVariants(item),errors}
 }
-function syncResolverSummary(run){const previous=globalResolverState(),suggestions=run.suggestions||[];const state={...previous,version:'11.15.20',status:run.status==='complete'?(run.failed?'partial':'success'):run.status,lastRun:new Date().toISOString(),scanned:run.processed,resolved:run.newSafe,review:run.review,fundPending:run.fundPending||0,unresolved:run.failed,errors:run.errors,suggestions,routes:previous.routes||{},audit:previous.audit||[]};persistGlobalResolver(state);return state}
-function updateResolverProgressUI(run=resolverRunState()){
- const processed=document.getElementById('resolverProcessed'),total=document.getElementById('resolverTotal'),msg=document.getElementById('resolverMessage'),bar=document.getElementById('resolverProgressBar');if(processed)processed.textContent=run.processed||0;if(total)total.textContent=run.total||0;if(msg)msg.textContent=run.message||'';if(bar)bar.style.width=`${run.total?Math.round((run.processed||0)/run.total*100):0}%`;
- const fields={resolverRemaining:Math.max(0,(run.total||0)-(run.processed||0)),resolverPermanent:run.permanent||0,resolverSafe:run.newSafe||0,resolverReview:run.review||0,resolverSkipped:run.skipped||0,resolverFundPending:run.fundPending||0,resolverFailed:run.failed||0};for(const [id,v] of Object.entries(fields)){const el=document.getElementById(id);if(el)el.textContent=v}
- const stop=document.getElementById('stopGlobalResolver');if(stop){stop.disabled=run.status!=='running';stop.textContent=run.stopRequested?'Stoppar…':'Stoppa säkert'}
-}
-window.mkRunResolverBatch=function(event){
- if(event){event.preventDefault?.();event.stopPropagation?.();}
- startResolverBatchFromUI();
- return false;
-};
-window.mkStopResolver=function(event){
- if(event){event.preventDefault?.();event.stopPropagation?.();}
- requestResolverStop();
- return false;
-};
-window.mkReviewResolver=function(event){
- if(event){event.preventDefault?.();event.stopPropagation?.();}
- openGlobalResolverReview();
- return false;
-};
-function setResolverButtonState(label,disabled=true){
- const b=document.getElementById('runGlobalResolver');
- if(b){b.textContent=label;b.disabled=disabled;b.setAttribute('aria-busy',disabled?'true':'false')}
-}
-function setResolverStatusLabel(text){const el=document.getElementById('resolverStatusLabel');if(el)el.textContent=text}
-function startResolverBatchFromUI(){
- if(resolverWorkerActive||resolverStartLocked){resolverBootstrapDiag('Bootstrap 00 Start blockerad',`worker=${resolverWorkerActive} lock=${resolverStartLocked}`,'warning');return false;}
- resetResolverDiagnostics();installResolverBootstrapGuards();
- resolverBootstrapDiag('Bootstrap 01 Startfunktion anropad','Knapptryck mottaget');startResolverHeartbeat();
- resolverStartLocked=true;resolverBootstrapDiag('Bootstrap 02 Startlås satt','resolverStartLocked=true');
- try{
-  let run=resolverRunState();resolverBootstrapDiag('Bootstrap 03 Tidigare körstatus läst',`${run.status} ${run.processed||0}/${run.total||0}`);
-  const canResume=run.status==='paused'&&Array.isArray(run.targetItems)&&run.targetItems.length&&run.cursor<run.targetItems.length;
-  if(!canResume){
-   resolverBootstrapDiag('Bootstrap 04 Mållista beräknas','resolverTargets() start');
-   const fresh=resolverTargets();
-   resolverBootstrapDiag('Bootstrap 05 Mållista klar',`${fresh.length} olösta instrument`,'success');
-   run={version:'11.15.20',status:'running',runId:crypto.randomUUID?.()||String(Date.now()),startedAt:new Date().toISOString(),updatedAt:new Date().toISOString(),completedAt:'',cursor:0,total:fresh.length,processed:0,skipped:Object.keys(permanentIdentityRegistry().routes||{}).length,permanent:Object.keys(permanentIdentityRegistry().routes||{}).length,newSafe:0,review:0,fundPending:0,failed:0,errors:0,stopRequested:false,targetKeys:fresh.map(x=>x.key),targetItems:fresh.map(x=>({key:x.key,name:x.name,account:x.account,assetType:x.assetType,currency:x.currency,ticker:x.ticker||'',isin:x.isin||'',exchange:x.exchange||''})),suggestions:[],message:fresh.length?`Resolverarbetaren startar. Verifierar instrument 1/${fresh.length}…`:'Inga olösta instrument återstår.'};
-  }else{
-   resolverBootstrapDiag('Bootstrap 04 Återupptagning',`cursor=${run.cursor}`);
-   run.status='running';run.stopRequested=false;run.runId=run.runId||String(Date.now());run.message=`Resolverarbetaren fortsätter. Verifierar instrument ${run.processed+1}/${run.total}…`;
-  }
-  resolverBootstrapDiag('Bootstrap 06 Körstatus byggd',`runId=${run.runId} · mål=${run.total}`);
-  run=persistResolverRun(run);resolverBootstrapDiag('Bootstrap 07 Körstatus sparad',`lagring=${resolverRunStorage} · status=${run.status} · id=${run.runId}`,'success');
-  syncResolverSummary(run);updateResolverProgressUI(run);setResolverStatusLabel(run.total?'Kör':'Klar');
-  resolverBootstrapDiag('Bootstrap 08 UI uppdaterat',`${run.processed}/${run.total}`,'success');
-  if(!run.total){run.status='complete';persistResolverRun(run);updateResolverProgressUI(run);setResolverButtonState('Inga instrument återstår',true);resolverStartLocked=false;resolverBootstrapDiag('Bootstrap avslutad','Inga mål');return true}
-  resolverWorkerActive=true;setResolverButtonState(`Verifierar ${run.processed+1}/${run.total}…`,true);
-  resolverBootstrapDiag('Bootstrap 09 Workerflagga satt',`worker=${resolverWorkerActive}`,'success');
-  armResolverBootstrapWatchdogs(run.runId);resolverBootstrapDiag('Bootstrap 10 Watchdogs aktiverade','250 ms · 2 s · 8 s');
-  Promise.resolve().then(()=>{
-   resolverBootstrapDiag('Bootstrap 11 Promise-callback körs','Huvudtråden nådde workeranropet','success');
-   return runGlobalResolver(run.runId)
-  }).then(result=>resolverBootstrapDiag('Bootstrap 12 Worker-Promise löst',`resultat=${String(result)}`,'success')).catch(error=>{
-   console.error('Resolver worker failed',error);resolverBootstrapDiag('Bootstrap EXCEPTION Worker kraschade',String(error?.stack||error?.message||error),'error');
-   let failed=resolverRunState();failed.status='error';failed.errors=num(failed.errors)+1;failed.message=`Resolverfel: ${String(error?.message||error)}`;persistResolverRun(failed);syncResolverSummary(failed);updateResolverProgressUI(failed);setResolverStatusLabel('Fel');setResolverButtonState('Försök igen',false);
-  }).finally(()=>{
-   clearResolverBootstrapWatchdogs();resolverWorkerActive=false;resolverStartLocked=false;stopResolverHeartbeat();resolverBootstrapDiag('Bootstrap 13 Worker avslutad',resolverRunState().status)
-  });
-  resolverBootstrapDiag('Bootstrap 11 Schemaläggning klar','Promise-kedjan skapad');
-  return true;
- }catch(error){
-  console.error('Resolver start failed',error);clearResolverBootstrapWatchdogs();stopResolverHeartbeat();resolverBootstrapDiag('Bootstrap EXCEPTION Start kraschade',String(error?.stack||error?.message||error),'error');
-  let run=resolverRunState();run.status='error';run.errors=num(run.errors)+1;run.message=`Startfel: ${String(error?.message||error)}`;persistResolverRun(run);syncResolverSummary(run);updateResolverProgressUI(run);setResolverStatusLabel('Fel');setResolverButtonState('Försök igen',false);resolverStartLocked=false;return false;
- }
-}
-async function runGlobalResolver(runId){
- resolverBootstrapDiag('Worker 01 Funktionskropp öppnad',`runId=${runId}`,'success');
- await Promise.resolve();
- resolverBootstrapDiag('Worker 02 Första await passerad','microtask OK','success');
- resolverDiag('Worker aktiv',runId);
- let run=resolverRunState();
- resolverBootstrapDiag('Worker 03 Körstatus läst',`${run.status} · id=${run.runId===runId?'match':'avvikelse'} · lagring=${resolverRunStorage}`);
- if(run.status!=='running'||run.runId!==runId){resolverDiag('Worker 04 avbruten','Körstatus eller runId matchar inte','error');return false;}
- resolverDiag('Snapshot läses',`${run.targetItems?.length||0} instrument`);
- const targetItems=Array.isArray(run.targetItems)?run.targetItems:[];
- if(!targetItems.length)throw new Error('Batchen saknar instrumentlista');
- const byKey=new Map(targetItems.map(x=>[x.key,x]));resolverDiag('Snapshot klar',`${byKey.size} instrument`);
- const batchEnd=Math.min(run.targetKeys.length,run.cursor+8);
- for(let i=run.cursor;i<batchEnd;i++){
-  run=resolverRunState();
-  if(run.runId!==runId)return false;
-  if(run.stopRequested){run.status='paused';run.message=`Stoppad säkert efter ${run.processed}/${run.total}.`;persistResolverRun(run);syncResolverSummary(run);updateResolverProgressUI(run);setResolverStatusLabel('Pausad');break}
-  resolverDiag('Loop start',`index ${i} · cursor ${run.cursor}`);
-  const item=byKey.get(run.targetKeys[i]);
-  if(!item){run.cursor=i+1;run.processed++;run.failed++;run.message=`Saknat instrument hoppades över (${run.processed}/${run.total}).`;persistResolverRun(run);syncResolverSummary(run);updateResolverProgressUI(run);continue}
-  // Detta sker synkront före första provideranropet, så UI kan aldrig stanna på "förbereds".
-  run.message=`Verifierar ${run.processed+1}/${run.total}: ${item.name}`;persistResolverRun(run);syncResolverSummary(run);updateResolverProgressUI(run);setResolverStatusLabel('Kör');setResolverButtonState(`Verifierar ${run.processed+1}/${run.total}…`,true);
+async function runGlobalResolver(){
+ let run=recoverResolverRun(),targets=resolverTargets(),resume=run.status==='paused'&&Array.isArray(run.targetKeys)&&run.targetKeys.length;
+ const byKey=new Map(instrumentMappingCoverage().items.map(x=>[x.key,x]));
+ if(!resume){run={version:'11.15.21',status:'running',runId:crypto.randomUUID?.()||String(Date.now()),startedAt:new Date().toISOString(),updatedAt:new Date().toISOString(),completedAt:'',cursor:0,total:targets.length,processed:0,skipped:Object.keys(permanentIdentityRegistry().routes||{}).length,permanent:Object.keys(permanentIdentityRegistry().routes||{}).length,newSafe:0,review:0,failed:0,errors:0,stopRequested:false,targetKeys:targets.map(x=>x.key),suggestions:[],message:'Resolvern startar…'};persistResolverRun(run)}
+ else{targets=run.targetKeys.map(k=>byKey.get(k)).filter(Boolean);run.status='running';run.stopRequested=false;run.message='Återupptar från senaste sparade position…';persistResolverRun(run)}
+ render();
+ for(let i=run.cursor;i<targets.length;i++){
+  run=resolverRunState();if(run.stopRequested){run.status='paused';run.message=`Pausad efter ${run.processed}/${run.total}.`;persistResolverRun(run);render();return}
+  const item=targets[i];if(routeIsUsable(permanentRouteFor(item.key))){run.cursor=i+1;run.processed++;run.skipped++;persistResolverRun(run);continue}
+  run.message=`Verifierar ${i+1}/${targets.length}: ${item.name}`;persistResolverRun(run);const btn=document.getElementById('runGlobalResolver');if(btn)btn.textContent=`Verifierar ${i+1}/${targets.length}…`;
   try{
-   resolverDiag('Permanent Registry kontroll',item.key);
-   if(routeIsUsable(permanentRouteFor(item.key))){resolverDiag('Permanent träff','Instrument hoppas över','success');run=resolverRunState();run.cursor=i+1;run.processed++;run.skipped++;}
-   else{
-    resolverDiag('Instrumentresolver start',item.name);
-    const row=await withDeadline(resolveOneInstrument(item),30000,'Instrumentresolver');
-    resolverDiag('Instrumentresolver klar',`${row.best?.ticker||row.best?.isin||'ingen träff'}`);
-    run=resolverRunState();
-    if(run.runId!==runId)return false;
-    run.cursor=i+1;run.processed++;run.errors+=row.errors.length;run.suggestions=[...(run.suggestions||[]).filter(x=>x.key!==row.key),compactResolverSuggestion(row)].slice(-80);
-    if(row.autoSafe&&applyResolverSuggestion(row.key,0,{silent:true,rowOverride:row}).ok){run.newSafe++;run.permanent=Object.keys(permanentIdentityRegistry().routes||{}).length}
-    else if(row.fundPending)run.fundPending++;else if(row.best)run.review++;else run.failed++;
-   }
-  }catch(error){
-   resolverDiag('Instrumentresolver fel',String(error?.stack||error?.message||error),'error');
-   run=resolverRunState();run.cursor=i+1;run.processed++;run.failed++;run.errors++;run.suggestions=[...(run.suggestions||[]),{key:item.key,name:item.name,account:item.account,assetType:item.assetType,currency:item.currency,best:null,candidates:[],confidence:0,autoSafe:false,conflict:false,variants:tickerVariants(item),errors:[String(error?.message||error)]}].slice(-80);
-  }
-  resolverDiag('Checkpoint sparas',`${run.processed}/${run.total}`);
-  run.message=`Checkpoint ${run.processed}/${run.total} sparad.`;persistResolverRun(run);syncResolverSummary(run);updateResolverProgressUI(run);
-  resolverDiag('UI-yield','Nästa instrument');
-  await new Promise(resolve=>setTimeout(resolve,25));
+   const row=await resolveOneInstrument(item);run=resolverRunState();run.cursor=i+1;run.processed++;run.errors+=row.errors.length;
+   const compact=compactResolverSuggestion(row);run.suggestions=[...(run.suggestions||[]).filter(x=>x.key!==row.key),compact].slice(-120);
+   if(row.autoSafe&&applyResolverSuggestion(row.key,0,{silent:true,rowOverride:row})){run.newSafe++;run.permanent=Object.keys(permanentIdentityRegistry().routes||{}).length}
+   else if(row.best)run.review++;else run.failed++;
+   persistResolverRun(run)
+  }catch(error){run=resolverRunState();run.cursor=i+1;run.processed++;run.failed++;run.errors++;run.suggestions=[...(run.suggestions||[]),{key:item.key,name:item.name,account:item.account,assetType:item.assetType,currency:item.currency,best:null,candidates:[],confidence:0,autoSafe:false,conflict:false,variants:tickerVariants(item),errors:[String(error?.message||error)]}].slice(-120);persistResolverRun(run)}
+  if(i%3===2){render();await new Promise(resolve=>setTimeout(resolve,0))}
  }
- run=resolverRunState();
- if(run.runId!==runId)return false;
- if(run.status==='running'){
-  if(run.cursor>=run.targetKeys.length){run.status='complete';run.completedAt=new Date().toISOString();run.message=`Klar: ${run.newSafe} säkra · ${run.review} för granskning · ${run.failed} utan träff.`;setResolverStatusLabel('Klar')}
-  else{run.status='paused';run.message=`Batch klar: ${run.processed}/${run.total}. ${run.total-run.processed} återstår.`;setResolverStatusLabel('Pausad')}
- }
- run.permanent=Object.keys(permanentIdentityRegistry().routes||{}).length;persistResolverRun(run);syncResolverSummary(run);updateResolverProgressUI(run);resolverDiag('Batch avslutad',`${run.status} · ${run.processed}/${run.total}`);stopResolverHeartbeat();refreshValuationAfterResolver();setResolverButtonState(run.status==='paused'?'Fortsätt nästa batch (max 8)':'Kör nästa batch (max 8)',false);render();return true;
+ run=resolverRunState();run.status='complete';run.completedAt=new Date().toISOString();run.permanent=Object.keys(permanentIdentityRegistry().routes||{}).length;run.message=`Klar: ${run.newSafe} nya säkra · ${run.review} för granskning · ${run.failed} utan träff.`;persistResolverRun(run);
+ const previous=globalResolverState(),suggestions=run.suggestions||[];persistGlobalResolver({...previous,version:'11.15.21',status:run.failed?'partial':'success',lastRun:new Date().toISOString(),scanned:run.processed,resolved:run.newSafe,review:run.review,unresolved:run.failed,errors:run.errors,suggestions,audit:[{date:new Date().toISOString(),scanned:run.processed,resolved:run.newSafe,review:run.review,unresolved:run.failed,errors:run.errors},...(previous.audit||[])].slice(0,100)});
+ refreshValuationAfterResolver();liveEvent(run.failed?'warning':'success','Global Identity Resolver 11.15.21',run.message,{skipped:run.skipped,permanent:run.permanent,errors:run.errors});render();if(suggestions.length)openGlobalResolverReview()
 }
-function applyResolverSuggestion(key,index=0,{silent=false,rowOverride=null}={}){
- const state=globalResolverState(),run=resolverRunState(),row=rowOverride||(run.suggestions||[]).find(x=>x.key===key)||(state.suggestions||[]).find(x=>x.key===key),candidate=row?.candidates?.[index];
- if(!row||!candidate)return {ok:false,message:'Kandidaten kunde inte läsas.'};
- const current=liveFoundation.mappings[key]||{};
- if(isManualMapping(current)&&!silent&&!confirm('Detta instrument har en manuell koppling. Ersätta den med valt resolverförslag?'))return {ok:false,message:'Avbrutet.'};
- const validation=validatePermanentRoute(key,row,candidate);
- if(!validation.ok){const message=validation.errors.join(' ');if(!silent)alert(message);return {ok:false,message};}
- if(validation.warnings.length&&!silent&&!confirm(`${validation.warnings.join(' ')}
-
-Spara ändå?`))return {ok:false,message:'Avbrutet efter varning.'};
- const route={provider:candidate.provider,ticker:validation.ticker,isin:validation.isin,exchange:validation.exchange,currency:validation.currency,figi:candidate.figi||'',confidence:candidate.score,verifiedAt:new Date().toISOString(),source:'global-resolver-11.15.20'};
- const saved=savePermanentIdentityRoute(key,route,{source:'global-resolver-approved'});
- if(!saved)return {ok:false,message:'Permanent lagring misslyckades.'};
- const verify=permanentRouteFor(key);
- if(!verify||!routeIsUsable(verify))return {ok:false,message:'Verifiering efter lagring misslyckades.'};
- liveFoundation.mappings[key]={...current,...route,providerSymbols:{...(current.providerSymbols||{}),...(candidate.providerSymbols||{}),[String(candidate.provider||'provider').toLowerCase().replace(/\s+/g,'_')]:candidate.ticker||candidate.isin},instrumentClass:classifyInstrument(holdingForIdentityKey(key,row)).code,verified:true,identityStatus:'verified',identityConfidence:candidate.score,identityReasons:[candidate.provider,'Verifierad i Global Identity Resolver 11.15.20'],source:'permanent-identity-registry-11.15.20',resolverVersion:'11.15.20',permanentRoute:verify,updatedAt:new Date().toISOString()};
- persistLiveFoundation();
- state.routes=state.routes||{};state.routes[key]=verify;
- state.suggestions=(state.suggestions||[]).filter(x=>x.key!==key);persistGlobalResolver(state);
- run.suggestions=(run.suggestions||[]).filter(x=>x.key!==key);run.permanent=Object.keys(permanentIdentityRegistry().routes||{}).length;run.review=Math.max(0,num(run.review)-(row.autoSafe?0:1));run.newSafe=Math.max(0,num(run.newSafe)-(row.autoSafe?1:0));persistResolverRun(run);syncResolverSummary(run);
- liveEvent('success','Permanent Identity Registry 11.15.20',`${row.name} sparad permanent som ${route.ticker||route.isin} · ${route.exchange||'okänd börs'} · ${route.currency}`,route);
- return {ok:true,message:`${row.name} sparad permanent som ${route.ticker||route.isin} · ${route.exchange||'okänd börs'} · ${route.currency}`,route};
-}
-function applySafeResolverSuggestions(){const run=resolverRunState();let count=0;for(const row of run.suggestions||[]){if(row.autoSafe&&!routeIsUsable(permanentRouteFor(row.key))&&applyResolverSuggestion(row.key,0,{silent:true}).ok)count++}return count}
-function permanentRegistryRows(){
- const registry=permanentIdentityRegistry();return Object.entries(registry.routes||{}).map(([key,route])=>{const h=holdingForIdentityKey(key,{});return {key,name:h._name||key,account:h._account||'',route}}).sort((a,b)=>a.name.localeCompare(b.name,'sv'));
-}
-function resolverReviewHtml(activeTab='review',notice=''){
- const run=resolverRunState(),savedRows=permanentRegistryRows(),reviewRows=(run.suggestions||[]).filter(row=>!routeIsUsable(permanentRouteFor(row.key)));
- const rows=reviewRows.map(row=>{const best=row.best;return `<article class="resolverResult ${row.conflict?'conflict':row.autoSafe?'safe':best?'review':'missing'}" data-review-key="${esc(row.key)}"><div class="resolverTitle"><div><b>${esc(row.name)}</b><small>${esc(row.account)} · ${esc(row.assetType)}</small></div><span>${best?`${num(row.confidence)}%`:'Ingen träff'}</span></div>${best?`<div class="resolverBest"><strong>${esc(best.ticker||best.isin)}</strong><p>${esc(best.name||'')} · ${esc(best.exchange||'Okänd börs')} · ${esc(best.currency||row.currency||'')}</p><small>${esc(best.provider)}${row.conflict?' · konflikt mellan källor':''}</small></div><div class="resolverActions"><button class="primary" data-resolver-apply="${esc(row.key)}">Godkänn och spara permanent</button>${row.candidates.length>1?`<select data-resolver-choice="${esc(row.key)}">${row.candidates.map((c,i)=>`<option value="${i}">${esc(c.ticker||c.isin)} · ${esc(c.exchange||'okänd börs')} · ${esc(c.currency||'')} · ${esc(c.provider)} · ${num(c.score)}%</option>`).join('')}</select>`:''}</div>`:row.fundPending?`<div class="notice"><b>Behöver fondidentitet</b><br>Traditionell fond utan ISIN. Aktieproviders hoppades över.</div>`:`<div class="notice">Ingen säker identitet hittades.</div>`}</article>`}).join('');
- const saved=savedRows.map(x=>`<article class="resolverResult safe"><div class="resolverTitle"><div><b>${esc(x.name)}</b><small>${esc(x.account)}</small></div><span>Permanent</span></div><div class="resolverBest"><strong>${esc(x.route.ticker||x.route.isin)}</strong><p>${esc(x.route.exchange||'Okänd börs')} · ${esc(x.route.currency||'')}</p><small>${esc(x.route.provider)} · sparad ${x.route.savedAt?new Date(x.route.savedAt).toLocaleString('sv-SE'):'permanent'}</small></div><button class="secondary" data-resolver-undo="${esc(x.key)}">Ångra permanent sparning</button></article>`).join('');
- return `<div class="eyebrow">Global Identity Resolver 11.15.20</div><h2>Permanent Registry Recovery</h2>${notice?`<div class="resolverSaveNotice">${esc(notice)}</div>`:''}<div class="resolverTabs"><button data-resolver-tab="review" class="${activeTab==='review'?'activeChip':''}">För granskning (${reviewRows.length})</button><button data-resolver-tab="saved" class="${activeTab==='saved'?'activeChip':''}">Sparade permanent (${savedRows.length})</button></div><div class="grid"><div class="card metric"><span>Sökta</span><b>${run.processed}</b></div><div class="card metric"><span>Kvar att granska</span><b>${reviewRows.length}</b></div><div class="card metric"><span>Permanent sparade</span><b>${savedRows.length}</b></div><div class="card metric"><span>Behöver fondidentitet</span><b>${run.fundPending||0}</b></div></div><div class="resolverList">${activeTab==='saved'?(saved||'<div class="empty">Inga permanent sparade identiteter ännu.</div>'):(rows||'<div class="empty">Inga kandidater återstår för granskning.</div>')}</div>`;
-}
-function undoPermanentIdentity(key){
- const registry=permanentIdentityRegistry(),route=registry.routes?.[key];if(!route)return false;
- delete registry.routes[key];registry.audit=[{date:new Date().toISOString(),key,provider:route.provider,ticker:route.ticker||'',isin:route.isin||'',action:'removed'},...(registry.audit||[])].slice(0,300);persistPermanentIdentityRegistry(registry);
- const m=liveFoundation.mappings[key]||{};delete m.permanentRoute;m.verified=false;m.identityStatus='review';m.source='permanent-route-removed-11.15.20';liveFoundation.mappings[key]=m;persistLiveFoundation();
- const state=globalResolverState();if(state.routes)delete state.routes[key];persistGlobalResolver(state);return true;
-}
-function bindResolverReview(activeTab='review'){
- const {card,body}=modalParts();
- document.querySelectorAll('[data-resolver-tab]').forEach(btn=>btn.onclick=()=>{const y=card.scrollTop;body.innerHTML=resolverReviewHtml(btn.dataset.resolverTab);bindResolverReview(btn.dataset.resolverTab);card.scrollTop=y});
- document.querySelectorAll('[data-resolver-apply]').forEach(btn=>btn.addEventListener('click',()=>{const y=card.scrollTop,key=btn.dataset.resolverApply,sel=document.querySelector(`[data-resolver-choice="${CSS.escape(key)}"]`),idx=num(sel?.value),result=applyResolverSuggestion(key,idx);if(result.ok){refreshValuationAfterResolver();body.innerHTML=resolverReviewHtml('review',result.message);bindResolverReview('review');card.scrollTop=y;renderResolverCountersOnly()}}));
- document.querySelectorAll('[data-resolver-undo]').forEach(btn=>btn.onclick=()=>{if(!confirm('Ta bort denna permanenta identitet? Instrumentet återgår till granskning vid nästa resolverkörning.'))return;const y=card.scrollTop;if(undoPermanentIdentity(btn.dataset.resolverUndo)){body.innerHTML=resolverReviewHtml('saved','Permanent sparning ångrades.');bindResolverReview('saved');card.scrollTop=y;renderResolverCountersOnly()}})
-}
-function renderResolverCountersOnly(){const run=resolverRunState(),saved=Object.keys(permanentIdentityRegistry().routes||{}).length,remaining=resolverTargets().length;const set=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=String(v)};set('resolverPermanent',saved);set('resolverRemaining',remaining);set('resolverSafe',run.newSafe||0);set('resolverReview',run.review||0)}
-function openGlobalResolverReview(activeTab='review'){openModal(resolverReviewHtml(activeTab));bindResolverReview(activeTab)}
-function globalResolverPanel(){const st=globalResolverState(),run=resolverRunState(),remaining=run.total?Math.max(0,run.total-run.processed):resolverTargets().length,saved=Object.keys(permanentIdentityRegistry().routes||{}).length,running=run.status==='running',paused=run.status==='paused';return `<section class="section globalResolverPanel"><div class="sectionHead"><div><div class="eyebrow">Global Identity Resolver 11.15.20</div><h2>Stabil batchmotor med permanent resultatlagring.</h2></div><span class="healthScore">${saved} låsta</span></div><p>Resolvern arbetar i batcher om exakt högst åtta instrument, sparar checkpoint efter varje instrument och skiljer traditionella fonder från börshandlade instrument. Fonder utan ISIN skickas inte till aktieproviders.</p><div class="grid"><div class="card metric"><span>Återstår</span><b id="resolverRemaining">${remaining}</b></div><div class="card metric"><span>Permanent sparade</span><b id="resolverPermanent">${saved}</b></div><div class="card metric"><span>Nya säkra</span><b id="resolverSafe">${run.newSafe||0}</b></div><div class="card metric"><span>För granskning</span><b id="resolverReview">${run.review||0}</b></div><div class="card metric"><span>Överhoppade</span><b id="resolverSkipped">${run.skipped||0}</b></div><div class="card metric"><span>Behöver fondidentitet</span><b id="resolverFundPending">${run.fundPending||0}</b></div><div class="card metric"><span>Misslyckade</span><b id="resolverFailed">${run.failed||0}</b></div></div><div class="resolverProgress"><div><span id="resolverStatusLabel">${running?'Kör':paused?'Pausad':'Redo'}</span><b><span id="resolverProcessed">${run.processed||0}</span>/<span id="resolverTotal">${run.total||0}</span></b></div><div class="bar"><i id="resolverProgressBar" style="width:${run.total?Math.round((run.processed||0)/run.total*100):0}%"></i></div><small id="resolverMessage">${esc(run.message||'Kör en liten stabil batch när du är redo.')}</small></div><div class="foundationActions"><button id="runGlobalResolver" class="primary resolverActionButton" type="button" onclick="return window.mkRunResolverBatch(event)" ${running?'disabled':''}>${running?'Batch körs…':paused?'Fortsätt nästa batch (max 8)':'Kör nästa batch (max 8)'}</button><button id="stopGlobalResolver" class="danger" type="button" onclick="return window.mkStopResolver(event)" ${running?'':'disabled'}>Stoppa säkert</button><button id="reviewGlobalResolver" class="secondary" type="button" onclick="return window.mkReviewResolver(event)" ${(run.suggestions||[]).length?'':'disabled'}>Granska resultat</button></div><div class="resolverSources"><span>Lokal först</span><span>Permanent Registry</span><span>Global Registry</span><span>OpenFIGI</span><span>Twelve Data</span><span>Alpha Vantage</span><span>Finnhub</span><span>Fond/ISIN & NAV</span></div><section class="resolverDiagnostics"><div class="sectionHead"><div><div class="eyebrow">Permanent Registry Recovery 11.15.20</div><h3>Enhetlig körkedja och full logg</h3><small><b id="resolverDiagnosticCount">${resolverDiagnosticState().lines?.length||0}</b> rader · <b id="resolverDiagnosticStorage">${esc(resolverTraceStorage)}</b></small></div><span class="healthScore">Puls <b id="resolverHeartbeat">${resolverDiagnosticState().heartbeat||0}</b></span></div><div class="diagMeta"><span>Instrument <b id="resolverCurrentInstrument">${esc(resolverDiagnosticState().currentInstrument||'–')}</b></span><span>Senaste steg <b id="resolverCurrentStep">${esc(resolverDiagnosticState().currentStep||'Redo')}</b></span></div><div id="resolverDiagnosticLog" class="diagnosticConsole ${resolverDiagnosticState().expanded?'expanded':''}">${(resolverDiagnosticState().lines||[]).map(diagnosticLineHtml).join('')||'<div class="empty">Ingen diagnostik ännu.</div>'}</div><div class="diagnosticActions"><button id="toggleResolverDiagnosticLog" class="secondary" type="button" onclick="return window.mkToggleResolverDiagnosticLog(event)">${resolverDiagnosticState().expanded?'Komprimera loggen':'Visa hela loggen'}</button><button class="secondary" type="button" onclick="return window.mkCopyResolverDiagnostics(event)">Kopiera hela loggen</button><button class="secondary" type="button" onclick="return window.mkClearResolverDiagnosticLog(event)">Rensa loggen</button></div></section><p class="disclaimer">Körstatusen lagras först i minne och sessionStorage, så full localStorage kan inte längre avbryta workern. Diagnostiken ändrar aldrig antal, GAV, kredit, transaktioner eller Portfolio Ledger. Loggen visar exakt om körningen stannar före Promise-callback, i workerfunktionen eller i instrumentresolving.</p></section>`}
+function applyResolverSuggestion(key,index=0,{silent=false,rowOverride=null}={}){const state=globalResolverState(),row=rowOverride||(state.suggestions||[]).find(x=>x.key===key),candidate=row?.candidates?.[index];if(!row||!candidate)return false;const current=liveFoundation.mappings[key]||{};if(isManualMapping(current)&&!silent&&!confirm('Detta instrument har en manuell koppling. Ersätta den med valt resolverförslag?'))return false;const route={provider:candidate.provider,ticker:candidate.ticker||'',isin:candidate.isin||'',exchange:candidate.exchange||'',currency:candidate.currency||row.currency||'SEK',figi:candidate.figi||'',confidence:candidate.score,verifiedAt:new Date().toISOString(),source:'global-resolver-11.15.21'};if(!routeIsUsable(route))return false;liveFoundation.mappings[key]={...current,...route,providerSymbols:{...(current.providerSymbols||{}),...(candidate.providerSymbols||{}),[String(candidate.provider||'provider').toLowerCase().replace(/\s+/g,'_')]:candidate.ticker||candidate.isin},instrumentClass:classifyInstrument(canonicalHoldings().find(h=>h._key===key)||row).code,verified:true,identityStatus:'verified',identityConfidence:candidate.score,identityReasons:[candidate.provider,'Verifierad i Global Identity Resolver 11.15.21'],source:'permanent-identity-registry-11.15.21',resolverVersion:'11.15.21',permanentRoute:route,updatedAt:new Date().toISOString()};persistLiveFoundation();savePermanentIdentityRoute(key,route,{source:'global-resolver-approved'});state.routes=state.routes||{};state.routes[key]=route;row.applied=true;row.appliedAt=new Date().toISOString();row.appliedCandidate=index;persistGlobalResolver(state);liveEvent('success','Permanent Identity Registry 11.15.21',`${row.name} låstes permanent till ${candidate.ticker||candidate.isin}`,route);return true}
+function applySafeResolverSuggestions(){const state=globalResolverState();let count=0;for(const row of state.suggestions||[]){if(row.autoSafe&&!row.applied&&applyResolverSuggestion(row.key,0))count++}return count}
+function resolverReviewHtml(){const st=globalResolverState();const rows=(st.suggestions||[]).map(row=>{const best=row.best;return `<article class="resolverResult ${row.conflict?'conflict':row.autoSafe?'safe':best?'review':'missing'}"><div class="resolverTitle"><div><b>${esc(row.name)}</b><small>${esc(row.account)} · ${esc(row.assetType)}</small></div><span>${row.applied?'Permanent':best?`${num(row.confidence)}%`:'Ingen träff'}</span></div>${best?`<div class="resolverBest"><strong>${esc(best.ticker||best.isin)}</strong><p>${esc(best.name||'')} · ${esc(best.exchange||'Okänd börs')} · ${esc(best.currency||row.currency||'')}</p><small>${esc(best.provider)}${row.conflict?' · konflikt mellan källor':''}</small></div><div class="resolverMeta"><small>Testade tickers: ${esc((row.variants||[]).slice(0,6).join(' · ')||'—')}</small></div><div class="resolverActions"><button class="primary" data-resolver-apply="${esc(row.key)}" ${row.applied?'disabled':''}>${row.applied?'Sparad permanent':'Godkänn och spara permanent'}</button>${row.candidates.length>1?`<select data-resolver-choice="${esc(row.key)}">${row.candidates.map((c,i)=>`<option value="${i}">${esc(c.ticker||c.isin)} · ${esc(c.provider)} · ${num(c.score)}%</option>`).join('')}</select>`:''}</div>`:`<div class="notice">Ingen säker identitet hittades automatiskt. Instrumentet lämnas orört för manuell granskning.</div>`}</article>`}).join('');return `<div class="eyebrow">Global Identity Resolver 11.15.21</div><h2>Verifiera och lås rätt identitet</h2><p class="disclaimer">ISIN, tickerformat, börsvarianter och flera providers jämförs. Endast uttryckligt godkända eller mycket säkra träffar sparas i read-only live-lagret.</p><div class="grid"><div class="card metric"><span>Sökta</span><b>${st.scanned}</b></div><div class="card metric"><span>Säkra</span><b>${st.resolved}</b></div><div class="card metric"><span>Granskning</span><b>${st.review}</b></div><div class="card metric"><span>Utan träff</span><b>${st.unresolved}</b></div></div><button id="applySafeResolver" class="primary" ${st.resolved?'':'disabled'}>Godkänn alla säkra och spara permanent</button><div class="resolverList">${rows||'<div class="empty">Kör resolvermotorn för att skapa förslag.</div>'}</div>`}
+function openGlobalResolverReview(){openModal(resolverReviewHtml());document.getElementById('applySafeResolver')?.addEventListener('click',()=>{const n=applySafeResolverSuggestions();alert(`${n} säkra identiteter sparades permanent.`);closeModal();render()});document.querySelectorAll('[data-resolver-apply]').forEach(btn=>btn.addEventListener('click',()=>{const key=btn.dataset.resolverApply,sel=document.querySelector(`[data-resolver-choice="${CSS.escape(key)}"]`),idx=num(sel?.value);if(applyResolverSuggestion(key,idx)){openGlobalResolverReview();render()}}))}
+function globalResolverPanel(){const st=globalResolverState(),run=recoverResolverRun(),coverage=instrumentMappingCoverage(),remaining=resolverTargets().length,saved=Object.keys(permanentIdentityRegistry().routes||{}).length,running=run.status==='running',paused=run.status==='paused';return `<section class="section globalResolverPanel"><div class="sectionHead"><div><div class="eyebrow">Global Identity Resolver 11.15.21</div><h2>Snabbare, återupptagbar och permanent.</h2></div><span class="healthScore">${saved} låsta</span></div><p>Redan lösta instrument hoppas över lokalt. Varje säker identitet sparas direkt, och en avbruten körning kan fortsätta från senaste position utan att börja om.</p><div class="grid"><div class="card metric"><span>Återstår</span><b>${remaining}</b></div><div class="card metric"><span>Permanent sparade</span><b>${saved}</b></div><div class="card metric"><span>Nya säkra</span><b>${run.newSafe||0}</b></div><div class="card metric"><span>För granskning</span><b>${run.review||st.review||0}</b></div><div class="card metric"><span>Överhoppade</span><b>${run.skipped||0}</b></div><div class="card metric"><span>Misslyckade</span><b>${run.failed||0}</b></div></div>${running||paused?`<div class="resolverProgress"><div><span>${paused?'Pausad':'Kör'}</span><b>${run.processed||0}/${run.total||0}</b></div><div class="bar"><i style="width:${run.total?Math.round((run.processed||0)/run.total*100):0}%"></i></div><small>${esc(run.message||'')}</small></div>`:''}<div class="foundationActions"><button id="runGlobalResolver" class="primary" type="button" ${running?'disabled':''}>${paused?'Fortsätt Global Identity Resolver 11.15.21':'Kör Global Identity Resolver 11.15.21'}</button><button id="stopGlobalResolver" class="danger" type="button" ${running?'':'disabled'}>Stoppa säkert</button><button id="reviewGlobalResolver" class="secondary" type="button" ${(st.suggestions||[]).length||(run.suggestions||[]).length?'':'disabled'}>Granska och godkänn</button></div><div class="resolverSources"><span>Permanent Registry</span><span>Global Registry</span><span>OpenFIGI</span><span>Twelve Data</span><span>Alpha Vantage</span><span>Finnhub</span></div><p class="disclaimer">Identitets- och providerdata sparas i read-only live-lagret. Antal, GAV, kredit, transaktioner och Portfolio Ledger ändras aldrig.</p></section>`}
 
 function classifyInstrument(h){
  const raw=`${h._type||assetType(h)} ${h._name||holdingName(h)}`.toLowerCase();
@@ -1179,7 +889,7 @@ function market(){
  <section class="section"><h2>Foundation Health</h2><div class="grid"><div class="card metric"><span>Helhetspoäng</span><b>${foundation.score}/100</b></div><div class="card metric"><span>Providers redo</span><b>${foundation.ready}/${foundation.registry.length}</b></div><div class="card metric"><span>Mappningstäckning</span><b>${foundation.coverage}%</b></div><div class="card metric"><span>Live-lager</span><b>${esc(registry.status)}</b></div></div></section>`;
 }
 
-function analysis(){const ip=intelligencePortfolio();let items=ip.items;if(intelFilter==='buy')items=items.filter(x=>x.status==='Öka kandidat');if(intelFilter==='watch')items=items.filter(x=>/Bevaka|Komplettera/.test(x.status));if(intelFilter==='risk')items=items.filter(x=>x.risk<45||x.weight>12);if(intelFilter==='quality')items=items.filter(x=>x.score>=70);items.sort((a,b)=>b.score-a.score);const strengths=[],weaknesses=[];if(ip.data>=70)strengths.push('God datatäckning för lokal analys');if(ip.high)strengths.push(`${ip.high} innehav med stark intelligensprofil`);if(canonicalHoldings().some(x=>/fond|etf/i.test(x._type)))strengths.push('Fonder och ETF:er bidrar till riskspridning');if(ip.risky)weaknesses.push(`${ip.risky} innehav behöver risk- eller koncentrationsgranskning`);if(ip.data<80)weaknesses.push('Ticker, sektor eller fundamenta saknas för delar av portföljen');if(Object.values(admin.credits||{}).some(x=>num(x.used)>0))weaknesses.push('Utnyttjad kredit ska vägas in före nya köp');return `<section class="hero"><div class="eyebrow">Mästarklass OS 11.15.20 · Permanent Registry Recovery</div><h2>Från score till genomförbar månadsplan.</h2><p>11.0 bevarar Portfolio Intelligence, målsimulering, riskradar och kapitalallokering. Allt är lokalt, read-only och spårbart.</p><div class="ratingHero"><div><span class="grade">${ip.grade}</span><b>${ip.score}/100</b><small>${starsFor(ip.score)}</small></div><div class="dimensionGrid"><span>Kvalitet <b>${ip.dimensions.quality}</b></span><span>Risk <b>${ip.dimensions.risk}</b></span><span>Värdering <b>${ip.dimensions.valuation}</b></span><span>Utdelning <b>${ip.dimensions.dividend}</b></span><span>Data <b>${ip.dimensions.data}</b></span></div></div></section><div class="grid"><div class="card metric"><span>Starka profiler</span><b>${ip.high}</b></div><div class="card metric"><span>Bevaka</span><b>${ip.watch}</b></div><div class="card metric"><span>Risk / koncentration</span><b>${ip.risky}</b></div><div class="card metric"><span>Datatäckning</span><b>${ip.data} %</b></div></div><section class="section"><h2>Portföljens läge</h2><div class="insightGrid"><div class="insight good"><b>Styrkor</b>${strengths.map(x=>`<p>✓ ${esc(x)}</p>`).join('')||'<p>Mer verifierad data behövs.</p>'}</div><div class="insight caution"><b>Att förbättra</b>${weaknesses.map(x=>`<p>• ${esc(x)}</p>`).join('')||'<p>Inga tydliga strukturvarningar.</p>'}</div></div></section>${autonomousPortfolioPanel()}${decisionCenter(ip)}<section class="section"><div class="sectionHead"><h2>Intelligenskort</h2><small>${items.length} av ${ip.items.length}</small></div><div class="intelFilters"><button data-intel-filter="all" class="${intelFilter==='all'?'activeChip':''}">Alla</button><button data-intel-filter="buy" class="${intelFilter==='buy'?'activeChip':''}">Öka kandidater</button><button data-intel-filter="quality" class="${intelFilter==='quality'?'activeChip':''}">Hög kvalitet</button><button data-intel-filter="watch" class="${intelFilter==='watch'?'activeChip':''}">Bevaka</button><button data-intel-filter="risk" class="${intelFilter==='risk'?'activeChip':''}">Risk</button></div><div class="intelList">${items.map(intelCard).join('')||'<div class="empty">Inga innehav matchar filtret.</div>'}</div></section>`}
+function analysis(){const ip=intelligencePortfolio();let items=ip.items;if(intelFilter==='buy')items=items.filter(x=>x.status==='Öka kandidat');if(intelFilter==='watch')items=items.filter(x=>/Bevaka|Komplettera/.test(x.status));if(intelFilter==='risk')items=items.filter(x=>x.risk<45||x.weight>12);if(intelFilter==='quality')items=items.filter(x=>x.score>=70);items.sort((a,b)=>b.score-a.score);const strengths=[],weaknesses=[];if(ip.data>=70)strengths.push('God datatäckning för lokal analys');if(ip.high)strengths.push(`${ip.high} innehav med stark intelligensprofil`);if(canonicalHoldings().some(x=>/fond|etf/i.test(x._type)))strengths.push('Fonder och ETF:er bidrar till riskspridning');if(ip.risky)weaknesses.push(`${ip.risky} innehav behöver risk- eller koncentrationsgranskning`);if(ip.data<80)weaknesses.push('Ticker, sektor eller fundamenta saknas för delar av portföljen');if(Object.values(admin.credits||{}).some(x=>num(x.used)>0))weaknesses.push('Utnyttjad kredit ska vägas in före nya köp');return `<section class="hero"><div class="eyebrow">Mästarklass OS 11.15.21 · Resolver Performance & Recovery</div><h2>Från score till genomförbar månadsplan.</h2><p>11.0 bevarar Portfolio Intelligence, målsimulering, riskradar och kapitalallokering. Allt är lokalt, read-only och spårbart.</p><div class="ratingHero"><div><span class="grade">${ip.grade}</span><b>${ip.score}/100</b><small>${starsFor(ip.score)}</small></div><div class="dimensionGrid"><span>Kvalitet <b>${ip.dimensions.quality}</b></span><span>Risk <b>${ip.dimensions.risk}</b></span><span>Värdering <b>${ip.dimensions.valuation}</b></span><span>Utdelning <b>${ip.dimensions.dividend}</b></span><span>Data <b>${ip.dimensions.data}</b></span></div></div></section><div class="grid"><div class="card metric"><span>Starka profiler</span><b>${ip.high}</b></div><div class="card metric"><span>Bevaka</span><b>${ip.watch}</b></div><div class="card metric"><span>Risk / koncentration</span><b>${ip.risky}</b></div><div class="card metric"><span>Datatäckning</span><b>${ip.data} %</b></div></div><section class="section"><h2>Portföljens läge</h2><div class="insightGrid"><div class="insight good"><b>Styrkor</b>${strengths.map(x=>`<p>✓ ${esc(x)}</p>`).join('')||'<p>Mer verifierad data behövs.</p>'}</div><div class="insight caution"><b>Att förbättra</b>${weaknesses.map(x=>`<p>• ${esc(x)}</p>`).join('')||'<p>Inga tydliga strukturvarningar.</p>'}</div></div></section>${autonomousPortfolioPanel()}${decisionCenter(ip)}<section class="section"><div class="sectionHead"><h2>Intelligenskort</h2><small>${items.length} av ${ip.items.length}</small></div><div class="intelFilters"><button data-intel-filter="all" class="${intelFilter==='all'?'activeChip':''}">Alla</button><button data-intel-filter="buy" class="${intelFilter==='buy'?'activeChip':''}">Öka kandidater</button><button data-intel-filter="quality" class="${intelFilter==='quality'?'activeChip':''}">Hög kvalitet</button><button data-intel-filter="watch" class="${intelFilter==='watch'?'activeChip':''}">Bevaka</button><button data-intel-filter="risk" class="${intelFilter==='risk'?'activeChip':''}">Risk</button></div><div class="intelList">${items.map(intelCard).join('')||'<div class="empty">Inga innehav matchar filtret.</div>'}</div></section>`}
 function ideas(){const a=[...(data.ideaBank||[]),...(data.aiRadar||[])];return `<section class="hero"><div class="eyebrow">Idébank</div><h2>Idéer som måste förtjäna sin plats</h2></section><div class="list">${a.map(x=>`<div class="card"><h3>${esc(x.title||x.name||'Idé')}</h3><p>${esc(x.text||x.note||'')}</p></div>`).join('')||'<div class="empty">Idébanken är tom.</div>'}</div>`}
 function goals(){const gs=goalIntelligence();return `<section class="hero"><div class="eyebrow">Goal Intelligence 10.8</div><h2>Bygg frihet steg för steg</h2><p>Se hur nuvarande kapital och sparande kan föra dig mot nästa milstolpar.</p></section><section class="section"><h2>Prognoser</h2><div class="goalTimeline">${gs.map(g=>`<div class="goalForecast"><div><b>${g.label}</b><small>${pct(g.progress)} uppnått</small></div><strong>${fmtYears(g.years)}</strong></div>`).join('')}</div></section><div class="card form"><label>Kapitalmål<input id="capitalGoal" inputmode="numeric" value="${num(data.goals.capital)}"></label><label>Årligt utdelningsmål<input id="divGoal" inputmode="numeric" value="${num(data.goals.annualDividend)}"></label><label>Månadssparande<input id="monthly" inputmode="numeric" value="${num(data.portfolio.monthly||data.monthlyPlan.total)}"></label><button id="saveGoals" class="primary">Spara mål lokalt</button></div>`}
 function more(){return `<section class="hero"><div class="eyebrow">Säkerhet & data</div><h2>Du äger din data</h2><p>Backupen innehåller basportfölj, administrationslager, kredit och transaktioner.</p></section><div class="card"><h2>Full lokal backup</h2><button id="exportBtn" class="primary">Exportera full backup</button><label class="file">Importera JSON-backup<input id="importFile" type="file" accept=".json,application/json"></label><p><small>Datakälla: ${esc(sourceKey||'ingen lokal portfölj hittad')}</small></p></div>`}
@@ -1214,9 +924,8 @@ function saveTransaction(){const key=document.getElementById('txHolding').value,
 function deleteTransaction(id){const tx=transactions.find(x=>x.id===id);if(!tx||!confirm('Radera transaktionen och återställ antal/GAV till läget före den?'))return;if(tx.overrideBefore)admin.overrides[tx.key]=tx.overrideBefore;else delete admin.overrides[tx.key];transactions=transactions.filter(x=>x.id!==id);persistTx();audit('transaction-delete',`Raderade transaktion ${tx.name}`,null,{id});persistAdmin();render()}
 function undoLast(){const x=admin.audit[0];if(!x)return;if(!confirm(`Ångra senaste ändringen: ${x.label}?`))return;if(x.kind==='holding-edit'){if(x.before?.value)admin.overrides[x.before.key]=x.before.value;else delete admin.overrides[x.after.key]}else if(x.kind==='holding-add'){admin.newHoldings=admin.newHoldings.filter(h=>h._key!==x.after.key)}else if(x.kind==='credit-edit'){if(x.before?.value)admin.credits[x.before.account]=x.before.value;else delete admin.credits[x.after.account]}else return alert('Denna loggpost ångras via transaktionshistoriken.');admin.audit.shift();persistAdmin();render()}
 function bindModal(){const {root,close}=modalParts();if(!root)return;close.onclick=()=>closeModal();root.onclick=e=>{if(e.target===root)closeModal()};document.querySelector('[data-edit-key]')?.addEventListener('click',e=>editHolding(e.currentTarget.dataset.editKey));document.querySelector('[data-tx-key]')?.addEventListener('click',e=>{const key=e.currentTarget.dataset.txKey;portfolioTab='transactions';closeModal();render();setTimeout(()=>{const sel=document.getElementById('txHolding');if(sel)sel.value=key},0)});document.getElementById('saveEdit')?.addEventListener('click',e=>saveEdit(e.currentTarget.dataset.key))}
-function bind(){document.getElementById('runAutonomousScan')?.addEventListener('click',()=>{runAutonomousPortfolioAnalysis({reason:'manual'});render()});document.getElementById('runConfidence')?.addEventListener('click',()=>{runAutonomousPortfolioAnalysis({reason:'manual'});render()});document.getElementById('runAdaptiveData')?.addEventListener('click',syncLiveData);document.getElementById('runIdentityRebuild')?.addEventListener('click',()=>{if(!confirm('Bygga om endast det lokala read-only identitetsregistret? Manuella kopplingar och portföljdata bevaras.'))return;const r=runIdentityRebuild();alert(`Identity Rebuild klar. ${r.rebuilt} identiteter byggda · ${r.removedUnsafe} osäkra återställda · ${r.review} att granska.`);render()});document.getElementById('openIdentityReview')?.addEventListener('click',openIdentityReview);document.getElementById('openFundNav')?.addEventListener('click',openFundNavEditor);document.getElementById('classifyAssets')?.addEventListener('click',()=>{const n=applyAssetClassifications();alert(`${n} instrument klassificerades för rätt prismodell.`);render()});document.getElementById('runUniversalIdentity')?.addEventListener('click',()=>{const r=scanUniversalIdentity();alert(`Universal Identity klar. ${r.verified} verifierade · ${r.review} att granska · ${r.conflicts} konflikter.`);render()});document.getElementById('applyUniversalIdentity')?.addEventListener('click',()=>{const r=applyUniversalSuggestions();alert(`${r.applied||0} säkra identitetsförslag tillämpades.`);render()});document.getElementById('runRegistry')?.addEventListener('click',()=>{const r=enrichMappingsFromRegistry();alert(`Identity Engine klar. ${r.recognized} igenkända · ${r.enriched} berikade · ${r.corrected||0} felaktiga tickers rättade.`);render()});document.getElementById('syncLive')?.addEventListener('click',syncLiveData);document.getElementById('runSteward')?.addEventListener('click',()=>{const r=runAutoDataSteward({force:true,reason:'manual'});alert(`Dataunderhåll klart. ${r.message}`);render()});document.getElementById('discoverMappings')?.addEventListener('click',discoverInstrumentMappings);document.getElementById('providerSettings')?.addEventListener('click',openProviderSettings);document.getElementById('reviewMappings')?.addEventListener('click',openMappingEditor);document.getElementById('suggestMappings')?.addEventListener('click',()=>{const n=applySafeMappingSuggestions();alert(n?`${n} tickerförslag lades till i live-lagret.`:'Inga nya säkra förslag hittades.');render()});document.getElementById('buildMappings')?.addEventListener('click',()=>{buildInstrumentMappings();render()});document.getElementById('validateLive')?.addEventListener('click',()=>{validateLiveCache();render()});document.querySelectorAll('[data-intel-filter]').forEach(b=>b.onclick=()=>{intelFilter=b.dataset.intelFilter;render();scrollTo(0,0)});document.querySelectorAll('[data-intel-index]').forEach(b=>b.onclick=()=>showHolding(Number(b.dataset.intelIndex)));document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=e=>{e.preventDefault();portfolioTab=b.dataset.tab||'overview';screen='portfolio';render();requestAnimationFrame(()=>scrollTo({top:0,left:0,behavior:'auto'}))});document.querySelectorAll('[data-tabgo]').forEach(b=>b.onclick=e=>{e.preventDefault();portfolioTab=b.dataset.tabgo||'overview';screen='portfolio';render();requestAnimationFrame(()=>scrollTo({top:0,left:0,behavior:'auto'}))});const s=document.getElementById('search');if(s)s.oninput=e=>{query=e.target.value;render()};const tf=document.getElementById('typeFilter');if(tf)tf.onchange=e=>{typeFilter=e.target.value;render()};const af=document.getElementById('accountFilter');if(af)af.onchange=e=>{accountFilter=e.target.value;render()};const sm=document.getElementById('sortMode');if(sm)sm.onchange=e=>{sortMode=e.target.value;render()};document.querySelectorAll('[data-index]').forEach(b=>b.onclick=()=>showHolding(Number(b.dataset.index)));document.getElementById('openEdit')?.addEventListener('click',()=>editHolding(document.getElementById('adminHolding').value));document.getElementById('addHolding')?.addEventListener('click',addHolding);document.getElementById('saveCredit')?.addEventListener('click',saveCredit);document.getElementById('saveTx')?.addEventListener('click',saveTransaction);document.getElementById('saveLedger')?.addEventListener('click',saveManualLedger);document.querySelectorAll('[data-ledger-id]').forEach(b=>b.onclick=()=>showLedger(b.dataset.ledgerId));document.querySelectorAll('[data-delete-tx]').forEach(b=>b.onclick=()=>deleteTransaction(b.dataset.deleteTx));document.getElementById('undoAudit')?.addEventListener('click',undoLast);const sg=document.getElementById('saveGoals');if(sg)sg.onclick=()=>{data.goals.capital=num(document.getElementById('capitalGoal').value);data.goals.annualDividend=num(document.getElementById('divGoal').value);data.portfolio.monthly=num(document.getElementById('monthly').value);safeSet(SETTINGS_KEY,JSON.stringify({goals:data.goals,portfolio:{monthly:data.portfolio.monthly}}));render()};const ex=document.getElementById('exportBtn');if(ex)ex.onclick=()=>{const payload={version:VERSION,exportedAt:new Date().toISOString(),sourceKey,data,admin,transactions,ledger};const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='mastarklass-os-full-backup-'+today()+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)};const im=document.getElementById('importFile');if(im)im.onchange=async e=>{const f=e.target.files?.[0];if(!f)return;const x=parse(await f.text());if(!x)return alert('Filen kunde inte läsas.');if(x.data&&looksLikePortfolio(x.data))safeSet(DATA_KEY,JSON.stringify(x.data));if(x.admin)safeSet(ADMIN_KEY,JSON.stringify(x.admin));if(x.transactions)safeSet(TX_KEY,JSON.stringify(x.transactions));if(x.ledger)safeSet(LEDGER_KEY,JSON.stringify(x.ledger));location.reload()}}
+function bind(){document.getElementById('runAutonomousScan')?.addEventListener('click',()=>{runAutonomousPortfolioAnalysis({reason:'manual'});render()});document.getElementById('runConfidence')?.addEventListener('click',()=>{runAutonomousPortfolioAnalysis({reason:'manual'});render()});document.getElementById('runAdaptiveData')?.addEventListener('click',syncLiveData);document.getElementById('runGlobalResolver')?.addEventListener('click',runGlobalResolver);document.getElementById('stopGlobalResolver')?.addEventListener('click',requestResolverStop);document.getElementById('reviewGlobalResolver')?.addEventListener('click',openGlobalResolverReview);document.getElementById('runIdentityRebuild')?.addEventListener('click',()=>{if(!confirm('Bygga om endast det lokala read-only identitetsregistret? Manuella kopplingar och portföljdata bevaras.'))return;const r=runIdentityRebuild();alert(`Identity Rebuild klar. ${r.rebuilt} identiteter byggda · ${r.removedUnsafe} osäkra återställda · ${r.review} att granska.`);render()});document.getElementById('openIdentityReview')?.addEventListener('click',openIdentityReview);document.getElementById('openFundNav')?.addEventListener('click',openFundNavEditor);document.getElementById('classifyAssets')?.addEventListener('click',()=>{const n=applyAssetClassifications();alert(`${n} instrument klassificerades för rätt prismodell.`);render()});document.getElementById('runUniversalIdentity')?.addEventListener('click',()=>{const r=scanUniversalIdentity();alert(`Universal Identity klar. ${r.verified} verifierade · ${r.review} att granska · ${r.conflicts} konflikter.`);render()});document.getElementById('applyUniversalIdentity')?.addEventListener('click',()=>{const r=applyUniversalSuggestions();alert(`${r.applied||0} säkra identitetsförslag tillämpades.`);render()});document.getElementById('runRegistry')?.addEventListener('click',()=>{const r=enrichMappingsFromRegistry();alert(`Identity Engine klar. ${r.recognized} igenkända · ${r.enriched} berikade · ${r.corrected||0} felaktiga tickers rättade.`);render()});document.getElementById('syncLive')?.addEventListener('click',syncLiveData);document.getElementById('runSteward')?.addEventListener('click',()=>{const r=runAutoDataSteward({force:true,reason:'manual'});alert(`Dataunderhåll klart. ${r.message}`);render()});document.getElementById('discoverMappings')?.addEventListener('click',discoverInstrumentMappings);document.getElementById('providerSettings')?.addEventListener('click',openProviderSettings);document.getElementById('reviewMappings')?.addEventListener('click',openMappingEditor);document.getElementById('suggestMappings')?.addEventListener('click',()=>{const n=applySafeMappingSuggestions();alert(n?`${n} tickerförslag lades till i live-lagret.`:'Inga nya säkra förslag hittades.');render()});document.getElementById('buildMappings')?.addEventListener('click',()=>{buildInstrumentMappings();render()});document.getElementById('validateLive')?.addEventListener('click',()=>{validateLiveCache();render()});document.querySelectorAll('[data-intel-filter]').forEach(b=>b.onclick=()=>{intelFilter=b.dataset.intelFilter;render();scrollTo(0,0)});document.querySelectorAll('[data-intel-index]').forEach(b=>b.onclick=()=>showHolding(Number(b.dataset.intelIndex)));document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=e=>{e.preventDefault();portfolioTab=b.dataset.tab||'overview';screen='portfolio';render();requestAnimationFrame(()=>scrollTo({top:0,left:0,behavior:'auto'}))});document.querySelectorAll('[data-tabgo]').forEach(b=>b.onclick=e=>{e.preventDefault();portfolioTab=b.dataset.tabgo||'overview';screen='portfolio';render();requestAnimationFrame(()=>scrollTo({top:0,left:0,behavior:'auto'}))});const s=document.getElementById('search');if(s)s.oninput=e=>{query=e.target.value;render()};const tf=document.getElementById('typeFilter');if(tf)tf.onchange=e=>{typeFilter=e.target.value;render()};const af=document.getElementById('accountFilter');if(af)af.onchange=e=>{accountFilter=e.target.value;render()};const sm=document.getElementById('sortMode');if(sm)sm.onchange=e=>{sortMode=e.target.value;render()};document.querySelectorAll('[data-index]').forEach(b=>b.onclick=()=>showHolding(Number(b.dataset.index)));document.getElementById('openEdit')?.addEventListener('click',()=>editHolding(document.getElementById('adminHolding').value));document.getElementById('addHolding')?.addEventListener('click',addHolding);document.getElementById('saveCredit')?.addEventListener('click',saveCredit);document.getElementById('saveTx')?.addEventListener('click',saveTransaction);document.getElementById('saveLedger')?.addEventListener('click',saveManualLedger);document.querySelectorAll('[data-ledger-id]').forEach(b=>b.onclick=()=>showLedger(b.dataset.ledgerId));document.querySelectorAll('[data-delete-tx]').forEach(b=>b.onclick=()=>deleteTransaction(b.dataset.deleteTx));document.getElementById('undoAudit')?.addEventListener('click',undoLast);const sg=document.getElementById('saveGoals');if(sg)sg.onclick=()=>{data.goals.capital=num(document.getElementById('capitalGoal').value);data.goals.annualDividend=num(document.getElementById('divGoal').value);data.portfolio.monthly=num(document.getElementById('monthly').value);safeSet(SETTINGS_KEY,JSON.stringify({goals:data.goals,portfolio:{monthly:data.portfolio.monthly}}));render()};const ex=document.getElementById('exportBtn');if(ex)ex.onclick=()=>{const payload={version:VERSION,exportedAt:new Date().toISOString(),sourceKey,data,admin,transactions,ledger};const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='mastarklass-os-full-backup-'+today()+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)};const im=document.getElementById('importFile');if(im)im.onchange=async e=>{const f=e.target.files?.[0];if(!f)return;const x=parse(await f.text());if(!x)return alert('Filen kunde inte läsas.');if(x.data&&looksLikePortfolio(x.data))safeSet(DATA_KEY,JSON.stringify(x.data));if(x.admin)safeSet(ADMIN_KEY,JSON.stringify(x.admin));if(x.transactions)safeSet(TX_KEY,JSON.stringify(x.transactions));if(x.ledger)safeSet(LEDGER_KEY,JSON.stringify(x.ledger));location.reload()}}
 function render(){
- canonicalCache=null;
  const app=document.getElementById('app');if(!app)return;
  nav();
  const views={home,portfolio,market,analysis,ideas,goals,more};
@@ -1231,12 +940,11 @@ function render(){
  bind();
 }
 
-function handleResolverHashAction(){return false}
 function installInteractionRouter(){
  if(document.documentElement.dataset.mkInteractionRouter==='1')return;
  document.documentElement.dataset.mkInteractionRouter='1';
  document.addEventListener('click',event=>{
-  const target=event.target.closest('button,a,[data-screen],[data-tab],[data-tabgo],[data-index],[data-intel-index],[data-ledger-id]');
+  const target=event.target.closest('button,[data-screen],[data-tab],[data-tabgo],[data-index],[data-intel-index],[data-ledger-id]');
   if(!target)return;
   if(target.dataset.screen){event.preventDefault();navigateTo(target.dataset.screen);return}
   if(target.dataset.tab||target.dataset.tabgo){event.preventDefault();screen='portfolio';portfolioTab=target.dataset.tab||target.dataset.tabgo||'overview';if(location.hash!=='#portfolio')history.pushState(null,'','#portfolio');render();requestAnimationFrame(()=>scrollTo({top:0,left:0,behavior:'auto'}));return}
@@ -1246,14 +954,85 @@ function installInteractionRouter(){
  },true);
 }
 
+
+/* 11.15.21 Permanent Registry Save Fix */
+let resolverReviewTab='review';
+function verifiedPermanentWrite(key,route,meta={}){
+ if(!key||!routeIsUsable(route))return {ok:false,error:'Ogiltig identitet'};
+ try{
+  const registry=permanentIdentityRegistry(),previous=registry.routes?.[key]||null,now=new Date().toISOString();
+  registry.routes=registry.routes||{};
+  registry.routes[key]={...previous,...route,locked:true,registryVersion:'11.15.21',savedAt:now,source:meta.source||route.source||'global-resolver-approved'};
+  registry.audit=[{date:now,key,provider:route.provider,ticker:route.ticker||'',isin:route.isin||'',exchange:route.exchange||'',currency:route.currency||'',action:previous?'updated':'created'},...(registry.audit||[])].slice(0,500);
+  registry.version='11.15.21';registry.updatedAt=now;
+  localStorage.setItem(PERMANENT_IDENTITY_KEY,JSON.stringify(registry));
+  const check=parse(localStorage.getItem(PERMANENT_IDENTITY_KEY));
+  if(!routeIsUsable(check?.routes?.[key]))throw new Error('Direkt återläsning misslyckades');
+  return {ok:true,route:check.routes[key],count:Object.keys(check.routes||{}).length};
+ }catch(error){return {ok:false,error:error?.message||String(error)}}
+}
+function candidateValidation(row,candidate){
+ const ticker=String(candidate?.ticker||'').trim().toUpperCase(),exchange=String(candidate?.exchange||'').trim(),currency=String(candidate?.currency||row?.currency||'').trim().toUpperCase();
+ if(!candidate)return {ok:false,error:'Ingen kandidat vald'};
+ if(!ticker&&!validIsin(candidate.isin))return {ok:false,error:'Kandidaten saknar giltig ticker eller ISIN'};
+ if(ticker==='0')return {ok:false,error:'Ticker 0 är ogiltig'};
+ if(!currency)return {ok:false,error:'Valuta saknas'};
+ const account=String(row?.account||'').toLowerCase(),name=String(row?.name||'').toLowerCase();
+ if(account.includes('montrose')&&/(usd|usa|united states|american)/i.test(`${currency} ${candidate.name||''} ${exchange}`)===false&&/paypal|broadcom|best buy|mastercard|realty income|taiwan semiconductor/.test(name))return {ok:false,error:'Amerikanskt Montrose-innehav måste ha USA-notering och USD'};
+ return {ok:true};
+}
+function applyResolverSuggestion(key,index=0,{silent=false,rowOverride=null}={}){
+ const state=globalResolverState(),row=rowOverride||(state.suggestions||[]).find(x=>x.key===key),candidate=row?.candidates?.[index];
+ if(!row||!candidate)return false;
+ const validation=candidateValidation(row,candidate);if(!validation.ok){if(!silent)alert(validation.error);return false}
+ const current=liveFoundation.mappings[key]||{};
+ if(isManualMapping(current)&&!silent&&!confirm('Detta instrument har en manuell koppling. Ersätta den med vald permanent identitet?'))return false;
+ const route={provider:candidate.provider,ticker:candidate.ticker||'',isin:candidate.isin||'',exchange:candidate.exchange||'',currency:candidate.currency||row.currency||'SEK',figi:candidate.figi||'',confidence:num(candidate.score),verifiedAt:new Date().toISOString(),source:'global-resolver-11.15.21'};
+ const written=verifiedPermanentWrite(key,route,{source:'global-resolver-approved-11.15.21'});
+ if(!written.ok){if(!silent)alert(`Kunde inte spara permanent: ${written.error}`);return false}
+ liveFoundation.mappings[key]={...current,...written.route,providerSymbols:{...(current.providerSymbols||{}),...(candidate.providerSymbols||{}),[String(candidate.provider||'provider').toLowerCase().replace(/\s+/g,'_')]:candidate.ticker||candidate.isin},instrumentClass:classifyInstrument(canonicalHoldings().find(h=>h._key===key)||row).code,verified:true,identityStatus:'verified',identityConfidence:num(candidate.score),identityReasons:[candidate.provider,'Verifierad i Permanent Registry 11.15.21'],source:'permanent-identity-registry-11.15.21',resolverVersion:'11.15.21',permanentRoute:written.route,updatedAt:new Date().toISOString()};
+ persistLiveFoundation();
+ state.routes=state.routes||{};state.routes[key]=written.route;
+ state.suggestions=(state.suggestions||[]).filter(x=>x.key!==key);
+ state.review=state.suggestions.filter(x=>x.best&&!x.autoSafe).length;
+ state.resolved=state.suggestions.filter(x=>x.autoSafe).length;
+ state.unresolved=state.suggestions.filter(x=>!x.best).length;
+ state.lastSaved={key,name:row.name,ticker:written.route.ticker,exchange:written.route.exchange,currency:written.route.currency,date:new Date().toISOString()};
+ persistGlobalResolver(state);
+ const run=resolverRunState();run.permanent=written.count;run.review=state.review;run.newSafe=Math.max(num(run.newSafe),0);run.message=`${row.name} sparad permanent som ${written.route.ticker||written.route.isin}`;persistResolverRun(run);
+ liveEvent('success','Permanent Registry Save 11.15.21',run.message,written.route);
+ return true;
+}
+function permanentRegistryRows(){
+ const registry=permanentIdentityRegistry(),holdings=Object.fromEntries(canonicalHoldings().map(h=>[h._key,h]));
+ return Object.entries(registry.routes||{}).sort((a,b)=>String(b[1].savedAt||'').localeCompare(String(a[1].savedAt||''))).map(([key,r])=>{const h=holdings[key]||{};return `<article class="resolverResult safe"><div class="resolverTitle"><div><b>${esc(h._name||key)}</b><small>${esc(h._account||'')} · ${esc(h._type||'')}</small></div><span>Permanent</span></div><div class="resolverBest"><strong>${esc(r.ticker||r.isin)}</strong><p>${esc(r.exchange||'Okänd börs')} · ${esc(r.currency||'')}</p><small>${esc(r.provider||'')}</small></div></article>`}).join('');
+}
+function resolverReviewHtml(){
+ const st=globalResolverState(),saved=Object.keys(permanentIdentityRegistry().routes||{}).length,reviewRows=(st.suggestions||[]).filter(row=>!row.applied).map(row=>{const best=row.best;return `<article class="resolverResult ${row.conflict?'conflict':row.autoSafe?'safe':best?'review':'missing'}" data-review-card="${esc(row.key)}"><div class="resolverTitle"><div><b>${esc(row.name)}</b><small>${esc(row.account)} · ${esc(row.assetType)}</small></div><span>${best?`${num(row.confidence)}%`:'Ingen träff'}</span></div>${best?`<div class="resolverBest"><strong>${esc(best.ticker||best.isin)}</strong><p>${esc(best.name||'')} · ${esc(best.exchange||'Okänd börs')} · ${esc(best.currency||row.currency||'')}</p><small>${esc(best.provider)}${row.conflict?' · konflikt mellan källor':''}</small></div><div class="resolverActions"><button type="button" class="primary" data-resolver-apply="${esc(row.key)}">Godkänn och spara permanent</button>${row.candidates.length>1?`<select data-resolver-choice="${esc(row.key)}">${row.candidates.map((c,i)=>`<option value="${i}">${esc(c.ticker||c.isin)} · ${esc(c.exchange||'')} · ${esc(c.currency||'')} · ${esc(c.provider)} · ${num(c.score)}%</option>`).join('')}</select>`:''}</div>`:`<div class="notice">Ingen säker identitet hittades automatiskt.</div>`}</article>`}).join('');
+ const last=st.lastSaved?`<div class="notice okbox"><b>${esc(st.lastSaved.name)} sparad permanent</b><p>${esc(st.lastSaved.ticker)} · ${esc(st.lastSaved.exchange||'')} · ${esc(st.lastSaved.currency||'')}</p></div>`:'';
+ return `<div class="eyebrow">Global Identity Resolver 11.15.21</div><h2>Permanent Registry Save Fix</h2>${last}<div class="foundationActions"><button type="button" id="tabResolverReview" class="${resolverReviewTab==='review'?'primary':'secondary'}">För granskning (${(st.suggestions||[]).length})</button><button type="button" id="tabResolverSaved" class="${resolverReviewTab==='saved'?'primary':'secondary'}">Sparade permanent (${saved})</button></div><div class="grid"><div class="card metric"><span>Kvar att granska</span><b>${(st.suggestions||[]).length}</b></div><div class="card metric"><span>Permanent sparade</span><b>${saved}</b></div></div><div class="resolverList">${resolverReviewTab==='saved'?(permanentRegistryRows()||'<div class="empty">Inga permanent sparade identiteter ännu.</div>'):(reviewRows||'<div class="empty">Inga kandidater kvar att granska.</div>')}</div>`;
+}
+function openGlobalResolverReview(){
+ openModal(resolverReviewHtml());
+ const modal=document.getElementById('modal')||document;
+ modal.querySelector('#tabResolverReview')?.addEventListener('click',()=>{resolverReviewTab='review';openGlobalResolverReview()});
+ modal.querySelector('#tabResolverSaved')?.addEventListener('click',()=>{resolverReviewTab='saved';openGlobalResolverReview()});
+ modal.querySelectorAll('[data-resolver-apply]').forEach(btn=>btn.addEventListener('click',event=>{
+  event.preventDefault();event.stopPropagation();
+  const key=btn.dataset.resolverApply,sel=modal.querySelector(`[data-resolver-choice="${CSS.escape(key)}"]`),idx=num(sel?.value),scrollHost=modal.querySelector('.modalCard')||modal,scrollTop=scrollHost.scrollTop;
+  btn.disabled=true;btn.textContent='Sparar permanent…';
+  if(applyResolverSuggestion(key,idx)){resolverReviewTab='review';openGlobalResolverReview();requestAnimationFrame(()=>{const h=(document.getElementById('modal')||document).querySelector('.modalCard');if(h)h.scrollTop=scrollTop;render()})}else{btn.disabled=false;btn.textContent='Godkänn och spara permanent'}
+ }))
+}
+function globalResolverPanel(){const st=globalResolverState(),run=recoverResolverRun(),remaining=resolverTargets().length,saved=Object.keys(permanentIdentityRegistry().routes||{}).length,running=run.status==='running',paused=run.status==='paused';return `<section class="section globalResolverPanel"><div class="sectionHead"><div><div class="eyebrow">Global Identity Resolver 11.15.21</div><h2>Stabil batchmotor med verifierad permanent lagring.</h2></div><span class="healthScore">${saved} låsta</span></div><p>Godkända identiteter skrivs till Permanent Registry, läses tillbaka direkt och tas därefter bort från granskningslistan.</p><div class="grid"><div class="card metric"><span>Återstår</span><b>${remaining}</b></div><div class="card metric"><span>Permanent sparade</span><b>${saved}</b></div><div class="card metric"><span>För granskning</span><b>${(st.suggestions||[]).length}</b></div><div class="card metric"><span>Misslyckade</span><b>${run.failed||0}</b></div></div>${running||paused?`<div class="resolverProgress"><div><span>${paused?'Pausad':'Kör'}</span><b>${run.processed||0}/${run.total||0}</b></div><div class="bar"><i style="width:${run.total?Math.round((run.processed||0)/run.total*100):0}%"></i></div><small>${esc(run.message||'')}</small></div>`:''}<div class="foundationActions"><button id="runGlobalResolver" class="primary" type="button" ${running?'disabled':''}>${paused?'Fortsätt nästa batch (max 8)':'Kör nästa batch (max 8)'}</button><button id="stopGlobalResolver" class="danger" type="button" ${running?'':'disabled'}>Stoppa säkert</button><button id="reviewGlobalResolver" class="secondary" type="button" ${(st.suggestions||[]).length||saved?'':'disabled'}>Granska resultat</button></div><div class="resolverSources"><span>Permanent Registry</span><span>Global Registry</span><span>OpenFIGI</span><span>Twelve Data</span><span>Alpha Vantage</span><span>Finnhub</span></div><p class="disclaimer">Antal, GAV, kredit, transaktioner och Portfolio Ledger ändras aldrig.</p></section>`}
+
 function boot(){
  data=loadData();
  admin=merge(ADMIN_DEFAULT,parse(safeGet(ADMIN_KEY))||{});
  transactions=parse(safeGet(TX_KEY))||[];
  ledger=parse(safeGet(LEDGER_KEY))||[];
  initializeLiveFoundation();
- const staleSync=liveSyncState();if(staleSync.status==='syncing'){staleSync.status='paused';staleSync.message='Tidigare synk avbröts och återställdes vid appstart.';persistLiveSync(staleSync)}const staleLive=liveState();if(staleLive.syncing){staleLive.syncing=false;staleLive.updatedAt=new Date().toISOString();safeSet(LIVE_KEY,JSON.stringify(staleLive))}
- recoverResolverRun({boot:true});
+ recoverResolverRun();
  hydratePermanentIdentityRoutes();
  const settings=parse(safeGet(SETTINGS_KEY));
  if(settings?.goals)data.goals=merge(data.goals,settings.goals);
@@ -1261,10 +1040,12 @@ function boot(){
  screen=(location.hash.slice(1)||'home');
  if(!NAV.some(x=>x[0]===screen))screen='home';
  migrateLedger();
+ runAutoDataSteward({force:false,reason:'boot'});
  installInteractionRouter();
  render();
  document.body.classList.add('appReady');
-
+ setTimeout(()=>runAutomaticIntelligenceCycle('app-open'),250);
+ document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')runAutomaticIntelligenceCycle('app-resume')});
  window.addEventListener('hashchange',()=>{const next=location.hash.slice(1)||'home';if(NAV.some(x=>x[0]===next)){screen=next;render();requestAnimationFrame(()=>scrollTo({top:0,left:0,behavior:'auto'}))}});
  window.addEventListener('popstate',()=>{const {root}=modalParts();if(root&&!root.hidden)closeModal({fromHistory:true})});
  document.addEventListener('keydown',e=>{if(e.key==='Escape'){const {root}=modalParts();if(root&&!root.hidden)closeModal()}});

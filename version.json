@@ -1,7 +1,6 @@
 {
-  "version": "11.15.20",
-  "name": "Permanent Registry Recovery",
-  "channel": "stable",
-  "buildDate": "2026-07-23",
-  "dataPolicy": "local-first-read-only-live-layer"
+  "version": "11.15.21",
+  "name": "Permanent Registry Save Fix",
+  "released": "2026-07-23",
+  "cache": "mastarklass-os-11-15-21"
 }
