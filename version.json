@@ -1,7 +1,7 @@
 {
-  "version": "11.15.24",
-  "name": "Verified Resolver Recovery",
-  "released": "2026-07-23",
-  "cache": "mastarklass-os-11-15-24",
-  "build": "2026-07-23"
+  "version": "11.15.25",
+  "name": "Permanent Registry Write Trace & Storage Recovery",
+  "released": "2026-07-24",
+  "cache": "mastarklass-os-11-15-25",
+  "build": "2026-07-24"
 }
