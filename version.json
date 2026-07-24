@@ -1,7 +1,7 @@
 {
-  "version": "11.15.25",
-  "name": "Permanent Registry Write Trace & Storage Recovery",
-  "released": "2026-07-24",
-  "cache": "mastarklass-os-11-15-25",
-  "build": "2026-07-24"
+  "version": "11.15.26",
+  "name": "IndexedDB Storage Migration",
+  "build": "2026-07-24",
+  "storage": "IndexedDB Permanent Registry",
+  "files": 8
 }
