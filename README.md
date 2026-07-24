@@ -1,39 +1,29 @@
-# Mästarklass OS 11.15.27 — IndexedDB Unified State Recovery
+# Mästarklass OS 11.15.28 — Resolver UX & Provider Cooldown
 
-Beständig återställningsrelease för hela Global Identity Resolver. Permanent Registry, batchcheckpoint, mållista, granskningsresultat och Resolver Chain Trace använder nu samma IndexedDB-lager.
+Stabilitets- och användbarhetsrelease ovanpå den fungerande IndexedDB-grunden i 11.15.27.
 
-## Rättat
+## Förbättrat
 
-- Permanent Identity Registry fortsätter att lagras i IndexedDB.
-- Aktiv körstatus och checkpoint speglas beständigt i IndexedDB efter varje förändring.
-- Mållistan och alla behandlade granskningsresultat återställs efter appbyte, omstart eller Android-minnesrensning.
-- Resolver Chain Trace med högst 400 rader återställs från IndexedDB.
-- En avbruten `running`-körning återställs säkert som `paused` och kan fortsätta från senaste checkpoint.
-- När appen går till bakgrunden görs en omedelbar samlad skrivning av körstatus, logg och diagnostikmetadata.
-- `sessionStorage` används endast som snabb reservspegel; det är inte längre den beständiga sanningskällan.
-- Full `localStorage` kan inte blockera Permanent Registry eller resolverns arbetsstatus.
-- Befintliga nio permanenta identiteter i IndexedDB bevaras.
-- Batchstorlek, stoppfunktion och högst åtta instrument per batch är oförändrade.
+- Permanent Registry, körstatus, checkpoint, granskningsresultat och full logg ligger fortsatt i IndexedDB.
+- Granskningsfönstret visar nu tydlig resultatbalans: mål, behandlade, återstår, kategoriserade och permanent sparade.
+- När ett instrument godkänns tas det bort direkt utan att användaren kastas till fel plats i listan.
+- Exakt scrollposition bevaras så långt webbläsarens layout tillåter.
+- En tydlig grön bekräftelse visar namn, ticker, börs och valuta efter verifierad lagring.
+- OpenFIGI går automatiskt i 15 minuters cooldown efter tre upprepade nätverksfel.
+- Övriga providers går direkt i cooldown vid HTTP 429 och efter upprepade nätverksfel.
+- Cooldown visas i Resolver Chain Trace och hindrar onödig väntetid och loggspam.
+- En lyckad providerförfrågan nollställer dess tidigare felräknare.
 
-## Skyddad data
+## Oförändrad säkerhet
 
-Antal, GAV, marknadsvärde, kredit, transaktioner, Portfolio Ledger, konton och API-nycklar ändras aldrig av migreringen.
+Versionen ändrar aldrig antal, GAV, marknadsvärde, kredit, transaktioner, konton eller Portfolio Ledger. Endast identitets-, provider- och read-only live-data kan uppdateras.
 
 ## Test efter uppladdning
 
-1. Ersätt samtliga åtta filer i GitHub-repots rot.
+1. Ersätt samtliga åtta filer i repositoryts rot.
 2. Vänta på grön GitHub Pages-deployment.
 3. Stäng PWA:n helt och öppna den igen.
-4. Kontrollera att version **11.15.27** visas.
-5. Kontrollera att de tidigare permanenta identiteterna fortfarande visas.
-6. Kör två batcher och öppna **Granska resultat**.
-7. Lämna appen, öppna webbläsaren och återvänd sedan till PWA:n.
-8. Kontrollera att checkpoint, granskningslista och logg finns kvar.
-9. Godkänn ett instrument och kontrollera att det försvinner från granskningen och ökar **Permanent sparade**.
-10. Starta om appen och kontrollera att både den permanenta posten och batchläget finns kvar.
-
-## Tekniska kontroller
-
-- `app.js` har validerats med `node --check`.
-- Alla versionsreferenser och service worker-cache är satta till 11.15.27.
-- IndexedDB-databasen och befintlig Permanent Registry behåller samma namn, vilket skyddar redan sparade poster.
+4. Kontrollera att version 11.15.28 visas och att tidigare permanent sparade identiteter finns kvar.
+5. Fortsätt nästa batch och öppna **Granska resultat**.
+6. Godkänn ett korrekt instrument och kontrollera att posten försvinner, scrollpositionen behålls och grön bekräftelse visas.
+7. Efter upprepade OpenFIGI-fel ska loggen visa provider-cooldown i stället för fortsatta nätverksanrop.

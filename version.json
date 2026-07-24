@@ -1,7 +1,7 @@
 {
-  "version": "11.15.27",
-  "name": "IndexedDB Unified State Recovery",
-  "build": "2026-07-24",
-  "storage": "IndexedDB Permanent Registry + Resolver State",
-  "files": 8
+  "version": "11.15.28",
+  "name": "Resolver UX & Provider Cooldown",
+  "released": "2026-07-24",
+  "cache": "mastarklass-os-11-15-28",
+  "storage": "IndexedDB"
 }

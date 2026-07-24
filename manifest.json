@@ -1,7 +1,7 @@
 {
-  "name": "Mästarklass OS 11.15.27",
-  "short_name": "Mästarklass 11.15.27",
-  "start_url": "./?v=11.15.27",
+  "name": "Mästarklass OS 11.15.28",
+  "short_name": "Mästarklass 11.15.28",
+  "start_url": "./?v=11.15.28",
   "display": "standalone",
   "background_color": "#06101d",
   "theme_color": "#07111f",
@@ -13,5 +13,5 @@
       "purpose": "any maskable"
     }
   ],
-  "version": "11.15.27"
+  "version": "11.15.28"
 }
