@@ -1,7 +1,7 @@
 {
-  "version": "11.15.26",
-  "name": "IndexedDB Storage Migration",
+  "version": "11.15.27",
+  "name": "IndexedDB Unified State Recovery",
   "build": "2026-07-24",
-  "storage": "IndexedDB Permanent Registry",
+  "storage": "IndexedDB Permanent Registry + Resolver State",
   "files": 8
 }

@@ -1,18 +1,19 @@
-# Mästarklass OS 11.15.26 — IndexedDB Storage Migration
+# Mästarklass OS 11.15.27 — IndexedDB Unified State Recovery
 
-Lagringsrelease för **Permanent Identity Registry**. Versionen flyttar permanent identitetsdata från full `localStorage` till **IndexedDB** och behåller den stabila batchmotorn från 11.15.25.
+Beständig återställningsrelease för hela Global Identity Resolver. Permanent Registry, batchcheckpoint, mållista, granskningsresultat och Resolver Chain Trace använder nu samma IndexedDB-lager.
 
 ## Rättat
 
-- Permanent Registry lagras i IndexedDB i stället för localStorage.
-- Befintliga permanent sparade identiteter migreras automatiskt vid appstart.
-- Den gamla registerposten tas bort från localStorage först efter verifierad IndexedDB-migrering, vilket frigör utrymme.
-- Varje godkännande skrivs och läses tillbaka direkt från IndexedDB innan instrumentet tas bort från granskningen.
-- Permanent räknare och resolverns mållista använder ett synkroniserat minnescache från IndexedDB.
-- Full localStorage kan inte längre blockera nya permanenta identiteter.
-- Batchar om högst åtta instrument, checkpoint, paus/fortsätt och säker stopp behålls.
-- Resolver Chain Trace visar IndexedDB-start, migrering, skrivning och återläsning.
-- Vid lagringsfel ligger instrumentet kvar i granskningen och portföljdata ändras inte.
+- Permanent Identity Registry fortsätter att lagras i IndexedDB.
+- Aktiv körstatus och checkpoint speglas beständigt i IndexedDB efter varje förändring.
+- Mållistan och alla behandlade granskningsresultat återställs efter appbyte, omstart eller Android-minnesrensning.
+- Resolver Chain Trace med högst 400 rader återställs från IndexedDB.
+- En avbruten `running`-körning återställs säkert som `paused` och kan fortsätta från senaste checkpoint.
+- När appen går till bakgrunden görs en omedelbar samlad skrivning av körstatus, logg och diagnostikmetadata.
+- `sessionStorage` används endast som snabb reservspegel; det är inte längre den beständiga sanningskällan.
+- Full `localStorage` kan inte blockera Permanent Registry eller resolverns arbetsstatus.
+- Befintliga nio permanenta identiteter i IndexedDB bevaras.
+- Batchstorlek, stoppfunktion och högst åtta instrument per batch är oförändrade.
 
 ## Skyddad data
 
@@ -21,12 +22,18 @@ Antal, GAV, marknadsvärde, kredit, transaktioner, Portfolio Ledger, konton och 
 ## Test efter uppladdning
 
 1. Ersätt samtliga åtta filer i GitHub-repots rot.
-2. Vänta tills GitHub Pages visar grön deployment.
+2. Vänta på grön GitHub Pages-deployment.
 3. Stäng PWA:n helt och öppna den igen.
-4. Kontrollera att version **11.15.26** visas.
-5. Öppna Marknad. De tre tidigare sparade identiteterna ska fortfarande räknas som permanent sparade.
-6. Kör en eller två batchar och öppna **Granska resultat**.
-7. Godkänn exempelvis Broadcom eller PepsiCo.
-8. Bekräfta att instrumentet försvinner från granskningen och att **Permanent sparade** ökar direkt.
-9. Starta om appen och kontrollera att posten fortfarande finns kvar.
-10. Vid fel: kopiera Resolver Chain Trace. Loggen ska nu ange `IndexedDB` i Permanent write-stegen.
+4. Kontrollera att version **11.15.27** visas.
+5. Kontrollera att de tidigare permanenta identiteterna fortfarande visas.
+6. Kör två batcher och öppna **Granska resultat**.
+7. Lämna appen, öppna webbläsaren och återvänd sedan till PWA:n.
+8. Kontrollera att checkpoint, granskningslista och logg finns kvar.
+9. Godkänn ett instrument och kontrollera att det försvinner från granskningen och ökar **Permanent sparade**.
+10. Starta om appen och kontrollera att både den permanenta posten och batchläget finns kvar.
+
+## Tekniska kontroller
+
+- `app.js` har validerats med `node --check`.
+- Alla versionsreferenser och service worker-cache är satta till 11.15.27.
+- IndexedDB-databasen och befintlig Permanent Registry behåller samma namn, vilket skyddar redan sparade poster.
