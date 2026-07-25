@@ -1,6 +1,6 @@
 {
-  "version": "11.15.36",
-  "name": "Persistence Repair & ISIN Entry Gate",
+  "version": "11.15.37",
+  "name": "Storage Cleanup & Migration",
   "build": "2026-07-25",
   "channel": "stable"
 }

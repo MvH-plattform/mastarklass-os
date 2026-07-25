@@ -1,29 +1,38 @@
-# Mästarklass OS 11.15.36 — Persistence Repair & ISIN Entry Gate
+# Mästarklass OS 11.15.37 — Storage Cleanup & Migration
 
-Denna version bygger direkt ovanpå 11.15.35 och innehåller allt från 11.15.34–11.15.35.
+Denna version bygger direkt ovanpå 11.15.36 och innehåller allt från 11.15.34–11.15.36.
 
 ## Nytt
 
-- Separat test av **localStorage**, **IndexedDB** och **Permanent Identity Registry**.
-- Visar det verkliga felet när lagring misslyckas, exempelvis fullt lagringsutrymme, blockerad IndexedDB eller misslyckad återläsning.
-- Försiktig reparation som endast komprimerar diagnostik, äldre loggar, providertelemetri och rapporter.
-- Portfölj, antal, GAV, marknadsvärden, transaktioner, konton, API-nycklar och Portfolio Ledger raderas aldrig.
-- Direkt återläsning efter skrivtest i samtliga beständiga lager.
-- Ny panel **Persistence Repair 11.15.36** i Global Identity Resolver.
-- Tydlig **ISIN Entry Gate** som visar exakt när ISIN ska läggas in.
+- Ny panel **Storage Cleanup 11.15.37**.
+- Frigör lagringsutrymme innan Persistence Repair körs.
+- Rensar gamla resolverloggar, providertelemetri, diagnostik, cache- och sessionsdata.
+- Flyttar stora icke-kritiska localStorage-poster till IndexedDB och verifierar återläsningen innan originalet tas bort.
+- Skyddar portfölj, konton, antal, GAV, marknadsvärden, transaktioner, Portfolio Ledger, API-nycklar, direktkorrigeringar och identitetsregister.
+- Kör en första försiktig städning automatiskt vid appstart.
+- Persistence Repair använder Storage Cleanup automatiskt om localStorage fortfarande är fullt.
 
-## Rätt ordning för ISIN
+## Rätt ordning
 
 1. Öppna **Marknad → Global Identity Resolver**.
-2. Tryck **Reparera och testa lagring**.
-3. Fortsätt först när localStorage, IndexedDB och Registry visar **OK**.
-4. Tryck **Sök gamla ISIN**.
-5. Tryck **Kontrollera identiteter**.
-6. Lägg endast in de ISIN som fortfarande saknas via:
+2. Tryck **Frigör lagringsutrymme**.
+3. Tryck **Reparera och testa lagring**.
+4. Fortsätt först när localStorage, IndexedDB och Registry visar **OK**.
+5. Tryck **Sök gamla ISIN**.
+6. Tryck **Kontrollera identiteter**.
+7. Lägg in kvarvarande ISIN via:
    **Portfölj → Administrera → Redigera befintligt innehav → välj värdepapper → Öppna redigering → ISIN → Spara direktkorrigering**.
-7. Kör sedan resolverbatcherna vidare.
-8. När identiteterna är klara kopplas aktier och ETF:er till livekurser; traditionella fonder går vidare till NAV-källan.
+8. Kör därefter resolverbatcher och livekurser/NAV.
 
-## Test
+## Säkerhet
 
-Efter deployment ska version 11.15.36 visas. Kör Persistence Repair och skicka resultatet om något lager fortfarande visar FEL.
+Följande raderas aldrig av Storage Cleanup:
+- portfölj och innehav
+- antal och GAV
+- marknadsvärden
+- konton och transaktioner
+- Portfolio Ledger
+- API-nycklar
+- direktkorrigeringar
+- manuella identiteter
+- Permanent Identity Registry

@@ -265,3 +265,8 @@ input,select,textarea,button{max-width:100%}
 .isinStageBox{display:grid;gap:8px;margin:14px 0 18px;padding:17px;border:1px solid #397aa4;border-radius:19px;background:#0a1d32}
 .isinStageBox>b{font-size:1.05rem;color:#dff3ff}.isinStageBox span{color:#b7c8da;line-height:1.38}.isinStageBox strong{color:#7dd3fc}
 @media(max-width:520px){.persistenceRepairBox{grid-template-columns:1fr}}
+
+/* 11.15.37 — Storage Cleanup & Migration */
+.storageMigrationBox{display:grid;grid-template-columns:minmax(0,1fr) minmax(180px,.7fr);gap:12px;align-items:center;margin:14px 0;padding:17px;border:1px solid #2f8fcb;border-radius:19px;background:#0b2034}
+.storageMigrationBox b,.storageMigrationBox span{display:block}.storageMigrationBox span{margin-top:6px;color:#b7d5e8}.storageMigrationBox .primary{margin:0}
+@media(max-width:520px){.storageMigrationBox{grid-template-columns:1fr}}
