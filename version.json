@@ -1,6 +1,6 @@
 {
-  "version": "11.15.41",
-  "name": "Resolver Interaction & Feedback Fix",
+  "version": "11.15.42",
+  "name": "Conflict Report Renderer Fix",
   "build": "2026-07-25",
   "channel": "stable"
 }

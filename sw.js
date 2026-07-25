@@ -1,5 +1,5 @@
-const CACHE='mastarklass-os-11.15.41';
-const ASSETS=['./','./index.html','./app.js?v=11.15.41','./styles.css?v=11.15.41','./manifest.json?v=11.15.41','./icon.svg','./version.json?v=11.15.41'];
+const CACHE='mastarklass-os-11.15.42';
+const ASSETS=['./','./index.html','./app.js?v=11.15.42','./styles.css?v=11.15.42','./manifest.json?v=11.15.42','./icon.svg','./version.json?v=11.15.42'];
 self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(ASSETS)).then(()=>self.skipWaiting())));
 self.addEventListener('activate',event=>event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(key=>key.startsWith('mastarklass-os-')&&key!==CACHE).map(key=>caches.delete(key)))).then(()=>self.clients.claim())));
 self.addEventListener('message',event=>{if(event.data?.type==='SKIP_WAITING')self.skipWaiting()});
