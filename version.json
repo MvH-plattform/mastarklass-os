@@ -1,6 +1,6 @@
 {
-  "version": "11.15.29",
-  "name": "State & Cooldown Fix",
+  "version": "11.15.30",
+  "name": "Checkpoint, Cooldown & Resultatbalans",
   "build": "2026-07-25",
   "channel": "stable"
 }

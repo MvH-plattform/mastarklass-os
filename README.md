@@ -1,23 +1,29 @@
-# Mästarklass OS 11.15.29 — State & Cooldown Fix
+# Mästarklass OS 11.15.30 — Checkpoint, Cooldown & Resultatbalans
+
+Stabilitetsrelease ovanpå 11.15.29. Versionen rättar de tre fel som isolerades i Resolver Chain Trace.
 
 ## Rättat
-- Giltigt pausat checkpoint prioriteras framför tom `idle 0/0`.
-- Tom standardstatus får inte skriva över RunId, mållista, cursor eller progress.
-- Provider-cooldowns sparas i resolverns IndexedDB-status.
-- OpenFIGI går i 15 minuters cooldown efter tre nätverksfel.
-- HTTP 429 ger omedelbar 15 minuters cooldown.
-- Cooldown kontrolleras före nätverksanrop.
-- Loggexporten använder aktuell version.
-- UI skiljer på Batch återstår och Portfölj återstår.
 
-## Skydd
-Antal, GAV, marknadsvärde, kredit, transaktioner, konton och Portfolio Ledger ändras aldrig.
+- En sparad körning från aktuell version 11.15.30 återställs från IndexedDB och får inte ersättas av `idle 0/0`.
+- Körstatus från 11.15.24–11.15.30 kan migreras utan att checkpoint, mållista, cursor eller granskningsresultat tappas.
+- Provider-cooldown är monoton: en äldre körsnapshot kan inte längre skriva över nyare felräknare eller aktiv cooldown.
+- OpenFIGI går i 15 minuters cooldown efter tre återkommande nätverksfel.
+- En sen lyckad callback kan inte förkorta en redan aktiv cooldown.
+- Resultatrubriken räknar bara kategorier från aktuell körning och begränsas till faktiskt behandlade instrument.
+- `Överhoppade` har döpts om till `Redan permanent` för att skilja redan lösta instrument från misslyckade sökningar.
+- Permanent Registry, checkpoint, granskningsresultat och full logg ligger kvar i IndexedDB.
 
-## Test
-1. Ladda upp alla åtta rootfiler.
-2. Vänta på grön GitHub Pages-deployment.
-3. Stäng och öppna PWA:n.
-4. Kontrollera version 11.15.29.
-5. Fortsätt en batch.
-6. Starta om och kontrollera att checkpoint återställs.
-7. Efter tre OpenFIGI-fel ska loggen visa cooldown.
+## Oförändrat skydd
+
+Antal, GAV, marknadsvärde, kredit, transaktioner, konton, Portfolio Ledger och API-nycklar ändras aldrig.
+
+## Test efter uppladdning
+
+1. Ersätt samtliga åtta rotfiler i GitHub-repots root.
+2. Vänta tills GitHub Pages visar grön deployment.
+3. Stäng PWA:n helt och öppna den igen.
+4. Kontrollera att version 11.15.30 visas.
+5. Fortsätt en batch och notera checkpoint, exempelvis `24/74`.
+6. Stäng och öppna appen. Samma checkpoint ska återställas, inte `Redo 0/0`.
+7. Efter tre OpenFIGI-nätverksfel ska loggen visa `OpenFIGI cooldown` och efterföljande instrument ska hoppa över OpenFIGI.
+8. Öppna Granska resultat och kontrollera att kategoriserade resultat aldrig överstiger antalet behandlade.
