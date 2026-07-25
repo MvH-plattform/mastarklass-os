@@ -1,6 +1,6 @@
 {
-  "version": "11.15.35",
-  "name": "Recovery Validation & Deployment Refresh",
+  "version": "11.15.36",
+  "name": "Persistence Repair & ISIN Entry Gate",
   "build": "2026-07-25",
   "channel": "stable"
 }
