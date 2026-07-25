@@ -1,29 +1,32 @@
-# Mästarklass OS 11.15.30 — Checkpoint, Cooldown & Resultatbalans
+# Mästarklass OS 11.15.31 — Intelligent Review Mode
 
-Stabilitetsrelease ovanpå 11.15.29. Versionen rättar de tre fel som isolerades i Resolver Chain Trace.
+Resolverrelease byggd ovanpå den stabila IndexedDB-kedjan i 11.15.30.
 
-## Rättat
+## Nytt
 
-- En sparad körning från aktuell version 11.15.30 återställs från IndexedDB och får inte ersättas av `idle 0/0`.
-- Körstatus från 11.15.24–11.15.30 kan migreras utan att checkpoint, mållista, cursor eller granskningsresultat tappas.
-- Provider-cooldown är monoton: en äldre körsnapshot kan inte längre skriva över nyare felräknare eller aktiv cooldown.
-- OpenFIGI går i 15 minuters cooldown efter tre återkommande nätverksfel.
-- En sen lyckad callback kan inte förkorta en redan aktiv cooldown.
-- Resultatrubriken räknar bara kategorier från aktuell körning och begränsas till faktiskt behandlade instrument.
-- `Överhoppade` har döpts om till `Redan permanent` för att skilja redan lösta instrument från misslyckade sökningar.
-- Permanent Registry, checkpoint, granskningsresultat och full logg ligger kvar i IndexedDB.
+- Varje kandidat visar nu **ticker, fullständigt namn, börs, valuta, provider, poäng och ISIN**.
+- Kandidatlistan gör det tydligt vad respektive träff faktiskt avser innan den sparas permanent.
+- Ny knapp: **Inget av alternativen stämmer**.
+- Alla visade felaktiga kandidater kan avvisas permanent för just innehavet och föreslås inte igen.
+- Användaren kan komplettera med ISIN, ticker, börs, valuta, exakt namn och kommentar.
+- **Avvisa och sök igen** gör om sökningen direkt med de kompletterade uppgifterna.
+- **Flytta till Behöver identitet** tar bort instrumentet från vanlig granskning utan att tappa uppgifterna.
+- Avvisningar, kompletteringar, checkpoint och granskningsresultat lagras i resolverns IndexedDB-state.
+- Om omsökningen misslyckas ligger uppgifterna kvar för ett senare försök.
 
-## Oförändrat skydd
+## Säkerhet
 
-Antal, GAV, marknadsvärde, kredit, transaktioner, konton, Portfolio Ledger och API-nycklar ändras aldrig.
+Antal, GAV, marknadsvärde, kredit, transaktioner, konton och Portfolio Ledger ändras aldrig av resolvergranskningen. Endast identitetslagret och resolverns granskningsstate uppdateras.
 
 ## Test efter uppladdning
 
-1. Ersätt samtliga åtta rotfiler i GitHub-repots root.
-2. Vänta tills GitHub Pages visar grön deployment.
+1. Ersätt samtliga åtta filer i GitHub-repots root.
+2. Vänta på GitHub Pages-deployment.
 3. Stäng PWA:n helt och öppna den igen.
-4. Kontrollera att version 11.15.30 visas.
-5. Fortsätt en batch och notera checkpoint, exempelvis `24/74`.
-6. Stäng och öppna appen. Samma checkpoint ska återställas, inte `Redo 0/0`.
-7. Efter tre OpenFIGI-nätverksfel ska loggen visa `OpenFIGI cooldown` och efterföljande instrument ska hoppa över OpenFIGI.
-8. Öppna Granska resultat och kontrollera att kategoriserade resultat aldrig överstiger antalet behandlade.
+4. Kontrollera version **11.15.31**.
+5. Öppna **Granska resultat**.
+6. Kontrollera att ISIN visas för varje kandidat, eller tydligt anges som saknat.
+7. Tryck **Inget av alternativen stämmer** på ett instrument.
+8. Fyll i exempelvis korrekt ISIN och välj **Avvisa och sök igen**.
+9. Kontrollera att gamla kandidater inte återkommer.
+10. Testa även **Flytta till Behöver identitet** och kontrollera att instrumentet försvinner från vanlig granskning.
