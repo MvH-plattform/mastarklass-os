@@ -1,6 +1,6 @@
 {
-  "version": "11.15.42",
-  "name": "Conflict Report Renderer Fix",
+  "version": "11.15.43",
+  "name": "Shared ISIN Account Safety",
   "build": "2026-07-25",
   "channel": "stable"
 }
