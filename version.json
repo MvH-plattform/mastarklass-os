@@ -1,6 +1,6 @@
 {
-  "version": "11.15.32",
-  "name": "ISIN-first Candidate Inspector",
+  "version": "11.15.33",
+  "name": "Identity Integrity Engine",
   "build": "2026-07-25",
   "channel": "stable"
 }
