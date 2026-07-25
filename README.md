@@ -1,32 +1,32 @@
-# Mästarklass OS 11.15.31 — Intelligent Review Mode
+# Mästarklass OS 11.15.32 — ISIN-first Candidate Inspector
 
-Resolverrelease byggd ovanpå den stabila IndexedDB-kedjan i 11.15.30.
+Den här versionen bygger vidare på den stabila IndexedDB- och batchmotorn i 11.15.30 och gör identitetsgranskningen tydlig när flera providers visar liknande tickeralternativ.
 
-## Nytt
+## Förbättrat
 
-- Varje kandidat visar nu **ticker, fullständigt namn, börs, valuta, provider, poäng och ISIN**.
-- Kandidatlistan gör det tydligt vad respektive träff faktiskt avser innan den sparas permanent.
-- Ny knapp: **Inget av alternativen stämmer**.
-- Alla visade felaktiga kandidater kan avvisas permanent för just innehavet och föreslås inte igen.
-- Användaren kan komplettera med ISIN, ticker, börs, valuta, exakt namn och kommentar.
-- **Avvisa och sök igen** gör om sökningen direkt med de kompletterade uppgifterna.
-- **Flytta till Behöver identitet** tar bort instrumentet från vanlig granskning utan att tappa uppgifterna.
-- Avvisningar, kompletteringar, checkpoint och granskningsresultat lagras i resolverns IndexedDB-state.
-- Om omsökningen misslyckas ligger uppgifterna kvar för ett senare försök.
+- ISIN visas som primär identitetsnyckel för varje kandidat.
+- Varje av högst fyra alternativ visar fullständigt namn, ticker, ISIN, börs, valuta, instrumenttyp och provider.
+- Kandidater utan ISIN märks tydligt som **Tickerförslag – ISIN saknas**.
+- En kandidat utan ISIN visas aldrig som 100 % verifierad i granskningen.
+- Exakt ISIN-match märks **Verifierad – exakt ISIN**.
+- Kandidat med giltigt ISIN men utan jämförelseunderlag märks **Stark kandidat – ISIN finns**.
+- Konflikter mellan källor markeras och användaren uppmanas kontrollera börs och ISIN.
+- Valet görs med tydliga radiokort i stället för en kompakt och svårtolkad lista.
+- Godkännandeknappen skiljer mellan verifierad identitet och manuellt tickerförslag.
+- Checkpoint, batchstatus, provider-cooldown, permanent register och full logg fortsätter ligga i IndexedDB.
 
-## Säkerhet
+## Oförändrad säkerhet
 
-Antal, GAV, marknadsvärde, kredit, transaktioner, konton och Portfolio Ledger ändras aldrig av resolvergranskningen. Endast identitetslagret och resolverns granskningsstate uppdateras.
+Antal, GAV, marknadsvärde, kredit, transaktioner, konton, Portfolio Ledger och API-nycklar ändras aldrig av resolvern.
 
 ## Test efter uppladdning
 
-1. Ersätt samtliga åtta filer i GitHub-repots root.
-2. Vänta på GitHub Pages-deployment.
+1. Ersätt samtliga åtta filer i GitHub-repots rot.
+2. Vänta tills GitHub Pages visar grön deployment.
 3. Stäng PWA:n helt och öppna den igen.
-4. Kontrollera version **11.15.31**.
+4. Kontrollera att version **11.15.32** visas.
 5. Öppna **Granska resultat**.
-6. Kontrollera att ISIN visas för varje kandidat, eller tydligt anges som saknat.
-7. Tryck **Inget av alternativen stämmer** på ett instrument.
-8. Fyll i exempelvis korrekt ISIN och välj **Avvisa och sök igen**.
-9. Kontrollera att gamla kandidater inte återkommer.
-10. Testa även **Flytta till Behöver identitet** och kontrollera att instrumentet försvinner från vanlig granskning.
+6. Expandera ett instrument med flera kandidater, exempelvis Lime Technologies eller en JPM ETF.
+7. Kontrollera att varje alternativ visar ISIN, börs, valuta, typ och provider.
+8. Kandidater utan ISIN ska vara märkta som tickerförslag och ha högst 89 % visad identitetssäkerhet.
+9. Välj rätt alternativ genom att jämföra ISIN först och godkänn därefter.

@@ -1,6 +1,6 @@
 {
-  "version": "11.15.31",
-  "name": "Intelligent Review Mode",
+  "version": "11.15.32",
+  "name": "ISIN-first Candidate Inspector",
   "build": "2026-07-25",
   "channel": "stable"
 }
