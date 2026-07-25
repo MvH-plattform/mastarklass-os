@@ -1,6 +1,6 @@
 {
-  "version": "11.15.39",
-  "name": "Unified Identity Engine",
+  "version": "11.15.40",
+  "name": "Portfolio Identity Bridge & Cleanup Safety Lock",
   "build": "2026-07-25",
   "channel": "stable"
 }
