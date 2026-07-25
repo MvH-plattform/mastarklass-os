@@ -1,6 +1,6 @@
 {
-  "version": "11.15.33",
-  "name": "Identity Integrity Engine",
+  "version": "11.15.34",
+  "name": "Identity Recovery & Safety Lock",
   "build": "2026-07-25",
   "channel": "stable"
 }

@@ -1,31 +1,32 @@
-# Mästarklass OS 11.15.33 — Identity Integrity Engine
+# Mästarklass OS 11.15.34 — Identity Recovery & Safety Lock
 
-Den här versionen reparerar kopplingen mellan manuellt sparade ISIN, portföljens innehav, live-mappningen, resolver-snapshoten och Permanent Identity Registry.
+Den här versionen söker igenom appens äldre lokala datalager efter tidigare sparade ISIN och skiljer strikt mellan verifierad instrumentidentitet och manuellt godkänd marknadsrutt.
 
 ## Nytt
 
-- Läser och sammanfogar identitet från innehav, direktkorrigeringar, manuell instrumentmappning, Permanent Registry och tidigare live-mappning.
-- Sparar manuella identiteter i ett separat beständigt register med både holdingKey och instrumentfingeravtryck.
-- ISIN finns nu direkt i formulären för att lägga till och redigera värdepapper.
-- Resolverns snapshot byggs från den sammanslagna identiteten, så tidigare sparade ISIN följer med in i batchen.
-- Traditionella fonder med giltigt ISIN låses som säker identitet utan att skickas till aktieproviders.
-- Traditionella fonder utan ISIN fortsätter markeras som `Behöver fondidentitet`.
-- Samma ISIN återanvänder en redan permanent identitet för andra konton/innehav.
-- Kandidater utan giltigt ISIN kan inte få högre faktisk identitetspoäng än 89 %, utom verifierade poster i det lokala globala registret.
-- OpenFIGI går i cooldown direkt efter `Failed to fetch`, så samma nätverksfel upprepas inte för varje instrument.
-- Alla versions- och cachefiler är synkroniserade till 11.15.33.
+- Automatisk ISIN Recovery vid första starten av 11.15.34.
+- Genomsöker samtliga JSON-poster i localStorage och, när webbläsaren tillåter det, alla IndexedDB-databaser och object stores.
+- Matchar återfunna ISIN mot värdepapper genom normaliserat namn, konto, tillgångsslag och ticker.
+- Skriver återställt ISIN till direktkorrigering, manuellt identitetsregister och live-mappning.
+- Visar återställningsstatus direkt i Global Identity Resolver.
+- Ny knapp **Sök gamla ISIN** för att köra återställningen igen manuellt.
+- Kandidater utan giltigt ISIN sparas som **manuell marknadsrutt**, inte som verifierad identitet.
+- Manuella marknadsrutter kan användas för pris efter uttryckligt godkännande, men får högst 89 % identitetssäkerhet.
+- ISIN-verifierade och registerverifierade identiteter behåller full verifieringsstatus.
+- OpenFIGI-cooldown, IndexedDB-checkpoint och batchmotorn från 11.15.33 behålls.
 
-## Viktig avgränsning
+## När ISIN behöver läggas in på nytt
 
-En verifierad fondidentitet via ISIN gör att fonden kan kopplas korrekt i systemet. För ett uppdaterat fondvärde krävs dessutom en NAV-källa eller ett lokalt senast känt NAV. Identitet och prisdata är två separata steg.
+Gå till **Portfölj → Administrera → Redigera befintligt innehav → välj värdepapper → Öppna redigering**. Fyll i ISIN-fältet och spara direktkorrigeringen. Det lagras därefter versionsoberoende i det manuella identitetsregistret och live-mappningen.
 
 ## Test efter uppladdning
 
 1. Ersätt samtliga åtta filer i GitHub-repots rot.
 2. Vänta på grön GitHub Pages-deployment.
 3. Stäng PWA:n helt och öppna den igen.
-4. Kontrollera att version 11.15.33 visas.
-5. Öppna Marknad och kör nästa resolverbatch.
-6. Kontrollera loggen: `Instrument laddat` ska nu visa tidigare sparat ISIN eller `Identity Integrity merge`.
-7. Fonder med ISIN ska visa `Fond/ISIN säker identitet` och sparas permanent.
-8. Kör därefter live-synkningen. Börshandlade instrument kan få kurs; traditionella fonder kräver NAV-data.
+4. Kontrollera att version 11.15.34 visas.
+5. Öppna Marknad. Kontrollera rutan **ISIN Recovery 11.15.34**.
+6. Tryck **Sök gamla ISIN** om automatisk körning inte hittade allt.
+7. Kör nästa resolverbatch.
+8. Fonder med återställt ISIN ska visa `Fond/ISIN säker identitet` i loggen.
+9. Tickerförslag utan ISIN får sparas endast som manuell marknadsrutt och får inte visas som verifierad identitet.
