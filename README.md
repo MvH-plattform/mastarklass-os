@@ -1,23 +1,24 @@
-# Mästarklass OS 11.15.40 — Portfolio Identity Bridge & Cleanup Safety Lock
+# Mästarklass OS 11.15.41 — Resolver Interaction & Feedback Fix
 
-Denna version bygger direkt ovanpå 11.15.39.
+Denna version bygger direkt ovanpå 11.15.40.
 
-## Portfolio Identity Bridge
-- Läser samma aktiva portföljkälla som visar dina 102 innehav: `mastarklass_os_10_data`.
-- Synkar identitetsmotorn mot den aktiva portföljen.
-- Unified Identity Engine och resolverräknarna använder samma underlag.
+## Korrigerat
 
-## Cleanup Safety Lock
-- Automatisk cleanup vid appstart är borttagen.
-- All data skyddas som standard.
-- Portfölj, innehav, antal, GAV, marknadsvärden, konton, transaktioner, ledger, API-nycklar, direktkorrigeringar och identitetsregister kan aldrig rensas.
-- Endast exakt tillåtna logg- och temporärnycklar får rensas.
-- Rensning kräver förhandsgranskning och uttryckligt knapptryck.
+- Synkknappen visar `Synkar…` och därefter `Synkning klar ✓`.
+- Tidpunkt för senaste lyckade synkning visas.
+- Konfliktknappen loggar knapptrycket innan rapporten byggs.
+- Konfliktrapporten öppnas via robusta event listeners.
+- Separat felhantering visar ett tydligt fel om modalrenderingen misslyckas.
+- Reservknappen **Öppna rapport direkt** använder samma säkra öppningsfunktion.
+- MutationObserver återansluter knapparna efter varje omrendering.
+- Cleanup Safety Lock och portföljdata lämnas oförändrade.
 
-## Testordning
-1. Öppna Marknad → Global Identity Resolver.
+## Test
+
+1. Öppna **Marknad → Global Identity Resolver**.
 2. Tryck **Synka portfölj till identitetsmotorn**.
-3. Verifiera cirka `20/102 med ISIN`, `82 saknar`, `1 konflikt`.
-4. Öppna konflikter och saknade ISIN.
-5. Rätta konflikten och lägg därefter in kvarvarande ISIN.
-6. Använd Cleanup endast via **Förhandsgranska säker rensning**.
+3. Knappen ska visa `Synkar…` och sedan `Synkning klar ✓`.
+4. Tryck **Visa konflikter och saknade ISIN**.
+5. Rapporten ska öppnas.
+6. Vid behov, använd **Öppna rapport direkt**.
+7. Loggen ska visa knapptryck och lyckad öppning.
