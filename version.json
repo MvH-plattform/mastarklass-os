@@ -1,6 +1,6 @@
 {
-  "version": "11.15.38",
-  "name": "Identity Conflict Resolver",
+  "version": "11.15.39",
+  "name": "Unified Identity Engine",
   "build": "2026-07-25",
   "channel": "stable"
 }
