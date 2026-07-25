@@ -1,13 +1,19 @@
-const CACHE='mastarklass-os-11.15.34';
-const ASSETS=['./','./index.html','./app.js','./styles.css','./manifest.json','./icon.svg','./version.json'];
+const CACHE='mastarklass-os-11.15.35';
+const ASSETS=['./','./index.html','./app.js?v=11.15.35','./styles.css?v=11.15.35','./manifest.json?v=11.15.35','./icon.svg','./version.json?v=11.15.35'];
 self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(ASSETS)).then(()=>self.skipWaiting())));
 self.addEventListener('activate',event=>event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(key=>key.startsWith('mastarklass-os-')&&key!==CACHE).map(key=>caches.delete(key)))).then(()=>self.clients.claim())));
+self.addEventListener('message',event=>{if(event.data?.type==='SKIP_WAITING')self.skipWaiting()});
 self.addEventListener('fetch',event=>{
  if(event.request.method!=='GET')return;
  const request=event.request;
  if(request.mode==='navigate'){
-  event.respondWith(fetch(request).then(response=>{const copy=response.clone();caches.open(CACHE).then(cache=>cache.put('./index.html',copy));return response}).catch(()=>caches.match('./index.html')));
+  event.respondWith(fetch(request,{cache:'no-store'}).then(response=>{
+   const copy=response.clone();caches.open(CACHE).then(cache=>cache.put('./index.html',copy));return response
+  }).catch(()=>caches.match('./index.html')));
   return;
  }
- event.respondWith(fetch(request).then(response=>{if(response&&response.ok){const copy=response.clone();caches.open(CACHE).then(cache=>cache.put(request,copy))}return response}).catch(()=>caches.match(request,{ignoreSearch:true})));
+ event.respondWith(fetch(request,{cache:'no-store'}).then(response=>{
+  if(response&&response.ok){const copy=response.clone();caches.open(CACHE).then(cache=>cache.put(request,copy))}
+  return response
+ }).catch(()=>caches.match(request,{ignoreSearch:true})));
 });

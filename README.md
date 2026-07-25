@@ -1,32 +1,36 @@
-# Mästarklass OS 11.15.34 — Identity Recovery & Safety Lock
+# Mästarklass OS 11.15.35 — Recovery Validation & Deployment Refresh
 
-Den här versionen söker igenom appens äldre lokala datalager efter tidigare sparade ISIN och skiljer strikt mellan verifierad instrumentidentitet och manuellt godkänd marknadsrutt.
+Denna version bygger direkt ovanpå 11.15.34. All ISIN Recovery och Safety Lock från 11.15.34 ingår även om 11.15.34 aldrig hann publiceras.
 
-## Nytt
+## Ingår från 11.15.34
 
-- Automatisk ISIN Recovery vid första starten av 11.15.34.
-- Genomsöker samtliga JSON-poster i localStorage och, när webbläsaren tillåter det, alla IndexedDB-databaser och object stores.
-- Matchar återfunna ISIN mot värdepapper genom normaliserat namn, konto, tillgångsslag och ticker.
-- Skriver återställt ISIN till direktkorrigering, manuellt identitetsregister och live-mappning.
-- Visar återställningsstatus direkt i Global Identity Resolver.
-- Ny knapp **Sök gamla ISIN** för att köra återställningen igen manuellt.
-- Kandidater utan giltigt ISIN sparas som **manuell marknadsrutt**, inte som verifierad identitet.
-- Manuella marknadsrutter kan användas för pris efter uttryckligt godkännande, men får högst 89 % identitetssäkerhet.
-- ISIN-verifierade och registerverifierade identiteter behåller full verifieringsstatus.
-- OpenFIGI-cooldown, IndexedDB-checkpoint och batchmotorn från 11.15.33 behålls.
+- Automatisk sökning efter tidigare sparade ISIN i localStorage och tillgängliga IndexedDB-register.
+- Matchning via normaliserat namn, konto, tillgångsslag och ticker.
+- Återställning till direktkorrigering, manuellt identitetsregister och live-mappning.
+- Tickerförslag utan giltigt ISIN sparas som manuell marknadsrutt, inte verifierad identitet.
+- OpenFIGI-cooldown, IndexedDB-checkpoint och stabil batchmotor.
 
-## När ISIN behöver läggas in på nytt
+## Nytt i 11.15.35
 
-Gå till **Portfölj → Administrera → Redigera befintligt innehav → välj värdepapper → Öppna redigering**. Fyll i ISIN-fältet och spara direktkorrigeringen. Det lagras därefter versionsoberoende i det manuella identitetsregistret och live-mappningen.
+- **Recovery Validation** kontrollerar att funktionerna från 11.15.34 verkligen fungerar efter publicering.
+- Visar hur många innehav som har ISIN, hur många som fortfarande saknar ISIN och om samma ISIN används av olika instrument.
+- Söker efter gamla permanenta rutter som felaktigt markerats som verifierade utan ISIN.
+- Kontrollerar att lokal beständig lagring kan skrivas och läsas tillbaka.
+- Kör en första tyst validering automatiskt vid appstart.
+- Ny knapp **Kontrollera 11.15.34** i Global Identity Resolver.
+- Ny service-worker-cache och striktare nätverksuppdatering för att minska risken att PWA:n visar föregående version.
 
-## Test efter uppladdning
+## Test efter lyckad deployment
 
-1. Ersätt samtliga åtta filer i GitHub-repots rot.
-2. Vänta på grön GitHub Pages-deployment.
-3. Stäng PWA:n helt och öppna den igen.
-4. Kontrollera att version 11.15.34 visas.
-5. Öppna Marknad. Kontrollera rutan **ISIN Recovery 11.15.34**.
-6. Tryck **Sök gamla ISIN** om automatisk körning inte hittade allt.
-7. Kör nästa resolverbatch.
-8. Fonder med återställt ISIN ska visa `Fond/ISIN säker identitet` i loggen.
-9. Tickerförslag utan ISIN får sparas endast som manuell marknadsrutt och får inte visas som verifierad identitet.
+1. Kontrollera att 11.15.35 visas i apphuvudet.
+2. Öppna Marknad och Global Identity Resolver.
+3. Kontrollera rutorna **ISIN Recovery 11.15.34** och **Recovery Validation 11.15.35**.
+4. Tryck **Sök gamla ISIN**.
+5. Tryck **Kontrollera 11.15.34**.
+6. Kontrollera antal innehav med ISIN, konflikter och att lagring visar OK.
+7. Lägg endast in de återstående ISIN manuellt via Portfölj → Administrera → Redigera befintligt innehav.
+8. Kör därefter resolverbatcherna vidare.
+
+## Säkerhet
+
+Antal, GAV, marknadsvärde, kredit, konton, transaktioner, Portfolio Ledger och API-nycklar ändras aldrig av Recovery Validation.

@@ -252,3 +252,9 @@ input,select,textarea,button{max-width:100%}
 
 /* 11.15.34 — Identity Recovery & Safety Lock */
 .identityRecoveryBox{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:14px;align-items:center;margin:16px 0;padding:16px;border:1px solid #3b78a1;border-radius:20px;background:#071a2c}.identityRecoveryBox b,.identityRecoveryBox span{display:block}.identityRecoveryBox span{margin-top:5px;color:#9fb1c8}.identityRecoveryBox button{width:auto;margin:0}@media(max-width:520px){.identityRecoveryBox{grid-template-columns:1fr}.identityRecoveryBox button{width:100%}}
+
+/* 11.15.35 — Recovery Validation & Deployment Refresh */
+.identityValidationBox{display:grid;grid-template-columns:minmax(0,1fr) minmax(150px,.55fr);gap:12px;align-items:center;margin:12px 0 18px;padding:16px;border:1px solid #2c8f73;border-radius:18px;background:#0a2927}
+.identityValidationBox b,.identityValidationBox span{display:block}.identityValidationBox span{margin-top:5px;color:#a9c7c4}
+.identityValidationBox .secondary{margin:0}
+@media(max-width:520px){.identityValidationBox{grid-template-columns:1fr}}
