@@ -1,6 +1,6 @@
 {
-  "version": "11.15.37",
-  "name": "Storage Cleanup & Migration",
+  "version": "11.15.38",
+  "name": "Identity Conflict Resolver",
   "build": "2026-07-25",
   "channel": "stable"
 }
