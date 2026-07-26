@@ -1,25 +1,25 @@
-# Mästarklass OS 11.15.46 — Smart Provider Router & Valuation Confidence
+# Mästarklass OS 11.15.47 — Adaptive Quote Engine
 
-Den här versionen bygger direkt ovanpå 11.15.45 och bevarar samtliga portföljdata, identiteter, konton, transaktioner, GAV, kredit, Ledger och Cleanup Safety Lock.
+Den här versionen bygger direkt ovanpå 11.15.46 och flyttar fokus från identitet till faktisk kurstäckning.
 
-## Nytt i 11.15.46
-- Smart Provider Router skiljer automatiskt kursinstrument från NAV-instrument.
-- Prisproviders används bara när ett kursinstrument saknar giltig lokal cache.
-- NAV-instrument skyddas fortsatt från Twelve Data, Alpha Vantage och Finnhub.
-- Varje innehav får Valuation Confidence Score 0–100 %.
-- Ny rapport visar providerplan, färskhet, datakällor och lägst datatillit först.
-- Marknadsrutter och datatillit byggs automatiskt vid appstart och efter knapptryck.
-- Senast känt marknadsvärde används som säker reserv när livekurs eller NAV saknas.
+## Nytt
+- Färsk lokal cache används först för att minska API-anrop och rate limits.
+- Ihågkommen fungerande provider prioriteras per instrument.
+- Alternativa tickerformat provas därefter genom Twelve Data, Alpha Vantage, Finnhub och valfri Stooq Legacy.
+- Fördröjd cache och senast känd kurs används som säker reserv när providers inte svarar.
+- NAV-instrument hålls helt utanför aktieproviders och kan därför inte skapa Montrose HTTP 403.
+- Ny rapport **Adaptive Quote Engine** visar providerplan, utfall, cacheträffar och verkliga fel per instrument.
+- Resolverlogg visar sammanfattningen för varje synk.
 
 ## Test efter deployment
 1. Öppna Marknad → Global Identity Resolver.
 2. Tryck **Bygg marknadsrutter**.
-3. Kontrollera **Rutter klara 102/102**.
-4. Öppna **Datatillit och providerplan**.
-5. Kontrollera att fonder visar **NAV-källa** och aktier/ETF:er visar **Cache** eller **Prisprovider**.
-6. Kör **Synkronisera live-data** och kontrollera att NAV-instrument inte ger HTTP 403.
+3. Öppna **Adaptive Quote Engine** och kontrollera providerplanen.
+4. Tryck **Synkronisera live-data**.
+5. Kontrollera att NAV-instrument inte ger HTTP 403.
+6. Öppna rapporten igen och jämför nya providerträffar, färsk cache, reservcache och instrument utan kurs.
 
 ## Säkerhet
-- Ingen automatisk cleanup.
 - Cleanup Safety Lock är fortsatt aktivt.
-- Portföljdata, antal, GAV, kredit, transaktioner och Ledger ändras inte av routermotorn.
+- Inga antal, GAV, konton, transaktioner, kredit eller Ledger ändras.
+- API-nycklar och all portföljdata stannar lokalt i webbläsaren.
