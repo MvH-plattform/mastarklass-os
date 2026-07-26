@@ -296,3 +296,9 @@ input,select,textarea,button{max-width:100%}
 .portfolioBridgeBox small,.identityConflictBox small{display:block;margin-top:7px;color:#91a6bd}
 button[aria-busy="true"]{opacity:.78;cursor:wait}
 .identityConflictActions{grid-template-columns:1fr}
+
+
+/* 11.15.44 — ISIN Market Routing & Valuation Bridge */
+.marketRoutingBridge{border-color:#36a6d9;background:linear-gradient(180deg,#0b2a3c,#0b242f)}
+.marketRoutingBridge small{display:block;margin-top:7px;color:#a9d8e9}
+.marketRoutingBridge .primary{margin:0}

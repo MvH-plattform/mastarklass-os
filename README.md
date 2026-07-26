@@ -1,17 +1,26 @@
-# Mästarklass OS 11.15.43 — Shared ISIN Account Safety
+# Mästarklass OS 11.15.44 — ISIN Market Routing & Valuation Bridge
 
-Den här versionen bygger direkt ovanpå 11.15.42.
+Den här versionen bygger direkt ovanpå 11.15.43 och bevarar samtliga 102 innehav, identiteter, konton, transaktioner, GAV, kredit, Ledger och Cleanup Safety Lock.
 
-## Korrigerat
-- Samma ISIN på flera konton räknas inte längre som konflikt.
-- Realty Income på Montrose och Avanza visas som samma värdepapper på flera konton.
-- Rapporten skiljer på verkliga konflikter, delade ISIN-grupper och innehav som saknar ISIN.
-- Cleanup Safety Lock och all portföljdata behålls.
+## Nytt
+- Bygger en permanent marknadsrutt för varje innehav med ISIN som primär identitet.
+- Skiljer automatiskt mellan börskurs och fond-NAV.
+- Kopplar varje rutt till rätt valuta och FX till SEK.
+- Matchar livekurser via holding-ID, ISIN, ticker och providersymboler.
+- Livevärderingen använder den säkrade identitetsvalutan i stället för enbart äldre fält i innehavet.
+- Visar hur många rutter som har kurs, NAV och FX samt vad som fortfarande saknas.
+- Ruttmotorn körs säkert vid appstart utan att ändra antal, GAV eller historik.
 
-## Test
+## Test efter deployment
 1. Öppna Marknad → Global Identity Resolver.
-2. Synka portföljen.
-3. Öppna konfliktrapporten.
-4. Realty Income ska ligga under Samma värdepapper på flera konton.
-5. Räknaren ska visa 0 verkliga konflikter.
-6. Lägg därefter in kvarvarande ISIN via Lägg till ISIN.
+2. Kontrollera att Portfolio Identity Bridge visar 102/102 med ISIN.
+3. Tryck **Bygg marknadsrutter**.
+4. Kontrollera att knappen visar **Rutter klara ✓**.
+5. Se räknarna för marknadsrutter, kurser, NAV och FX.
+6. Öppna Portfölj → Översikt och kontrollera livevärderingen.
+7. Kör därefter ordinarie livesynk för att fylla rutter som saknar kurs eller NAV.
+
+## Säkerhet
+- Ingen automatisk cleanup har lagts till.
+- Cleanup Safety Lock är oförändrat aktivt.
+- Portföljdata, identiteter och permanent register skyddas.

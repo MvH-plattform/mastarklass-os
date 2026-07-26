@@ -1,6 +1,6 @@
 {
-  "version": "11.15.43",
-  "name": "Shared ISIN Account Safety",
-  "build": "2026-07-25",
+  "version": "11.15.44",
+  "name": "ISIN Market Routing & Valuation Bridge",
+  "build": "2026-07-26",
   "channel": "stable"
 }
