@@ -1,6 +1,6 @@
 {
-  "version": "11.15.45",
-  "name": "Market Routing Feedback & NAV Safety",
+  "version": "11.15.46",
+  "name": "Smart Provider Router & Valuation Confidence",
   "build": "2026-07-26",
   "channel": "stable"
 }

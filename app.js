@@ -1,5 +1,5 @@
 (()=>{'use strict';
-const VERSION='11.15.45';
+const VERSION='11.15.46';
 const DATA_KEY='mastarklass_os_10_data';
 const LIVE_KEY='mastarklass_os_live_readonly_v1';
 const SETTINGS_KEY='mastarklass_os_10_settings';
@@ -40,6 +40,7 @@ const IDENTITY_CONFLICT_KEY='mastarklass_os_11_15_38_identity_conflicts';
 const UNIFIED_IDENTITY_KEY='mastarklass_os_11_15_39_unified_identity';
 const PORTFOLIO_IDENTITY_BRIDGE_KEY='mastarklass_os_11_15_40_portfolio_identity_bridge';
 const MARKET_ROUTING_KEY='mastarklass_os_11_15_44_market_routing';
+const SMART_ROUTER_KEY='mastarklass_os_11_15_46_smart_router';
 const CLEANUP_SAFETY_LOCK_KEY='mastarklass_os_11_15_40_cleanup_safety_lock';
 const RESOLVER_INTERACTION_KEY='mastarklass_os_11_15_41_resolver_interaction';
 const RESOLVER_RUN_KEY='mastarklass_os_11_15_17_resolver_run';
@@ -277,8 +278,8 @@ function bridgePortfolioToIdentity(){
 }
 
 
-function marketRoutingState(){return merge({version:'11.15.45',lastRun:'',status:'not-run',total:0,routed:0,quoteReady:0,navReady:0,fxReady:0,needsPrice:0,needsNav:0,needsFx:0,routes:{},missingPrice:[],missingNav:[],missingFx:[],blockedQuoteRoutes:[]},parse(safeGet(MARKET_ROUTING_KEY))||{})}
-function persistMarketRouting(x){x.version='11.15.45';x.lastRun=new Date().toISOString();safeSet(MARKET_ROUTING_KEY,JSON.stringify(x));return x}
+function marketRoutingState(){return merge({version:'11.15.46',lastRun:'',status:'not-run',total:0,routed:0,quoteReady:0,navReady:0,fxReady:0,needsPrice:0,needsNav:0,needsFx:0,routes:{},missingPrice:[],missingNav:[],missingFx:[],blockedQuoteRoutes:[]},parse(safeGet(MARKET_ROUTING_KEY))||{})}
+function persistMarketRouting(x){x.version='11.15.46';x.lastRun=new Date().toISOString();safeSet(MARKET_ROUTING_KEY,JSON.stringify(x));return x}
 function routeCurrencyFor(h,identity={}){return String(identity.currency||text(h,['currency','valuta'],'SEK')||'SEK').trim().toUpperCase()}
 function marketRouteForHolding(h){
  const identity=mergedIdentityForHolding(h,h._key),cls=classifyInstrument(h),mapping=liveFoundation.mappings[h._key]||{},currency=routeCurrencyFor(h,identity);
@@ -300,7 +301,7 @@ function buildMarketRoutingBridge({log=true}={}){
  const missingPrice=[],missingNav=[],missingFx=[],blockedQuoteRoutes=[];
  for(const h of hs){const r=routes[h._key],q=liveQuoteForRoute(h,r),nav=navFor(h),fx=r.currency==='SEK'?1:fxForCurrency(r.currency);if(r.pricing==='nav'&&!nav)missingNav.push({key:h._key,name:h._name,account:h._account,isin:r.isin});if(r.pricing!=='nav'&&!q)missingPrice.push({key:h._key,name:h._name,account:h._account,ticker:r.ticker,isin:r.isin});if(!fx)missingFx.push({key:h._key,name:h._name,currency:r.currency});if(r.pricing==='nav')blockedQuoteRoutes.push({key:h._key,name:h._name,reason:'NAV-instrument skickas inte till aktieproviders'})}
  const result=persistMarketRouting({status:routed===hs.length?'ready':'partial',total:hs.length,routed,quoteReady,navReady,fxReady,needsPrice,needsNav,needsFx,routes,missingPrice,missingNav,missingFx,blockedQuoteRoutes});
- if(log)resolverDiag('ISIN Market Routing 11.15.45',`${routed}/${hs.length} rutter · ${quoteReady} kurser · ${navReady} NAV · ${needsFx} saknar FX · ${blockedQuoteRoutes.length} NAV-rutter skyddade`,routed===hs.length?'success':'warning');
+ if(log)resolverDiag('ISIN Market Routing 11.15.46',`${routed}/${hs.length} rutter · ${quoteReady} kurser · ${navReady} NAV · ${needsFx} saknar FX · ${blockedQuoteRoutes.length} NAV-rutter skyddade`,routed===hs.length?'success':'warning');
  return result
 }
 function fxForCurrency(currency){const cur=String(currency||'SEK').toUpperCase();if(cur==='SEK')return 1;const fx=liveState().fx||liveState().rates||{};return num(fx[cur])||num(fx[cur+'SEK'])||num(fx[cur+'/SEK'])||0}
@@ -308,13 +309,51 @@ function liveQuoteForRoute(h,route=marketRouteForHolding(h)){
  const quotes=Array.isArray(liveState().quotes)?liveState().quotes:[],symbols=[route.ticker,route.isin,...Object.values(route.providerSymbols||{}),text(h,['symbol','ticker','providerSymbol','isin'],'')].filter(Boolean).map(x=>String(x).trim().toUpperCase());
  return quotes.find(q=>q.instrumentKey===h._key||symbols.includes(String(q.isin||'').toUpperCase())||symbols.includes(String(q.symbol||q.ticker||q.providerSymbol||'').toUpperCase()))||null
 }
-function marketRoutingPanel(){const r=marketRoutingState(),built=r.lastRun?resolverInteractionTime(r.lastRun):'Inte byggd';return `<div class="portfolioBridgeBox marketRoutingBridge"><div><b>ISIN Market Routing & Valuation Bridge 11.15.45</b><span>${r.status==='not-run'?'Inte byggd':`Rutter klara ${r.routed}/${r.total} · ${r.quoteReady} kurser · ${r.navReady} NAV`}</span><small>Senast byggd: ${built} · ${r.needsPrice||0} saknar kurs · ${r.needsNav||0} saknar NAV · ${r.needsFx||0} saknar FX</small></div><div class="identityConflictActions"><button id="mk-market-routing-btn" class="primary" type="button">Bygg marknadsrutter</button><button class="secondary" type="button" onclick="return window.mkOpenMarketRoutingReport(event)">Öppna rutt- och felrapport</button></div></div>`}
-function runMarketRoutingWithFeedback(event){event?.preventDefault?.();event?.stopPropagation?.();resolverButtonFeedback('mk-market-routing-btn','Bygger rutter…',true);try{const r=buildMarketRoutingBridge();canonicalCache=null;liveValuationSnapshot({persist:true});resolverButtonFeedback('mk-market-routing-btn','Rutter klara ✓',true);render();restoreResolverButton('mk-market-routing-btn',1500);return r}catch(error){const message=storageErrorText(error);resolverDiag('ISIN Market Routing 11.15.45 fel',message,'error');resolverButtonFeedback('mk-market-routing-btn','Kunde inte bygga',true);alert('Marknadsrutterna kunde inte byggas.\n\n'+message);restoreResolverButton('mk-market-routing-btn',2200);return false}}
+function marketRoutingPanel(){const r=marketRoutingState(),built=r.lastRun?resolverInteractionTime(r.lastRun):'Inte byggd';return `<div class="portfolioBridgeBox marketRoutingBridge"><div><b>Smart Market Router & Valuation Bridge 11.15.46</b><span>${r.status==='not-run'?'Inte byggd':`Rutter klara ${r.routed}/${r.total} · ${r.quoteReady} kurser · ${r.navReady} NAV`}</span><small>Senast byggd: ${built} · ${r.needsPrice||0} saknar kurs · ${r.needsNav||0} saknar NAV · ${r.needsFx||0} saknar FX</small></div><div class="identityConflictActions"><button id="mk-market-routing-btn" class="primary" type="button">Bygg marknadsrutter</button><button class="secondary" type="button" onclick="return window.mkOpenMarketRoutingReport(event)">Öppna rutt- och felrapport</button><button class="secondary" type="button" onclick="return window.mkOpenSmartRouterReport(event)">Öppna datatillit och providerplan</button></div></div>`}
+function runMarketRoutingWithFeedback(event){event?.preventDefault?.();event?.stopPropagation?.();resolverButtonFeedback('mk-market-routing-btn','Bygger rutter…',true);try{const r=buildMarketRoutingBridge();buildSmartRouterState({log:true});canonicalCache=null;liveValuationSnapshot({persist:true});resolverButtonFeedback('mk-market-routing-btn','Rutter klara ✓',true);render();restoreResolverButton('mk-market-routing-btn',1500);return r}catch(error){const message=storageErrorText(error);resolverDiag('ISIN Market Routing 11.15.46 fel',message,'error');resolverButtonFeedback('mk-market-routing-btn','Kunde inte bygga',true);alert('Marknadsrutterna kunde inte byggas.\n\n'+message);restoreResolverButton('mk-market-routing-btn',2200);return false}}
 window.mkRunMarketRouting=runMarketRoutingWithFeedback;
 
-function renderMarketRoutingReport(){const r=marketRoutingState();const rows=(items,label)=>items?.length?items.map(x=>`<div class="missingIsinRow"><span><b>${escapeHtml(x.name||x.currency||'Okänd')}</b><small>${escapeHtml(x.account||x.currency||'')} ${x.ticker?`· ${escapeHtml(x.ticker)}`:''} ${x.isin?`· ${escapeHtml(x.isin)}`:''}</small></span><strong>${label}</strong></div>`).join(''):`<div class="notice okbox">Inga poster.</div>`;openModal(`<div class="sectionHead"><div><h2>Marknadsrutter 11.15.45</h2><p>Rutter klara ${r.routed}/${r.total} · senast byggd ${resolverInteractionTime(r.lastRun)}</p></div></div><div class="grid"><div class="card metric"><span>Kurser</span><b>${r.quoteReady}</b></div><div class="card metric"><span>NAV</span><b>${r.navReady}</b></div><div class="card metric"><span>FX klara</span><b>${r.fxReady}</b></div><div class="card metric"><span>NAV-rutter skyddade</span><b>${r.blockedQuoteRoutes?.length||0}</b></div></div><h3>Saknar kurs</h3>${rows(r.missingPrice,'Kurs saknas')}<h3 class="topGap">Saknar NAV</h3>${rows(r.missingNav,'NAV saknas')}<h3 class="topGap">Saknar FX</h3>${rows(r.missingFx,'FX saknas')}<p class="disclaimer">NAV-instrument, inklusive Montrose-fonder, blockeras från aktieproviders för att undvika HTTP 403 och andra felaktiga kursanrop. Senast kända värden används tills giltig kurs eller NAV finns.</p>`);return false}
+function renderMarketRoutingReport(){const r=marketRoutingState();const rows=(items,label)=>items?.length?items.map(x=>`<div class="missingIsinRow"><span><b>${escapeHtml(x.name||x.currency||'Okänd')}</b><small>${escapeHtml(x.account||x.currency||'')} ${x.ticker?`· ${escapeHtml(x.ticker)}`:''} ${x.isin?`· ${escapeHtml(x.isin)}`:''}</small></span><strong>${label}</strong></div>`).join(''):`<div class="notice okbox">Inga poster.</div>`;openModal(`<div class="sectionHead"><div><h2>Marknadsrutter 11.15.46</h2><p>Rutter klara ${r.routed}/${r.total} · senast byggd ${resolverInteractionTime(r.lastRun)}</p></div></div><div class="grid"><div class="card metric"><span>Kurser</span><b>${r.quoteReady}</b></div><div class="card metric"><span>NAV</span><b>${r.navReady}</b></div><div class="card metric"><span>FX klara</span><b>${r.fxReady}</b></div><div class="card metric"><span>NAV-rutter skyddade</span><b>${r.blockedQuoteRoutes?.length||0}</b></div></div><h3>Saknar kurs</h3>${rows(r.missingPrice,'Kurs saknas')}<h3 class="topGap">Saknar NAV</h3>${rows(r.missingNav,'NAV saknas')}<h3 class="topGap">Saknar FX</h3>${rows(r.missingFx,'FX saknas')}<p class="disclaimer">NAV-instrument, inklusive Montrose-fonder, blockeras från aktieproviders för att undvika HTTP 403 och andra felaktiga kursanrop. Senast kända värden används tills giltig kurs eller NAV finns.</p>`);return false}
 window.mkOpenMarketRoutingReport=event=>{event?.preventDefault?.();return renderMarketRoutingReport()};
 
+
+
+/* 11.15.46 — Smart Provider Router & Valuation Confidence */
+function smartRouterState(){return merge({version:'11.15.46',lastRun:'',status:'not-run',total:0,quoteRoutes:0,navRoutes:0,cacheFresh:0,cacheDelayed:0,providerNeeded:0,highConfidence:0,mediumConfidence:0,lowConfidence:0,averageConfidence:0,items:[]},parse(safeGet(SMART_ROUTER_KEY))||{})}
+function persistSmartRouter(x){x.version='11.15.46';x.lastRun=new Date().toISOString();safeSet(SMART_ROUTER_KEY,JSON.stringify(x));return x}
+function routeQuoteFreshness(h,route){const q=liveQuoteForRoute(h,route);if(!q)return {state:'missing',minutes:null};const ts=Date.parse(quoteTimestampLocal(q)||'');if(!ts)return {state:'delayed',minutes:null};const minutes=Math.max(0,(Date.now()-ts)/60000);return {state:minutes<=30?'fresh':minutes<=1440?'delayed':'stale',minutes}}
+function valuationConfidenceFor(h,route=marketRouteForHolding(h)){
+ const identity=mergedIdentityForHolding(h,h._key),cls=classifyInstrument(h),q=liveQuoteForRoute(h,route),nav=navFor(h),fx=route.currency==='SEK'?1:fxForCurrency(route.currency),qty=quantity(h);
+ let score=0,reasons=[];
+ if(identity.isin){score+=25;reasons.push('ISIN')}
+ if(route.pricing==='nav'?identity.isin:(route.ticker||identity.isin)){score+=15;reasons.push('marknadsrutt')}
+ if(q||nav){score+=30;reasons.push(route.pricing==='nav'?'NAV':'kurs')}
+ if(fx){score+=10;reasons.push('FX')}
+ if(qty){score+=10;reasons.push('antal')}
+ const fresh=routeQuoteFreshness(h,route);if(route.pricing==='nav'&&nav){score+=10;reasons.push('lokalt NAV')}else if(fresh.state==='fresh'){score+=10;reasons.push('färsk data')}else if(fresh.state==='delayed'){score+=5;reasons.push('fördröjd data')}
+ if(!q&&!nav&&explicitValue(h)){score=Math.max(score,45);reasons.push('senast känt värde')}
+ score=Math.max(0,Math.min(100,Math.round(score)));
+ return {score,level:score>=80?'high':score>=55?'medium':'low',reasons,freshness:fresh.state,pricing:cls.pricing}
+}
+function buildSmartRouterState({log=true}={}){
+ const routing=buildMarketRoutingBridge({log:false}),items=[];let quoteRoutes=0,navRoutes=0,cacheFresh=0,cacheDelayed=0,providerNeeded=0,highConfidence=0,mediumConfidence=0,lowConfidence=0,totalScore=0;
+ for(const h of canonicalHoldings()){
+  const route=routing.routes[h._key]||marketRouteForHolding(h),confidence=valuationConfidenceFor(h,route),fresh=routeQuoteFreshness(h,route);
+  if(route.pricing==='nav')navRoutes++;else quoteRoutes++;
+  if(fresh.state==='fresh')cacheFresh++;else if(fresh.state==='delayed')cacheDelayed++;
+  const needsProvider=route.pricing==='quote'&&!liveQuoteForRoute(h,route);
+  if(needsProvider)providerNeeded++;
+  if(confidence.level==='high')highConfidence++;else if(confidence.level==='medium')mediumConfidence++;else lowConfidence++;
+  totalScore+=confidence.score;
+  items.push({key:h._key,name:h._name,account:h._account,pricing:route.pricing,ticker:route.ticker,isin:route.isin,currency:route.currency,providerAction:route.pricing==='nav'?'NAV-källa':needsProvider?'Prisprovider':'Cache',confidence:confidence.score,confidenceLevel:confidence.level,reasons:confidence.reasons,freshness:confidence.freshness});
+ }
+ const result=persistSmartRouter({status:lowConfidence?'partial':'ready',total:items.length,quoteRoutes,navRoutes,cacheFresh,cacheDelayed,providerNeeded,highConfidence,mediumConfidence,lowConfidence,averageConfidence:items.length?Math.round(totalScore/items.length):0,items});
+ if(log)resolverDiag('Smart Provider Router 11.15.46',`${items.length} instrument · ${quoteRoutes} kursrutter · ${navRoutes} NAV-rutter · tillit ${result.averageConfidence}%`,lowConfidence?'warning':'success');
+ return result
+}
+function smartRouterSummaryHtml(){const s=smartRouterState();return `<div class="smartRouterSummary"><div><span>Genomsnittlig datatillit</span><b>${s.averageConfidence||0}%</b></div><div><span>Hög tillit</span><b>${s.highConfidence||0}</b></div><div><span>Medel</span><b>${s.mediumConfidence||0}</b></div><div><span>Låg</span><b>${s.lowConfidence||0}</b></div></div>`}
+function renderSmartRouterReport(){const s=buildSmartRouterState({log:false});const rows=s.items.slice().sort((a,b)=>a.confidence-b.confidence).map(x=>`<div class="smartRouteRow ${x.confidenceLevel}"><div><b>${escapeHtml(x.name)}</b><small>${escapeHtml(x.account)} · ${escapeHtml(x.pricing.toUpperCase())} · ${escapeHtml(x.providerAction)}</small><small>${escapeHtml((x.reasons||[]).join(' · ')||'Saknar underlag')}</small></div><strong>${x.confidence}%</strong></div>`).join('');openModal(`<div class="sectionHead"><div><h2>Smart Provider Router 11.15.46</h2><p>${s.total} instrument · ${s.quoteRoutes} kursrutter · ${s.navRoutes} NAV-rutter</p></div></div>${smartRouterSummaryHtml()}<h3>Instrument sorterade efter lägst datatillit</h3><div class="smartRouteList">${rows}</div><p class="disclaimer">NAV-instrument skickas endast till NAV-spåret. Prisproviders används bara för kursinstrument som saknar giltig cache. Portföljdata, antal och GAV ändras inte.</p>`);return false}
+window.mkOpenSmartRouterReport=event=>{event?.preventDefault?.();return renderSmartRouterReport()};
 
 const CLEANUP_EXACT_ALLOWLIST=[
  'mastarklass_os_11_15_16_resolver_diag',
@@ -1947,7 +1986,7 @@ async function boot(){
  recoverResolverRun({boot:true});
  await hydratePermanentIdentityRoutes();
  migrateIdentityIntegrity();
- bridgePortfolioToIdentity();refreshUnifiedIdentity();buildMarketRoutingBridge({log:false});setTimeout(()=>{canonicalCache=null;bridgePortfolioToIdentity();refreshUnifiedIdentity();buildMarketRoutingBridge({log:false});render()},350);
+ bridgePortfolioToIdentity();refreshUnifiedIdentity();buildMarketRoutingBridge({log:false});buildSmartRouterState({log:false});setTimeout(()=>{canonicalCache=null;bridgePortfolioToIdentity();refreshUnifiedIdentity();buildMarketRoutingBridge({log:false});buildSmartRouterState({log:false});render()},350);
  if(persistenceRepairState().status==='not-run')await runPersistenceRepair({silent:true});
  if(identityRecoveryState().status==='not-run')await runIdentityRecovery({silent:true});
  if(identityValidationState().status==='not-run')runIdentityIntegrityValidation({silent:true});
