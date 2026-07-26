@@ -1,5 +1,5 @@
 (()=>{'use strict';
-const VERSION='11.15.44';
+const VERSION='11.15.45';
 const DATA_KEY='mastarklass_os_10_data';
 const LIVE_KEY='mastarklass_os_live_readonly_v1';
 const SETTINGS_KEY='mastarklass_os_10_settings';
@@ -277,8 +277,8 @@ function bridgePortfolioToIdentity(){
 }
 
 
-function marketRoutingState(){return merge({version:'11.15.44',lastRun:'',status:'not-run',total:0,routed:0,quoteReady:0,navReady:0,fxReady:0,needsPrice:0,needsNav:0,needsFx:0,routes:{}},parse(safeGet(MARKET_ROUTING_KEY))||{})}
-function persistMarketRouting(x){x.version='11.15.44';x.lastRun=new Date().toISOString();safeSet(MARKET_ROUTING_KEY,JSON.stringify(x));return x}
+function marketRoutingState(){return merge({version:'11.15.45',lastRun:'',status:'not-run',total:0,routed:0,quoteReady:0,navReady:0,fxReady:0,needsPrice:0,needsNav:0,needsFx:0,routes:{},missingPrice:[],missingNav:[],missingFx:[],blockedQuoteRoutes:[]},parse(safeGet(MARKET_ROUTING_KEY))||{})}
+function persistMarketRouting(x){x.version='11.15.45';x.lastRun=new Date().toISOString();safeSet(MARKET_ROUTING_KEY,JSON.stringify(x));return x}
 function routeCurrencyFor(h,identity={}){return String(identity.currency||text(h,['currency','valuta'],'SEK')||'SEK').trim().toUpperCase()}
 function marketRouteForHolding(h){
  const identity=mergedIdentityForHolding(h,h._key),cls=classifyInstrument(h),mapping=liveFoundation.mappings[h._key]||{},currency=routeCurrencyFor(h,identity);
@@ -297,8 +297,10 @@ function buildMarketRoutingBridge({log=true}={}){
   if(r.pricing==='nav'){if(nav)navReady++;else needsNav++}else{if(q)quoteReady++;else needsPrice++}
   if(fx)fxReady++;else needsFx++;
  }
- const result=persistMarketRouting({status:routed===hs.length?'ready':'partial',total:hs.length,routed,quoteReady,navReady,fxReady,needsPrice,needsNav,needsFx,routes});
- if(log)resolverDiag('ISIN Market Routing 11.15.44',`${routed}/${hs.length} rutter · ${quoteReady} kurser · ${navReady} NAV · ${needsFx} saknar FX`,routed===hs.length?'success':'warning');
+ const missingPrice=[],missingNav=[],missingFx=[],blockedQuoteRoutes=[];
+ for(const h of hs){const r=routes[h._key],q=liveQuoteForRoute(h,r),nav=navFor(h),fx=r.currency==='SEK'?1:fxForCurrency(r.currency);if(r.pricing==='nav'&&!nav)missingNav.push({key:h._key,name:h._name,account:h._account,isin:r.isin});if(r.pricing!=='nav'&&!q)missingPrice.push({key:h._key,name:h._name,account:h._account,ticker:r.ticker,isin:r.isin});if(!fx)missingFx.push({key:h._key,name:h._name,currency:r.currency});if(r.pricing==='nav')blockedQuoteRoutes.push({key:h._key,name:h._name,reason:'NAV-instrument skickas inte till aktieproviders'})}
+ const result=persistMarketRouting({status:routed===hs.length?'ready':'partial',total:hs.length,routed,quoteReady,navReady,fxReady,needsPrice,needsNav,needsFx,routes,missingPrice,missingNav,missingFx,blockedQuoteRoutes});
+ if(log)resolverDiag('ISIN Market Routing 11.15.45',`${routed}/${hs.length} rutter · ${quoteReady} kurser · ${navReady} NAV · ${needsFx} saknar FX · ${blockedQuoteRoutes.length} NAV-rutter skyddade`,routed===hs.length?'success':'warning');
  return result
 }
 function fxForCurrency(currency){const cur=String(currency||'SEK').toUpperCase();if(cur==='SEK')return 1;const fx=liveState().fx||liveState().rates||{};return num(fx[cur])||num(fx[cur+'SEK'])||num(fx[cur+'/SEK'])||0}
@@ -306,9 +308,12 @@ function liveQuoteForRoute(h,route=marketRouteForHolding(h)){
  const quotes=Array.isArray(liveState().quotes)?liveState().quotes:[],symbols=[route.ticker,route.isin,...Object.values(route.providerSymbols||{}),text(h,['symbol','ticker','providerSymbol','isin'],'')].filter(Boolean).map(x=>String(x).trim().toUpperCase());
  return quotes.find(q=>q.instrumentKey===h._key||symbols.includes(String(q.isin||'').toUpperCase())||symbols.includes(String(q.symbol||q.ticker||q.providerSymbol||'').toUpperCase()))||null
 }
-function marketRoutingPanel(){const r=marketRoutingState();return `<div class="portfolioBridgeBox marketRoutingBridge"><div><b>ISIN Market Routing & Valuation Bridge 11.15.44</b><span>${r.status==='not-run'?'Inte byggd':`${r.routed}/${r.total} marknadsrutter · ${r.quoteReady} kurser · ${r.navReady} NAV`}</span><small>${r.needsPrice||0} saknar kurs · ${r.needsNav||0} saknar NAV · ${r.needsFx||0} saknar FX</small></div><button id="mk-market-routing-btn" class="primary" type="button">Bygg marknadsrutter</button></div>`}
-function runMarketRoutingWithFeedback(event){event?.preventDefault?.();event?.stopPropagation?.();resolverButtonFeedback('mk-market-routing-btn','Bygger rutter…',true);try{const r=buildMarketRoutingBridge();canonicalCache=null;liveValuationSnapshot({persist:true});resolverButtonFeedback('mk-market-routing-btn','Rutter klara ✓',true);render();restoreResolverButton('mk-market-routing-btn',1500);return r}catch(error){const message=storageErrorText(error);resolverDiag('ISIN Market Routing 11.15.44 fel',message,'error');resolverButtonFeedback('mk-market-routing-btn','Kunde inte bygga',true);alert('Marknadsrutterna kunde inte byggas.\n\n'+message);restoreResolverButton('mk-market-routing-btn',2200);return false}}
+function marketRoutingPanel(){const r=marketRoutingState(),built=r.lastRun?resolverInteractionTime(r.lastRun):'Inte byggd';return `<div class="portfolioBridgeBox marketRoutingBridge"><div><b>ISIN Market Routing & Valuation Bridge 11.15.45</b><span>${r.status==='not-run'?'Inte byggd':`Rutter klara ${r.routed}/${r.total} · ${r.quoteReady} kurser · ${r.navReady} NAV`}</span><small>Senast byggd: ${built} · ${r.needsPrice||0} saknar kurs · ${r.needsNav||0} saknar NAV · ${r.needsFx||0} saknar FX</small></div><div class="identityConflictActions"><button id="mk-market-routing-btn" class="primary" type="button">Bygg marknadsrutter</button><button class="secondary" type="button" onclick="return window.mkOpenMarketRoutingReport(event)">Öppna rutt- och felrapport</button></div></div>`}
+function runMarketRoutingWithFeedback(event){event?.preventDefault?.();event?.stopPropagation?.();resolverButtonFeedback('mk-market-routing-btn','Bygger rutter…',true);try{const r=buildMarketRoutingBridge();canonicalCache=null;liveValuationSnapshot({persist:true});resolverButtonFeedback('mk-market-routing-btn','Rutter klara ✓',true);render();restoreResolverButton('mk-market-routing-btn',1500);return r}catch(error){const message=storageErrorText(error);resolverDiag('ISIN Market Routing 11.15.45 fel',message,'error');resolverButtonFeedback('mk-market-routing-btn','Kunde inte bygga',true);alert('Marknadsrutterna kunde inte byggas.\n\n'+message);restoreResolverButton('mk-market-routing-btn',2200);return false}}
 window.mkRunMarketRouting=runMarketRoutingWithFeedback;
+
+function renderMarketRoutingReport(){const r=marketRoutingState();const rows=(items,label)=>items?.length?items.map(x=>`<div class="missingIsinRow"><span><b>${escapeHtml(x.name||x.currency||'Okänd')}</b><small>${escapeHtml(x.account||x.currency||'')} ${x.ticker?`· ${escapeHtml(x.ticker)}`:''} ${x.isin?`· ${escapeHtml(x.isin)}`:''}</small></span><strong>${label}</strong></div>`).join(''):`<div class="notice okbox">Inga poster.</div>`;openModal(`<div class="sectionHead"><div><h2>Marknadsrutter 11.15.45</h2><p>Rutter klara ${r.routed}/${r.total} · senast byggd ${resolverInteractionTime(r.lastRun)}</p></div></div><div class="grid"><div class="card metric"><span>Kurser</span><b>${r.quoteReady}</b></div><div class="card metric"><span>NAV</span><b>${r.navReady}</b></div><div class="card metric"><span>FX klara</span><b>${r.fxReady}</b></div><div class="card metric"><span>NAV-rutter skyddade</span><b>${r.blockedQuoteRoutes?.length||0}</b></div></div><h3>Saknar kurs</h3>${rows(r.missingPrice,'Kurs saknas')}<h3 class="topGap">Saknar NAV</h3>${rows(r.missingNav,'NAV saknas')}<h3 class="topGap">Saknar FX</h3>${rows(r.missingFx,'FX saknas')}<p class="disclaimer">NAV-instrument, inklusive Montrose-fonder, blockeras från aktieproviders för att undvika HTTP 403 och andra felaktiga kursanrop. Senast kända värden används tills giltig kurs eller NAV finns.</p>`);return false}
+window.mkOpenMarketRoutingReport=event=>{event?.preventDefault?.();return renderMarketRoutingReport()};
 
 
 const CLEANUP_EXACT_ALLOWLIST=[
@@ -1738,7 +1743,7 @@ function classifyInstrument(h){
  if(/preferred|preferens/.test(raw))return {code:'preferred',label:'Preferensaktie',pricing:'exchange'};
  if(/etn|certifikat|certificate/.test(raw))return {code:'etn',label:'ETN/Certifikat',pricing:'exchange'};
  if(/etf|xact|hanetf|invesco.*(ucits|etf)|jpm.*premium income/.test(raw))return {code:'etf',label:'ETF',pricing:'exchange'};
- if(/fond|fund|indexnära|aktiespararna|spiltan|ålandsbanken|montrose global/.test(raw))return {code:'fund',label:'Fond',pricing:'nav'};
+ if(/fond|fund|indexnära|aktiespararna|spiltan|ålandsbanken|montrose/.test(raw))return {code:'fund',label:'Fond',pricing:'nav'};
  return {code:'stock',label:'Aktie',pricing:'exchange'};
 }
 function navFor(h){const st=fundNavState(),x=st.items?.[h._key];if(!x)return null;const price=num(x.nav||x.price);return price?{...x,price,provider:x.provider||'Manuellt NAV',timestamp:x.timestamp||x.updatedAt}:null}

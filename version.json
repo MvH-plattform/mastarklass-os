@@ -1,6 +1,6 @@
 {
-  "version": "11.15.44",
-  "name": "ISIN Market Routing & Valuation Bridge",
+  "version": "11.15.45",
+  "name": "Market Routing Feedback & NAV Safety",
   "build": "2026-07-26",
   "channel": "stable"
 }
