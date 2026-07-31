@@ -1,30 +1,21 @@
-# Mästarklass OS 11.15.49 — Rate-Limit Scheduler & Exchange Symbol Resolver
+# Mästarklass OS 11.15.50 — Mästarklass Terminal
 
-Den här versionen bygger direkt ovanpå 11.15.48 och bevarar samtliga portföljdata, identiteter, konton, transaktioner, GAV, kredit, Ledger och Cleanup Safety Lock.
+Detta är ett komplett GitHub-paket. Du behöver inte ändra någon kod.
 
-## Nytt i 11.15.49
+## Nytt
+- Mästarklass Terminal integrerad direkt i plattformen.
+- 40 analyserade bolag, inklusive Air Liquide.
+- Sökning, sortering och filter på land, sektor och tier.
+- Detaljkort för varje bolag med varför bolaget kan passa Mästarklass och fundamental säljsignal.
+- Slutmål: 28–35 aktier.
+- Separata framtidsflikar för ETF:er och fonder som kompletterar utdelningsmotorn.
+- Analyskö med kommande bolag, inklusive Illinois Tool Works och Bank of Nova Scotia.
 
-- Providerbudget per synk för Twelve Data, Alpha Vantage, Finnhub och Stooq Legacy.
-- Minsta väntetid mellan anrop för att minska HTTP 429 och onödiga API-anrop.
-- Providers i cooldown hoppas över automatiskt i stället för att anropas igen.
-- Tidigare olösta instrument prioriteras först vid nästa synk.
-- Separat felklassificering: rate-limit, ogiltig symbol, ingen data och providerfel.
-- Utökad börssymbolresolver för Stockholm, Oslo, Köpenhamn, Helsingfors, London, Frankfurt/Xetra och Toronto.
-- Ny rapport **Rate-Limit Scheduler 11.15.49** med providerbudget, cooldown och återstående kö.
-- Full Portfolio Quote Orchestrator kör fortsatt hela portföljen i säkra batcher.
-- NAV-instrument skickas fortsatt endast till NAV Center.
+## Deployment
+1. Packa upp ZIP-filen.
+2. Ladda upp samtliga filer till samma plats i GitHub-repositoryt och ersätt befintliga filer med samma namn.
+3. Commit changes.
+4. Vänta på GitHub Pages-deployment.
+5. Stäng den installerade appen helt och öppna den igen.
 
-## Test efter deployment
-
-1. Öppna **Marknad → Global Identity Resolver**.
-2. Tryck **Bygg marknadsrutter**.
-3. Tryck **Synkronisera live-data**.
-4. Öppna **Full Portfolio Quote Orchestrator** och kontrollera resultatet.
-5. Öppna **Rate-Limit Scheduler** och kontrollera providerbudget, cooldown och väntande instrument.
-6. Kör en ny synk efter att cooldown har löpt ut. Tidigare olösta instrument ska prioriteras.
-
-## Säkerhet
-
-- Cleanup Safety Lock är fortsatt aktivt.
-- Antal, GAV, konton, transaktioner, kredit och Ledger ändras inte.
-- API-nycklar och portföljdata stannar lokalt i webbläsaren.
+Ingen portföljdata, GAV, transaktion, kredit eller Ledger raderas av denna version. Terminalens data lagras local-first i webbläsaren.

@@ -1,5 +1,5 @@
 (()=>{'use strict';
-const VERSION='11.15.49';
+const VERSION='11.15.50';
 const DATA_KEY='mastarklass_os_10_data';
 const LIVE_KEY='mastarklass_os_live_readonly_v1';
 const SETTINGS_KEY='mastarklass_os_10_settings';

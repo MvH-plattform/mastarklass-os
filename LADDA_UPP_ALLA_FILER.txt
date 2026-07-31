@@ -1,0 +1,1 @@
+Packa upp ZIP-filen och ladda upp ALLA filer till GitHub-repositoryts rot. Välj ersätt för filer med samma namn, commit och invänta deployment. Ingen kodändring behövs.
