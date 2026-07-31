@@ -1,5 +1,5 @@
-const CACHE='mastarklass-os-11.15.52';
-const ASSETS=['./','./index.html','./app.js?v=11.15.52','./styles.css?v=11.15.52','./manifest.json?v=11.15.52','./icon.svg','./version.json?v=11.15.52','./masterclass_terminal_data.js?v=2.0.0','./masterclass_terminal.js?v=2.0.0'];
+const CACHE='mastarklass-os-11.15.53';
+const ASSETS=['./','./index.html','./app.js?v=11.15.53','./styles.css?v=11.15.53','./manifest.json?v=11.15.53','./icon.svg','./version.json?v=11.15.53','./masterclass_terminal_data.js?v=2.0.0','./masterclass_terminal.js?v=2.0.0'];
 self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(ASSETS)).then(()=>self.skipWaiting())));
 self.addEventListener('activate',event=>event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(key=>key.startsWith('mastarklass-os-')&&key!==CACHE).map(key=>caches.delete(key)))).then(()=>self.clients.claim())));
 self.addEventListener('message',event=>{if(event.data?.type==='SKIP_WAITING')self.skipWaiting()});

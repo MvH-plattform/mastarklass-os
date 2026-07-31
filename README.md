@@ -1,4 +1,4 @@
-# Mästarklass OS 11.15.52 — Mästarklass Terminal 2.0
+# Mästarklass OS 11.15.53 — Mästarklass Terminal 2.0.1
 
 Komplett GitHub-paket. Ingen kod behöver ändras manuellt.
 
@@ -23,3 +23,11 @@ Komplett GitHub-paket. Ingen kod behöver ändras manuellt.
 5. Stäng den installerade appen helt och öppna den igen.
 
 Terminalen ändrar inte portföljinnehav, antal, GAV, transaktioner, kredit, Ledger eller API-nycklar.
+
+
+## Korrigerat i 11.15.53
+
+- Större och tydligare flikar med fullständiga etiketter på mobil.
+- Utdelningsprofiler och portföljroller är tryckbara.
+- Tryck på en stapel för att se exakt vilka bolag som ingår.
+- Tryck sedan på ett bolag i listan för att öppna dess fullständiga detaljkort.
