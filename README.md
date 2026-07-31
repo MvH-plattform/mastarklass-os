@@ -1,29 +1,25 @@
-# Mästarklass OS 11.15.51 — Mästarklass Terminal Touch Fix
+# Mästarklass OS 11.15.52 — Mästarklass Terminal 2.0
 
-Detta är ett komplett GitHub-paket. Du behöver inte ändra någon kod.
+Komplett GitHub-paket. Ingen kod behöver ändras manuellt.
 
 ## Nytt
-- Mästarklass Terminal integrerad direkt i plattformen.
-- 40 analyserade bolag, inklusive Air Liquide.
-- Sökning, sortering och filter på land, sektor och tier.
-- Detaljkort för varje bolag med varför bolaget kan passa Mästarklass och fundamental säljsignal.
-- Slutmål: 28–35 aktier.
-- Separata framtidsflikar för ETF:er och fonder som kompletterar utdelningsmotorn.
-- Analyskö med kommande bolag, inklusive Illinois Tool Works och Bank of Nova Scotia.
+
+- Stor terminalöversikt med statistik, länder, sektorer och topprankade bolag.
+- Mobil masterlista och fullständig tabellvy.
+- Jämförelse av två eller tre bolag.
+- Arbetsyta för den framtida slutportföljen med 28–35 aktier.
+- Utdelningsmotor med utdelningsprofiler och portföljroller.
+- Analyskö, ETF-flik och fondflik.
+- Favoriter, bevakningsstatus och egna anteckningar.
+- Uppdatera-fliken är ersatt av ren backup/återställning.
+- Framtida bolagsanalyser uppdateras permanent genom att samma fil `masterclass_terminal_data.js` ersätts. Inga nya filer läggs till.
 
 ## Deployment
+
 1. Packa upp ZIP-filen.
-2. Ladda upp samtliga filer till samma plats i GitHub-repositoryt och ersätt befintliga filer med samma namn.
+2. Ladda upp samtliga filer till repositoryts rot och ersätt filer med samma namn.
 3. Commit changes.
-4. Vänta på GitHub Pages-deployment.
+4. Vänta på GitHub Pages.
 5. Stäng den installerade appen helt och öppna den igen.
 
-Ingen portföljdata, GAV, transaktion, kredit eller Ledger raderas av denna version. Terminalens data lagras local-first i webbläsaren.
-
-
-## Korrigerat i 11.15.51
-
-- Flikarna i terminalen använder nu robust touch-hantering på Android.
-- Hela bolagsraden är tryckbar, inte bara bolagsnamnet.
-- Terminalhuvudet ligger inte längre som ett osynligt lager över tabellraderna.
-- Microsoft till Moody’s öppnar nu samma detaljkort som övriga bolag.
+Terminalen ändrar inte portföljinnehav, antal, GAV, transaktioner, kredit, Ledger eller API-nycklar.
