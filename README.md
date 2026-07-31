@@ -1,4 +1,4 @@
-# Mästarklass OS 11.15.50 — Mästarklass Terminal
+# Mästarklass OS 11.15.51 — Mästarklass Terminal Touch Fix
 
 Detta är ett komplett GitHub-paket. Du behöver inte ändra någon kod.
 
@@ -19,3 +19,11 @@ Detta är ett komplett GitHub-paket. Du behöver inte ändra någon kod.
 5. Stäng den installerade appen helt och öppna den igen.
 
 Ingen portföljdata, GAV, transaktion, kredit eller Ledger raderas av denna version. Terminalens data lagras local-first i webbläsaren.
+
+
+## Korrigerat i 11.15.51
+
+- Flikarna i terminalen använder nu robust touch-hantering på Android.
+- Hela bolagsraden är tryckbar, inte bara bolagsnamnet.
+- Terminalhuvudet ligger inte längre som ett osynligt lager över tabellraderna.
+- Microsoft till Moody’s öppnar nu samma detaljkort som övriga bolag.
